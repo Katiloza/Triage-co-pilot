@@ -90,6 +90,25 @@ button { font-family: inherit; color: inherit; }
 .cal .cell.sel .c { color: #D6E3F5; }
 .cal .cell:not(.sel):hover { border-color: var(--border-strong); }
 .cal .blank { min-height: 38px; }
+.cal .cell.future { cursor: default; }
+.cal .cell.future .n { color: #C9C6BD; }
+.cal-month { display: inline-flex; align-items: center; gap: 4px; min-height: 30px; padding: 0 8px; margin-left: -6px; border: 0; border-radius: 8px; background: transparent; font-size: 13px; font-weight: 600; letter-spacing: -0.005em; color: var(--ink); cursor: pointer; }
+.cal-month:hover, .cal-month[aria-expanded="true"] { background: var(--sunk); }
+.cal-month svg { color: var(--faint); transition: transform 0.15s; }
+.cal-month[aria-expanded="true"] svg { transform: rotate(180deg); }
+.cal-cap { padding: 0 2px 8px; font-size: 11px; color: var(--faint); }
+.rail-top .icon-btn { width: 28px; height: 28px; border-radius: 7px; }
+.rail-top .icon-btn:not(:disabled):hover { background: var(--sunk); color: var(--ink); }
+/* Month and year picker: replaces the grid until a month is chosen */
+.cal-pick { padding: 2px 0 4px; }
+.cal-pick-year { display: flex; align-items: center; justify-content: space-between; padding: 0 2px 8px; font-size: 13px; font-weight: 600; font-family: var(--mono); }
+.cal-pick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.cal-pick-grid button { min-height: 38px; border: 1px solid var(--hair); border-radius: 9px; background: var(--surface); font-size: 12.5px; font-weight: 600; color: var(--ink-3); cursor: pointer; }
+.cal-pick-grid button:hover:not(:disabled) { border-color: var(--border-strong); }
+.cal-pick-grid button[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #FFFFFF; }
+.cal-pick-grid button.now { border-color: #CFCCC3; }
+.cal-pick-grid button:disabled { color: #C9C6BD; cursor: default; }
+.cal-pick-foot { display: flex; justify-content: flex-end; margin-top: 8px; }
 .rail-filters { padding: 2px 12px 10px; }
 .rail-filters .sub { margin-top: 6px; padding-left: 10px; border-left: 2px solid var(--red-bg); }
 .rail-top .kicker { padding-left: 2px; }
@@ -571,13 +590,16 @@ textarea.field:focus { border-color: var(--primary); }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/reactflow@11.11.4/dist/umd/index.js"></script>
 <script>
-const TODAY = { m: 10, d: 27 };
+const TODAY = { y: 2026, m: 10, d: 27 };
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const FIRST_YEAR = 2024; // how far back the calendar goes
 const key = (m, d) => m * 100 + d;
 
 const ICON = {
   logo: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-7 4 14 2.5-7H22"/></svg>',
   logoSm: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-7 4 14 2.5-7H22"/></svg>',
+  down: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
   left: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
   right: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
   up: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>',
@@ -725,7 +747,9 @@ const WORKED = '40-118-772';
 
 const S = {
   view: 'queue',          // queue | patient | pip
-  day: null,
+  day: null,             // 'y-m-d' picked in the calendar
+  cal: { y: 2026, m: 10 }, // month shown in the calendar
+  calPicker: null,       // year being browsed in the month picker, when open
   filter: 'all',
   current: WORKED,        // the patient open now, or last opened
   tab: 'decision',
@@ -767,21 +791,58 @@ const matchesFilter = (p) => {
   if (f.startsWith('declined-')) return p.status === 'declined' && p.decline === f.slice('declined-'.length);
   return p.status === f;
 };
-const onDay = (p) => S.day === null || (p.rm === 10 && p.rd === S.day);
+const dayKey = (y, m, d) => `${y}-${m}-${d}`;
+const onDay = (p) => S.day === null || S.day === dayKey(2026, p.rm, p.rd);
+const ymd = (y, m, d) => y * 10000 + m * 100 + d;
+const isFuture = (y, m, d) => ymd(y, m, d) > ymd(TODAY.y, TODAY.m, TODAY.d);
+const dayLabel = (k) => { const [y, m, d] = k.split('-').map(Number); return MONTH_NAMES[m - 1] + ' ' + d + (y === TODAY.y ? '' : ', ' + y); };
+// Referrals received each day. October 2026 is the sample month; other months get steady sample volumes.
+function receivedOn(y, m, d) {
+  if (isFuture(y, m, d)) return null;
+  if (y === 2026 && m === 10) return COUNTS[d] || 0;
+  const dow = new Date(y, m - 1, d).getDay();
+  if (dow === 0 || dow === 6) return 0;
+  return 6 + ((Math.imul(ymd(y, m, d), 2654435761) >>> 0) % 10);
+}
 
 /* ---------- Rail ---------- */
 
 function renderRail() {
+  const { y, m } = S.cal;
+  const lead = new Date(y, m - 1, 1).getDay();
+  const days = new Date(y, m, 0).getDate();
   const cells = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d) => `<div class="dn">${d}</div>`);
-  for (let i = 0; i < 35; i += 1) {
-    const num = i - 3;
-    if (num < 1 || num > 31) { cells.push('<div class="blank"></div>'); continue; }
-    const n = COUNTS[num] || 0;
-    const cls = ['cell', num === TODAY.d && 'today', S.day === num && 'sel'].filter(Boolean).join(' ');
-    cells.push(`<button type="button" class="${cls}" data-act="day" data-v="${num}"
-      aria-label="October ${num}, ${n} received${S.day === num ? ', selected' : ''}">
-      <span class="n">${num}</span><span class="c">${n || '·'}</span></button>`);
+  for (let i = 0; i < lead; i += 1) cells.push('<div class="blank"></div>');
+  for (let d = 1; d <= days; d += 1) {
+    const n = receivedOn(y, m, d);
+    const k = dayKey(y, m, d);
+    const future = n === null;
+    const cls = ['cell', k === dayKey(TODAY.y, TODAY.m, TODAY.d) && 'today', S.day === k && 'sel', future && 'future'].filter(Boolean).join(' ');
+    cells.push(`<button type="button" class="${cls}" data-act="day" data-v="${k}" ${future ? 'disabled' : ''}
+      aria-label="${MONTH_NAMES[m - 1]} ${d}, ${future ? 'not yet' : n + ' received'}${S.day === k ? ', selected' : ''}">
+      <span class="n">${d}</span><span class="c">${future ? '' : (n || '·')}</span></button>`);
   }
+  const atStart = y === FIRST_YEAR && m === 1;
+  const atNow = y === TODAY.y && m === TODAY.m;
+
+  // Quick jump: pick a year, then a month. Months after this one are not selectable.
+  const py = S.calPicker;
+  const picker = py === null ? '' : `
+    <div class="cal-pick" role="dialog" aria-label="Choose a month">
+      <div class="cal-pick-year">
+        <button type="button" class="icon-btn" data-act="calYear" data-v="-1" aria-label="Previous year" ${py <= FIRST_YEAR ? 'disabled' : ''}>${ICON.left}</button>
+        <span aria-live="polite">${py}</span>
+        <button type="button" class="icon-btn" data-act="calYear" data-v="1" aria-label="Next year" ${py >= TODAY.y ? 'disabled' : ''}>${ICON.right}</button>
+      </div>
+      <div class="cal-pick-grid">
+        ${MONTHS.map((label, i) => {
+          const mm = i + 1;
+          const later = py === TODAY.y && mm > TODAY.m;
+          return `<button type="button" class="${py === TODAY.y && mm === TODAY.m ? 'now' : ''}" data-act="calMonth" data-v="${mm}" aria-pressed="${py === y && mm === m}" aria-label="${MONTH_NAMES[i]} ${py}" ${later ? 'disabled' : ''}>${label}</button>`;
+        }).join('')}
+      </div>
+      <div class="cal-pick-foot"><button type="button" class="btn-ghost" data-act="calToday">This month</button></div>
+    </div>`;
 
   const chip = (id, label, size) => `<button type="button" class="chip ${size || ''}" data-act="filter" data-v="${id}" aria-pressed="${S.filter === id}">${label}</button>`;
   const declined = S.filter.startsWith('declined');
@@ -797,8 +858,8 @@ function renderRail() {
     </div>`;
 
   const rows = PEOPLE.filter((p) => onDay(p) && matchesFilter(p));
-  const title = (S.day === null ? '' : 'October ' + S.day + ' · ') + (S.filter === 'all' ? 'All referrals' : FILTERS[S.filter].replace('Declined · ', ''));
-  const count = S.day === null ? String(rows.length) : `${rows.length} of ${COUNTS[S.day] || 0} received`;
+  const title = (S.day === null ? '' : dayLabel(S.day) + ' · ') + (S.filter === 'all' ? 'All referrals' : FILTERS[S.filter].replace('Declined · ', ''));
+  const count = S.day === null ? String(rows.length) : `${rows.length} of ${receivedOn(...S.day.split('-').map(Number)) || 0} received`;
   const list = rows.length
     ? rows.map((p) => {
       const here = S.view === 'patient' && S.current === p.mrn;
@@ -817,12 +878,14 @@ function renderRail() {
         ${S.view === 'patient' ? `<button type="button" data-act="toQueue" aria-label="Back to the day" title="Back to the day">${ICON.left}</button>` : ''}
       </div>
       <div class="rail-top">
-        <span class="month" style="font-size: 13px; font-weight: 600; letter-spacing: -0.005em">October 2026</span><span style="font-size: 11px; color: var(--faint)">by date received</span>
+        <button type="button" class="cal-month" data-act="calPick" aria-expanded="${py !== null}" aria-label="${MONTH_NAMES[m - 1]} ${y}, choose a month">${MONTH_NAMES[m - 1]} ${y}${ICON.down}</button>
         <span class="grow"></span>
+        <button type="button" class="icon-btn" data-act="calStep" data-v="-1" aria-label="Previous month" ${atStart ? 'disabled' : ''}>${ICON.left}</button>
+        <button type="button" class="icon-btn" data-act="calStep" data-v="1" aria-label="Next month" ${atNow ? 'disabled' : ''}>${ICON.right}</button>
         <button type="button" class="col-toggle" data-act="collapse" data-v="rail" aria-label="Hide the patient list" title="Hide the patient list">${ICON.panelL}</button>
       </div>
       <div class="rail-scroll">
-        <div style="padding: 0 12px 10px"><div class="cal">${cells.join('')}</div></div>
+        <div style="padding: 0 12px 10px">${picker || `<div class="cal-cap">Referrals by date received</div><div class="cal">${cells.join('')}</div>`}</div>
         ${filters}
         <div class="rail-title"><span class="kicker">${title}</span><span class="grow"></span><span class="count">${count}</span>${S.day !== null ? '<button type="button" class="btn-ghost" data-act="clearDay">Show all</button>' : ''}</div>
         <div style="padding: 0 8px 12px">${list}</div>
@@ -1746,7 +1809,20 @@ function render() {
 /* ---------- Events ---------- */
 
 const ACT = {
-  day: (v) => { const n = +v; S.day = S.day === n ? null : n; },
+  day: (v) => { S.day = S.day === v ? null : v; },
+  // Month arrows step one month, from January of the first year up to this month.
+  calStep: (v) => {
+    const t = S.cal.y * 12 + (S.cal.m - 1) + +v;
+    const max = TODAY.y * 12 + (TODAY.m - 1);
+    const min = FIRST_YEAR * 12;
+    const c = Math.min(max, Math.max(min, t));
+    S.cal = { y: Math.floor(c / 12), m: (c % 12) + 1 };
+    S.calPicker = null;
+  },
+  calPick: () => { S.calPicker = S.calPicker === null ? S.cal.y : null; },
+  calYear: (v) => { S.calPicker = Math.min(TODAY.y, Math.max(FIRST_YEAR, S.calPicker + +v)); },
+  calMonth: (v) => { S.cal = { y: S.calPicker, m: +v }; S.calPicker = null; },
+  calToday: () => { S.cal = { y: TODAY.y, m: TODAY.m }; S.calPicker = null; },
   clearDay: () => { S.day = null; },
   filter: (v) => { S.filter = v; },
   open: (v) => {
@@ -1960,6 +2036,7 @@ document.addEventListener('scroll', () => { tip.hidden = true; }, true);
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && S.drawer) { S.drawer = null; render(); return; }
   if (e.key === 'Escape' && S.reroute) { S.reroute = null; redraw(); return; }
+  if (e.key === 'Escape' && S.calPicker !== null) { S.calPicker = null; redraw(); return; }
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
     const s = document.getElementById('search');
     if (s) { e.preventDefault(); s.focus(); }
