@@ -186,7 +186,6 @@ button { font-family: inherit; color: inherit; }
 .tabs button { min-height: 38px; padding: 0 13px; border: 0; background: transparent; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted); }
 .tabs button[aria-pressed="true"] { font-weight: 600; color: var(--ink); box-shadow: inset 0 -2px 0 var(--primary); }
 .pad { padding: 18px 20px 24px; }
-.measure { max-width: 1200px; }
 
 /* Verdict */
 .verdict { padding: 16px 18px; border-radius: 14px; background: var(--amber-bg); }
@@ -978,7 +977,7 @@ function renderPatient() {
         </div>
         ${worked ? `<div class="tabs" role="group" aria-label="Sections">${tabs}</div>` : '<div style="height: 14px"></div>'}
       </div>
-      <div class="centre-scroll"><div class="pad"><div class="measure">${content}${renderChat(p)}</div></div></div>
+      <div class="centre-scroll"><div class="pad">${content}${renderChat(p)}</div></div>
       ${renderSearch('Ask about this referral, or search another MRN', ['Draft the decision note', 'Draft a message', 'What is still awaiting?'])}
     </main>`;
 }
