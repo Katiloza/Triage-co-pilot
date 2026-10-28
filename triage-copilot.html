@@ -119,15 +119,6 @@ button { font-family: inherit; color: inherit; }
 /* Centre */
 .centre { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; container-type: inline-size; }
 .centre-scroll { flex-grow: 1; min-height: 0; overflow: auto; }
-.q-head { flex-shrink: 0; padding: 18px 20px 16px; border-bottom: 1px solid var(--border); }
-.q-head h1 { margin: 5px 0 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
-.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
-.card-btn { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; padding: 11px 13px 12px; border-radius: 12px; cursor: pointer; text-align: left; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-card); }
-.card-btn .lab { display: flex; align-items: center; gap: 6px; width: 100%; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
-.card-btn .num { margin-top: 7px; font-size: 26px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
-.card-btn .sub { margin-top: 5px; font-size: 10.5px; line-height: 1.4; color: var(--faint); }
-.card-btn[aria-pressed="true"] { box-shadow: 0 2px 8px rgba(20, 20, 15, 0.1); }
-.card-btn[aria-pressed="true"] .lab { color: var(--ink); }
 .dot.sm { width: 7px; height: 7px; }
 .welcome { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 40px 24px 48px; text-align: center; }
 .welcome .logo { width: 44px; height: 44px; border-radius: 13px; margin-bottom: 6px; }
@@ -509,9 +500,6 @@ textarea.field:focus { border-color: var(--primary); }
 /* The centre column, by its own width */
 
 @container (max-width: 760px) {
-  .q-head { padding: 16px 16px 14px; }
-  .q-head h1 { font-size: 19px; }
-  .q-head .mono { display: none; }
   .p-head { padding: 14px 16px 0; }
   .facts { margin-left: 0; width: 100%; gap: 14px 20px; flex-wrap: wrap; }
   .tabs { overflow-x: auto; scrollbar-width: none; }
@@ -522,8 +510,6 @@ textarea.field:focus { border-color: var(--primary); }
 }
 
 @container (max-width: 640px) {
-  .cards { gap: 8px; }
-  .card-btn .num { font-size: 22px; }
   .welcome h2 { font-size: 23px; }
   .welcome p { font-size: 13.5px; }
 }
@@ -825,25 +811,6 @@ function renderRail() {
 /* ---------- Centre: the day ---------- */
 
 function renderQueue() {
-  const dated = PEOPLE.filter(onDay);
-  const people = dated.filter(matchesFilter);
-  const count = (status, decline) => dated.filter((p) => p.status === status && (!decline || p.decline === decline)).length;
-  const oldest = Math.max(0, ...dated.filter((p) => p.status === 'awaiting').map((p) => p.days));
-  const cardDefs = [
-    { id: 'awaiting', label: 'Awaiting', accent: '#C98A2B', n: count('awaiting'), sub: oldest ? 'oldest ' + oldest + ' days' : 'none waiting' },
-    { id: 'accepted', label: 'Accepted', accent: '#0E7A52', n: count('accepted'), sub: 'sent to scheduling' },
-    { id: 'declined', label: 'Declined', accent: '#8A3324', n: count('declined'),
-      sub: count('declined', 'malig') + ' to malignant hematology · ' + count('declined', 'invest') + ' further investigations' }
-  ];
-  const cards = cardDefs.map((c) => {
-    const on = c.id === 'declined' ? S.filter.startsWith('declined') : S.filter === c.id;
-    return `<button type="button" class="card-btn" data-act="card" data-v="${c.id}" aria-pressed="${on}" style="${on ? 'border: 1.5px solid ' + c.accent : ''}">
-      <span class="lab"><span class="dot sm" style="background: ${c.accent}"></span>${c.label}</span>
-      <span class="num">${c.n}</span><span class="sub">${c.sub}</span></button>`;
-  }).join('');
-  const suffix = S.filter === 'all' ? ' in the queue' : ' · ' + FILTERS[S.filter].toLowerCase();
-  const kicker = S.day !== null ? 'Received October ' + S.day + ', 2026' : 'All referrals';
-
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const newToday = PEOPLE.filter((p) => p.status === 'new').length;
@@ -863,14 +830,6 @@ function renderQueue() {
 
   return `
     <main class="centre" aria-label="The day">
-      <div class="q-head">
-        <div style="display: flex; align-items: flex-end; gap: 12px">
-          <div style="min-width: 0"><div class="kicker">${kicker}</div><h1>${people.length} ${people.length === 1 ? 'referral' : 'referrals'}${suffix}</h1></div>
-          <span class="grow"></span>
-          <span class="mono" style="font-size: 11px; color: var(--faint)">Swept 06:00 today</span>
-        </div>
-        <div class="cards">${cards}</div>
-      </div>
       <div class="centre-scroll">${welcome}</div>
       ${renderSearch('Search an MRN or ask a question about the queue')}
     </main>`;
@@ -1712,13 +1671,6 @@ const ACT = {
   day: (v) => { const n = +v; S.day = S.day === n ? null : n; },
   clearDay: () => { S.day = null; },
   filter: (v) => { S.filter = v; },
-  // The count cards narrow the patient list, opening it if it is folded away or a drawer.
-  card: (v) => {
-    const on = v === 'declined' ? S.filter.startsWith('declined') : S.filter === v;
-    S.filter = on ? 'all' : v;
-    S.railCollapsed = false;
-    if (matchMedia('(max-width: 1023px)').matches) S.drawer = 'rail';
-  },
   open: (v) => {
     if (S.current !== v) { S.tab = 'decision'; S.copied = null; S.reroute = null; }
     // Opening a profile from the day shows only the awaiting column; the list is one click away.
