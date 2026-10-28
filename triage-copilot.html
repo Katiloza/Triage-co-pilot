@@ -404,6 +404,21 @@ textarea.field:focus { border-color: var(--primary); }
 .ai-tag { display: inline-flex; align-items: center; gap: 5px; height: 19px; padding: 0 8px; border-radius: 10px; background: var(--purple-bg); color: var(--purple); font-size: 10px; font-weight: 600; }
 .note-foot { display: flex; align-items: center; gap: 8px; padding: 10px 14px 12px; }
 .note-foot .why { flex-grow: 1; min-width: 0; font-size: 11px; line-height: 1.4; color: var(--faint); }
+/* Message to the referring provider: drafted in the chat, edited there, sent from the EHR */
+.mc { padding: 0 14px; }
+.mc-row { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 10px; margin-top: 8px; }
+.mc-row .k { font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ghost); }
+.mc-in { width: 100%; height: 34px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); font-family: inherit; font-size: 13px; color: var(--ink); outline: none; }
+.mc-in:focus, .mc-body:focus { border-color: var(--primary); }
+.mc-in::placeholder { color: var(--amber); }
+.mc-ask { margin: 12px 0 0; padding: 8px 12px 10px; border: 1px solid var(--hair); border-radius: 10px; background: var(--ground); }
+.mc-ask legend { padding: 0 4px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
+.mc-ask label { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12.5px; color: var(--ink-2); cursor: pointer; }
+.mc-ask input { width: 15px; height: 15px; margin: 0; accent-color: var(--primary); }
+.mc-ask .d { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--faint); white-space: nowrap; }
+.mc-ask .none { padding: 4px 0; font-size: 12px; color: var(--faint); }
+.mc-body { margin-top: 10px; height: 250px; font-size: 12.5px; line-height: 1.6; }
+.mc input:disabled, .mc textarea:disabled { background: var(--ground); color: var(--ink-2); }
 .suggest { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 9px; }
 .suggest .lab { font-size: 11px; color: var(--faint); margin-right: 2px; }
 
@@ -670,6 +685,11 @@ const TONE = {
   gap: { label: 'Undefined', mark: '?' }
 };
 
+// Referring provider, where the referral carries one. The name is missing on about a fifth of referrals.
+const PROVIDERS = {
+  '40-118-772': { name: 'J. Whitfield, MD', practice: 'Northgate Primary Care', salutation: 'Dr. Whitfield' }
+};
+
 const RECORD = [
   { k: 'Referring provider', v: 'J. Whitfield, MD · Northgate Primary Care' },
   { k: 'Specialty requested', v: 'Hematology · face-to-face' },
@@ -893,7 +913,7 @@ function renderPatient() {
         ${worked ? `<div class="tabs" role="group" aria-label="Sections">${tabs}</div>` : '<div style="height: 14px"></div>'}
       </div>
       <div class="centre-scroll"><div class="pad"><div class="measure">${content}${renderChat(p)}</div></div></div>
-      ${renderSearch('Ask about this referral, or search another MRN', ['Draft the decision note', 'What is still awaiting?'])}
+      ${renderSearch('Ask about this referral, or search another MRN', ['Draft the decision note', 'Message the referring provider', 'What is still awaiting?'])}
     </main>`;
 }
 
@@ -1020,7 +1040,9 @@ function ask(q) {
   const thread = S.chat[p.mrn] || (S.chat[p.mrn] = []);
   const ql = q.toLowerCase();
   thread.push({ who: 'you', text: q });
-  if (/note|draft|document|chart|write/.test(ql)) {
+  if (/message|referring|provider|letter|fax/.test(ql)) {
+    thread.push(newMessage(p));
+  } else if (/note|draft|document|chart|write/.test(ql)) {
     thread.push(p.mrn === WORKED
       ? { who: 'copilot', kind: 'note' }
       : { who: 'copilot', text: `The tree has not been run on ${p.name}'s referral in this prototype, so there is nothing to draft the note from.` });
@@ -1030,9 +1052,61 @@ function ask(q) {
       ? `${open.length} still open on ${surname(p)}: ` + open.map((a) => `${a.item} (due ${dueLabel(a)}${dueTone(a) === 'late' ? ', late' : ''})`).join('; ') + '.'
       : `Nothing is still awaiting on ${p.name}.` });
   } else {
-    thread.push({ who: 'copilot', text: 'In this prototype I can draft the decision note or list what is still awaiting. Try one of the suggestions above the box.' });
+    thread.push({ who: 'copilot', text: 'In this prototype I can draft the decision note, draft a message to the referring provider, or list what is still awaiting. Try one of the suggestions above the box.' });
   }
   S.scrollChat = true;
+}
+
+// One message covers one patient. It asks for whatever is still open on their awaiting list;
+// the copilot never sends it — the triager copies it into the EHR or a fax, then marks it sent.
+function newMessage(p) {
+  const prov = PROVIDERS[p.mrn];
+  const include = {};
+  itemsFor(p.mrn).filter((a) => !S.done[a.id]).forEach((a) => { include[a.id] = true; });
+  const m = {
+    who: 'copilot', kind: 'message', include, sent: false,
+    to: prov ? prov.name + ' · ' + prov.practice : '',
+    subject: `Referral ${p.ref} — information needed to complete triage`
+  };
+  m.body = messageBody(p, m);
+  return m;
+}
+
+function messageBody(p, m) {
+  const prov = PROVIDERS[p.mrn];
+  const asks = itemsFor(p.mrn).filter((a) => !S.done[a.id] && m.include[a.id]);
+  const lines = asks.map((a) => `• ${a.item} — ${a.asked !== '—' ? 'first requested ' + a.asked + ', ' : ''}needed by ${dueLabel(a)}`).join('\n');
+  const need = asks.length
+    ? `Thank you for this referral to hematology. To finish triaging it, we still need:\n${lines}\n\nOnce these are in, we will re-triage it — no new referral order is needed.${p.mrn === WORKED ? ' The window for this referral closes Dec 9, 2026.' : ''}`
+    : 'Thank you for this referral to hematology. We have what we need for now and will be in touch once triage is complete.';
+  return `Dear ${prov ? prov.salutation : 'colleague'},\n\nRe: ${p.name} · MRN ${p.mrn} · referral ${p.ref}, received ${p.received}, 2026\n\n${need}\n\nThank you,\nMelissa\nHematology referral triage`;
+}
+
+const messageText = (m) => `To: ${m.to}\nSubject: ${m.subject}\n\n${m.body}`;
+
+function renderMessage(p, m, i) {
+  const open = itemsFor(p.mrn).filter((a) => !S.done[a.id] || m.include[a.id]);
+  const off = m.sent ? 'disabled' : '';
+  const asks = open.length
+    ? open.map((a) => `<label><input type="checkbox" data-act="msgItem" data-v="${i}:${a.id}" ${m.include[a.id] ? 'checked' : ''} ${off}> ${a.item}<span class="d">due ${dueLabel(a)}</span></label>`).join('')
+    : '<div class="none">Nothing open on the awaiting list, so there is nothing to ask for.</div>';
+  return `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card">
+    <div class="note-head"><span class="kicker">Message to the referring provider · ${m.sent ? 'sent' : 'draft'}</span><span class="grow"></span>
+      ${m.sent ? '<span class="pill xs t-accepted">Logged as sent</span>' : '<span class="ai-tag" title="Drafted by the copilot. Review and edit before sending.">AI draft</span>'}</div>
+    <div class="mc">
+      <label class="mc-row"><span class="k">To</span><input class="mc-in" data-msg="${i}" data-f="to" value="${esc(m.to)}" placeholder="Referring provider not on file — enter who it goes to" ${off}></label>
+      <label class="mc-row"><span class="k">Subject</span><input class="mc-in" data-msg="${i}" data-f="subject" value="${esc(m.subject)}" ${off}></label>
+      <fieldset class="mc-ask"><legend>Ask for</legend>${asks}</fieldset>
+      <textarea class="field mc-body" data-msg="${i}" data-f="body" aria-label="Message" ${off}>${esc(m.body)}</textarea>
+    </div>
+    <div class="note-foot">
+      <span class="why">${m.sent
+        ? 'Logged as sent by Melissa, Oct 27 — in the notes and the history.'
+        : 'Nothing is sent from here. Copy it into the EHR message or a fax, then mark it sent so it is logged.' + (m.edited ? ' Ticking an item redrafts the text.' : '')}</span>
+      <button type="button" class="btn secondary sm" data-act="copy" data-v="${i}">${S.copied === i ? '✓ Copied' : 'Copy message'}</button>
+      ${m.sent ? '' : `<button type="button" class="btn primary sm" id="msgSent${i}" data-act="msgSent" data-v="${i}" ${m.to.trim() ? '' : 'disabled'}>Mark as sent</button>`}
+    </div>
+  </div></div>`;
 }
 
 function renderChat(p) {
@@ -1040,6 +1114,7 @@ function renderChat(p) {
   if (!thread.length) return '';
   const msgs = thread.map((m, i) => {
     if (m.who === 'you') return `<div class="msg-you"><div class="bubble">${esc(m.text)}</div></div>`;
+    if (m.kind === 'message') return renderMessage(p, m, i);
     if (m.kind !== 'note') return `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card"><div class="bot-text">${esc(m.text)}</div></div></div>`;
     const text = m.frozen || draftNote();
     const meta = m.frozen ? 'Added to the notes on the right' : (S.change ? 'Redrafted with your change' : 'Drafted from the tree');
@@ -1059,7 +1134,7 @@ function renderChat(p) {
 
 /* ---------- Right pane: awaiting, running notes ---------- */
 
-const TAG_TONE = { 'Decision note': 't-gap', 'Decision changed': 't-new', 'Decision restored': 't-cold' };
+const TAG_TONE = { 'Decision note': 't-gap', 'Decision changed': 't-new', 'Decision restored': 't-cold', 'Message sent': 't-accepted' };
 
 function logEvent(t, b, color) {
   const list = S.history[S.current] || (S.history[S.current] = []);
@@ -1720,9 +1795,28 @@ const ACT = {
     m.frozen = draftNote();
     S.added[S.current] = [{ date: 'OCT 27', who: 'Melissa', text: m.frozen, tag: 'Decision note', fresh: true }].concat(S.added[S.current] || []);
   },
+  msgItem: (v) => {
+    const [i, id] = v.split(':');
+    const m = S.chat[S.current][+i];
+    if (m.sent) return;
+    m.include[id] = !m.include[id];
+    m.body = messageBody(byMrn(S.current), m);
+    m.edited = false;
+  },
+  // Marking it sent records the message where the rest of the referral's story lives.
+  msgSent: (v) => {
+    const m = S.chat[S.current][+v];
+    if (!m.to.trim() || m.sent) return;
+    const asked = itemsFor(S.current).filter((a) => m.include[a.id]);
+    asked.forEach((a) => { a.asked = 'Oct 27'; });
+    m.sent = true;
+    const what = asked.length ? asked.map((a) => a.item).join('; ') : 'no outstanding items';
+    logNote('Message sent', `Sent a message to ${m.to}.\nAsked for: ${what}.\nSubject: ${m.subject}`);
+    logEvent('Message sent to the referring provider', `To ${m.to}. Asked for: ${what}. Sent by Melissa outside the copilot and logged here.`, '#2F5FA8');
+  },
   copy: (v) => {
     const m = S.chat[S.current][+v];
-    const text = m.frozen || draftNote();
+    const text = m.kind === 'message' ? messageText(m) : (m.frozen || draftNote());
     const keep = () => [...document.querySelectorAll('.centre-scroll')].map((c) => c.scrollTop);
     const done = () => {
       const top = keep(); S.copied = +v; render();
@@ -1773,6 +1867,18 @@ function scrollToChat() {
   const c = document.querySelector('.centre-scroll');
   if (c) c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' });
 }
+
+// Typing in the message keeps focus: fields update the draft in place.
+document.addEventListener('input', (e) => {
+  const i = e.target.dataset && e.target.dataset.msg;
+  if (i == null) return;
+  const m = (S.chat[S.current] || [])[+i];
+  if (!m || m.sent) return;
+  m[e.target.dataset.f] = e.target.value;
+  if (e.target.dataset.f === 'body') m.edited = true;
+  const sent = document.getElementById('msgSent' + i);
+  if (sent) sent.disabled = !m.to.trim();
+});
 
 // The rationale updates the tree preview without redrawing the page, so typing keeps focus.
 document.addEventListener('input', (e) => {
