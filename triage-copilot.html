@@ -378,6 +378,9 @@ textarea.field:focus { border-color: var(--primary); }
 .t-empty { padding: 18px 16px; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
 .t-empty p { margin: 0 0 6px; }
 .t-empty strong { color: var(--ink); font-weight: 600; }
+/* Full text of anything cut off with an ellipsis, shown on hover or keyboard focus */
+.tip { position: fixed; z-index: 100; max-width: 280px; padding: 6px 9px; border-radius: 7px; background: var(--ink); color: #FFFFFF; font-size: 12px; line-height: 1.4; box-shadow: 0 4px 14px rgba(20, 20, 15, 0.18); pointer-events: none; }
+.tip[hidden] { display: none; }
 .aw-none { padding: 18px 14px; font-size: 12px; line-height: 1.5; color: var(--faint); }
 
 /* Running notes — the notes column from the spreadsheet */
@@ -913,7 +916,7 @@ function renderPatient() {
         ${worked ? `<div class="tabs" role="group" aria-label="Sections">${tabs}</div>` : '<div style="height: 14px"></div>'}
       </div>
       <div class="centre-scroll"><div class="pad"><div class="measure">${content}${renderChat(p)}</div></div></div>
-      ${renderSearch('Ask about this referral, or search another MRN', ['Draft the decision note', 'Message the referring provider', 'What is still awaiting?'])}
+      ${renderSearch('Ask about this referral, or search another MRN', ['Draft the decision note', 'Draft a message', 'What is still awaiting?'])}
     </main>`;
 }
 
@@ -1917,6 +1920,42 @@ document.addEventListener('submit', (e) => {
   render();
   scrollToChat();
 });
+
+// Text cut off with an ellipsis shows in full on hover, or when its row has keyboard focus.
+// Hovering anywhere on the row is enough; nothing shows when the text already fits.
+const TRUNC = [['.aw-row', '.aw-text'], ['.rail-row', '.name'], ['.t-head', '.title']];
+const tip = document.createElement('div');
+tip.className = 'tip';
+tip.setAttribute('role', 'tooltip');
+tip.hidden = true;
+document.body.appendChild(tip);
+
+function truncatedIn(node) {
+  for (const [row, text] of TRUNC) {
+    const r = node && node.closest && node.closest(row);
+    const el = r && r.querySelector(text);
+    if (el) return el.scrollWidth > el.clientWidth ? el : null;
+  }
+  return null;
+}
+
+function showTip(el) {
+  if (!el) { tip.hidden = true; return; }
+  tip.textContent = el.textContent;
+  tip.hidden = false;
+  const r = el.getBoundingClientRect();
+  const t = tip.getBoundingClientRect();
+  const left = Math.max(8, Math.min(r.left - 9, innerWidth - t.width - 8));
+  const top = r.top - t.height - 6 < 8 ? r.bottom + 6 : r.top - t.height - 6;
+  tip.style.left = left + 'px';
+  tip.style.top = top + 'px';
+}
+
+document.addEventListener('mouseover', (e) => showTip(truncatedIn(e.target)));
+document.addEventListener('focusin', (e) => showTip(truncatedIn(e.target)));
+document.addEventListener('focusout', () => { tip.hidden = true; });
+document.addEventListener('click', () => { tip.hidden = true; }, true);
+document.addEventListener('scroll', () => { tip.hidden = true; }, true);
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && S.drawer) { S.drawer = null; render(); return; }
