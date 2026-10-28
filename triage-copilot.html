@@ -994,7 +994,7 @@ function renderSearch(placeholder, suggestions) {
 function renderPatient() {
   const p = byMrn(S.current);
   const worked = p.mrn === WORKED;
-  const tabs = [['decision', 'Decision'], ['referral', 'Referral and results'], ['history', 'History']]
+  const tabs = [['decision', 'Decision Algorithm'], ['referral', 'Referral and results'], ['history', 'History']]
     .map(([id, label]) => `<button type="button" data-act="tab" data-v="${id}" aria-pressed="${S.tab === id}">${label}</button>`).join('');
 
   let content;
