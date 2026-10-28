@@ -1,0 +1,1875 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Triage Copilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/reactflow@11.11.4/dist/style.css">
+<style>
+:root {
+  --ground: #F7F6F2;
+  --surface: #FFFFFF;
+  --sunk: #F3F2EE;
+  --border: #E7E5DF;
+  --border-strong: #DEDBD4;
+  --hair: #F1EFEA;
+  --ink: #1B1B19;
+  --ink-2: #3A3832;
+  --ink-3: #4A4843;
+  --muted: #6E6C66;
+  --faint: #8C8980;
+  --ghost: #A5A29A;
+  --primary: #2F5FA8;
+  --amber-bg: #FBF1E0; --amber: #8A5A12; --amber-dot: #C98A2B;
+  --red-bg: #FBE8E4;   --red: #8A3324;
+  --green-bg: #E7F4EE; --green: #0E7A52;
+  --blue-bg: #E9EFF8;  --blue: #2F5FA8;
+  --purple-bg: #EFEBFA; --purple: #5B4BB5;
+  --shadow-card: 0 1px 2px rgba(20, 20, 15, 0.04);
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: #ECEAE4;
+  color: var(--ink);
+  font-family: 'Figtree', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; color: inherit; }
+.mono { font-family: var(--mono); }
+.kicker { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); }
+.grow { flex-grow: 1; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+/* The app fills the browser window */
+.stage { height: 100%; height: 100dvh; display: flex; flex-direction: column; }
+.frame { flex-grow: 1; min-height: 0; width: 100%; display: flex; flex-direction: column; background: var(--ground); overflow: hidden; position: relative; }
+
+/* Title bar */
+.titlebar { flex-shrink: 0; height: 48px; display: flex; align-items: center; gap: 12px; padding: 0 14px 0 16px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.lights { display: flex; gap: 7px; }
+.lights span { width: 11px; height: 11px; border-radius: 50%; background: #E4E1DA; }
+.logo { width: 24px; height: 24px; flex-shrink: 0; border-radius: 7px; display: flex; align-items: center; justify-content: center; background: var(--primary); }
+.logo.sm { width: 20px; height: 20px; margin: 0; border-radius: 6px; }
+.app-name { font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
+.today { font-size: 12px; color: var(--faint); font-family: var(--mono); }
+.avatar { width: 27px; height: 27px; flex-shrink: 0; border-radius: 50%; background: #F0EFEA; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #5E5B54; }
+.follow-btn, .tb-btn { display: flex; align-items: center; gap: 7px; min-height: 30px; padding: 0 11px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 600; color: var(--ink-3); }
+.follow-btn:hover, .tb-btn:hover { border-color: #C9C6BD; color: var(--ink); }
+.tb-btn { display: none; flex-shrink: 0; }
+.tb-btn[aria-expanded="true"] { background: var(--blue-bg); border-color: var(--primary); color: var(--primary); }
+.tb-btn .count { font-family: var(--mono); font-size: 10.5px; padding: 0 6px; border-radius: 8px; background: var(--amber-bg); color: var(--amber); }
+
+.cols { flex-grow: 1; min-height: 0; display: flex; position: relative; }
+.scrim { display: none; }
+
+/* Left rail */
+.rail { width: 320px; flex-shrink: 0; transition: width 0.18s ease; display: flex; flex-direction: column; background: var(--surface); border-right: 1px solid var(--border); }
+.seg { display: flex; gap: 5px; padding: 3px; background: var(--sunk); border-radius: 9px; }
+.seg button { flex: 1 1 0; min-height: 30px; border: 0; border-radius: 7px; cursor: pointer; font-size: 12px; font-weight: 600; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 6px; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(20, 20, 15, 0.08); }
+.rail-scroll { flex-grow: 1; min-height: 0; overflow: auto; }
+.cal-head { display: flex; align-items: center; gap: 6px; padding: 0 2px 9px; }
+.cal-head .month { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
+.icon-btn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: transparent; color: var(--faint); cursor: pointer; }
+.icon-btn:disabled { color: #D3D0C8; cursor: default; }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.cal .dn { text-align: center; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; color: var(--ghost); padding-bottom: 3px; }
+.cal .cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-height: 38px; padding: 0; border-radius: 8px; border: 1px solid transparent; background: transparent; cursor: pointer; }
+.cal .cell .n { font-size: 11.5px; font-weight: 500; color: var(--ink); }
+.cal .cell .c { font-size: 9.5px; font-family: var(--mono); color: var(--ghost); }
+.cal .cell.today { border-color: #CFCCC3; }
+.cal .cell.today .n { font-weight: 700; }
+.cal .cell.sel { background: var(--primary); border-color: var(--primary); }
+.cal .cell.sel .n { color: #FFFFFF; font-weight: 700; }
+.cal .cell.sel .c { color: #D6E3F5; }
+.cal .cell:not(.sel):hover { border-color: var(--border-strong); }
+.cal .blank { min-height: 38px; }
+.rail-filters { padding: 2px 12px 10px; }
+.rail-filters .sub { margin-top: 6px; padding-left: 10px; border-left: 2px solid var(--red-bg); }
+.rail-top .kicker { padding-left: 2px; }
+.rail-title .btn-ghost { min-height: 24px; padding: 0 8px; align-self: center; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { min-height: 28px; padding: 0 10px; border-radius: 14px; cursor: pointer; font-size: 11.5px; font-weight: 600; background: var(--surface); color: var(--muted); border: 1px solid #E2DFD8; }
+.chip[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #FFFFFF; }
+.chip.active { background: var(--blue-bg); border-color: var(--primary); color: var(--primary); }
+.chip.sm { min-height: 26px; padding: 0 9px; border-radius: 13px; font-size: 11px; }
+.btn-ghost { flex-shrink: 0; min-height: 28px; padding: 0 10px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: 600; border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink); }
+.btn-ghost:disabled { color: #C9C6BD; cursor: default; }
+.rail-title { display: flex; align-items: baseline; gap: 8px; padding: 12px 14px 7px; border-top: 1px solid var(--hair); }
+.rail-title .count { font-size: 11px; color: var(--faint); font-family: var(--mono); }
+.rail-row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; margin-bottom: 2px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; text-align: left; }
+.rail-row:hover { background: #F7F6F2; }
+.rail-row.here { background: var(--blue-bg); }
+.rail-row .who { flex-grow: 1; min-width: 0; }
+.rail-row .name { display: block; font-size: 12.5px; font-weight: 600; line-height: 1.3; letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rail-row .mrn { display: block; font-size: 10.5px; color: var(--faint); margin-top: 2px; font-family: var(--mono); }
+.rail-row .age { flex-shrink: 0; font-size: 10.5px; color: var(--faint); font-family: var(--mono); }
+.rail-row .age.old { color: var(--red); font-weight: 600; }
+.dot { width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; }
+.rail-empty { padding: 14px 10px; font-size: 11.5px; line-height: 1.5; color: var(--faint); }
+.rail-foot { flex-shrink: 0; padding: 10px 12px 12px; border-top: 1px solid var(--hair); }
+.btn-back { display: flex; width: 100%; align-items: center; justify-content: center; gap: 7px; min-height: 36px; border: 1px solid var(--border-strong); border-radius: 9px; background: var(--surface); font-size: 12px; font-weight: 600; cursor: pointer; }
+
+/* Centre */
+.centre { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; container-type: inline-size; }
+.centre-scroll { flex-grow: 1; min-height: 0; overflow: auto; }
+.q-head { flex-shrink: 0; padding: 18px 20px 16px; border-bottom: 1px solid var(--border); }
+.q-head h1 { margin: 5px 0 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+.card-btn { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; padding: 11px 13px 12px; border-radius: 12px; cursor: pointer; text-align: left; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-card); }
+.card-btn .lab { display: flex; align-items: center; gap: 6px; width: 100%; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
+.card-btn .num { margin-top: 7px; font-size: 26px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+.card-btn .sub { margin-top: 5px; font-size: 10.5px; line-height: 1.4; color: var(--faint); }
+.card-btn[aria-pressed="true"] { box-shadow: 0 2px 8px rgba(20, 20, 15, 0.1); }
+.card-btn[aria-pressed="true"] .lab { color: var(--ink); }
+.dot.sm { width: 7px; height: 7px; }
+.welcome { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 40px 24px 48px; text-align: center; }
+.welcome .logo { width: 44px; height: 44px; border-radius: 13px; margin-bottom: 6px; }
+.welcome h2 { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; }
+.welcome p { margin: 0; max-width: 460px; font-size: 14px; line-height: 1.6; color: var(--muted); }
+.w-resume { display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; min-height: 44px; padding: 0 8px 0 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-card); cursor: pointer; font-size: 13px; color: var(--ink); text-align: left; }
+.w-resume:hover { border-color: #C9C6BD; }
+.w-resume .k { color: var(--faint); }
+.w-resume .go { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: var(--sunk); color: var(--ink-3); }
+.r { text-align: right; }
+.pill { display: inline-flex; align-items: center; height: 21px; padding: 0 9px; border-radius: 11px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+.pill.xs { height: 19px; padding: 0 8px; font-size: 10px; }
+.t-awaiting { background: var(--amber-bg); color: var(--amber); }
+.t-new { background: var(--blue-bg); color: var(--blue); }
+.t-accepted, .t-met { background: var(--green-bg); color: var(--green); }
+.t-declined { background: var(--red-bg); color: var(--red); }
+.t-missing { background: var(--amber-bg); color: var(--amber); }
+.t-gap { background: var(--purple-bg); color: var(--purple); }
+.t-cold { background: var(--sunk); color: var(--faint); }
+.empty { padding: 40px 20px; text-align: center; }
+.empty h2 { margin: 0; font-size: 14px; font-weight: 600; }
+.empty p { margin: 6px auto 0; max-width: 420px; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
+
+.search { flex-shrink: 0; padding: 12px 20px 16px; border-top: 1px solid var(--border); background: var(--surface); }
+.search form { display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 6px 0 14px; background: var(--surface); border: 1.5px solid #CFCCC3; border-radius: 12px; box-shadow: 0 2px 8px rgba(20, 20, 15, 0.07); }
+.search form:focus-within { border-color: var(--primary); }
+.search input { flex-grow: 1; min-width: 0; border: 0; outline: none; background: transparent; font-family: inherit; font-size: 13.5px; color: var(--ink); padding: 0; }
+.search .kbd { flex-shrink: 0; font-size: 11px; color: var(--ghost); font-family: var(--mono); }
+.btn-send { width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 9px; color: #FFFFFF; cursor: pointer; background: var(--primary); }
+.search-msg { margin: 7px 2px 0; font-size: 11.5px; color: var(--muted); }
+
+/* Patient header */
+.p-head { flex-shrink: 0; padding: 16px 20px 0; background: var(--surface); border-bottom: 1px solid var(--border); }
+.p-back { display: inline-flex; align-items: center; gap: 5px; min-height: 28px; margin: -4px 0 8px -8px; padding: 0 9px 0 6px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer; }
+.p-back:hover { background: var(--sunk); color: var(--ink); }
+.p-id { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px 13px; }
+.p-name { flex: 1 1 240px; min-width: 0; }
+.p-av { width: 42px; height: 42px; flex-shrink: 0; border-radius: 11px; background: #F0EFEA; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #5E5B54; }
+.p-id h1 { margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+.p-id .meta { font-size: 12px; color: var(--muted); margin-top: 3px; font-family: var(--mono); }
+.facts { display: flex; gap: 22px; padding-top: 2px; margin-left: auto; white-space: nowrap; }
+.facts .k { font-size: 10.5px; color: var(--faint); }
+.facts .v { font-size: 12.5px; font-weight: 600; margin-top: 2px; }
+.facts .v.late { color: var(--red); }
+.tabs { display: flex; gap: 2px; margin-top: 14px; }
+.tabs button { min-height: 38px; padding: 0 13px; border: 0; background: transparent; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted); }
+.tabs button[aria-pressed="true"] { font-weight: 600; color: var(--ink); box-shadow: inset 0 -2px 0 var(--primary); }
+.pad { padding: 18px 20px 24px; }
+.measure { max-width: 1200px; }
+
+/* Verdict */
+.verdict { padding: 16px 18px; border-radius: 14px; background: var(--amber-bg); }
+.verdict .top { display: flex; align-items: flex-start; gap: 13px; }
+.v-mark { width: 40px; height: 40px; flex-shrink: 0; border-radius: 11px; display: flex; align-items: center; justify-content: center; background: #F4E2C2; color: var(--amber); }
+.v-kicker { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--amber); }
+.v-title { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; margin-top: 4px; }
+.verdict.over { background: var(--blue-bg); }
+.verdict.over .v-mark { background: #D8E3F4; color: var(--primary); }
+.verdict.over .v-kicker { color: var(--primary); }
+.v-was { margin-top: 5px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+.v-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; padding-top: 13px; border-top: 1px solid rgba(27, 27, 25, 0.08); }
+.v-actions .hint { font-size: 11.5px; color: var(--muted); }
+/* Changing the decision: rationale first, then where the path should end */
+.change { margin-top: 10px; padding: 16px; background: var(--surface); border: 1.5px solid var(--primary); border-radius: 12px; box-shadow: 0 0 0 3px rgba(47, 95, 168, 0.12); }
+.change h3 { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: -0.005em; }
+.change .sub { margin: 4px 0 0; max-width: 640px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.change .q { display: block; margin-top: 14px; font-size: 12px; font-weight: 600; color: var(--ink-3); }
+.change .q .req { font-weight: 500; color: var(--faint); }
+.change .opts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.opt { min-height: 34px; padding: 0 12px; border-radius: 9px; cursor: pointer; font-size: 12.5px; font-weight: 600; background: var(--surface); color: var(--ink-3); border: 1px solid #E2DFD8; }
+.opt[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #FFFFFF; }
+.change .check { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 12.5px; color: var(--ink-2); cursor: pointer; }
+.change .check input { width: 16px; height: 16px; margin: 0; accent-color: var(--primary); }
+.change .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+.change .row .hint { font-size: 11.5px; color: var(--muted); }
+.v-tree { flex-shrink: 0; text-align: right; }
+.v-tree .k { font-size: 10.5px; color: var(--faint); }
+.v-tree .v { font-size: 12px; font-weight: 600; margin-top: 2px; }
+.v-tree .s { font-size: 11px; color: var(--faint); margin-top: 1px; font-family: var(--mono); }
+.btn { white-space: nowrap; min-height: 40px; padding: 0 15px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
+.btn.primary { border: 0; background: var(--primary); color: #FFFFFF; }
+.btn.primary.done { background: var(--green); }
+.btn.primary:disabled { background: #C9C6BD; cursor: default; }
+.btn.primary.done:disabled { background: var(--green); }
+.btn.secondary { border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink); }
+.btn.sm { min-height: 34px; padding: 0 12px; font-size: 12.5px; }
+
+textarea.field { display: block; width: 100%; resize: none; padding: 10px 11px; border: 1px solid var(--border-strong); border-radius: 9px; outline: none; background: var(--surface); font-family: inherit; font-size: 12.5px; line-height: 1.55; color: var(--ink); }
+textarea.field:focus { border-color: var(--primary); }
+
+/* Steps */
+.sec-head { display: flex; align-items: baseline; gap: 10px; margin-top: 24px; padding: 0 2px 10px; }
+.sec-head .aside { font-size: 11px; color: var(--faint); }
+/* Decision tree — React Flow canvas and the detail card for the selected node */
+.tree-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.tree-canvas { position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card); overflow: hidden; }
+.tree-bar { flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 8px 8px 12px; border-bottom: 1px solid var(--hair); }
+.tree-hint { flex-grow: 1; min-width: 0; font-size: 11px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tree-canvas.narrow .tree-hint { visibility: hidden; }
+.tree-zoom { display: flex; margin-left: 4px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.tree-zoom button { width: 30px; height: 28px; border: 0; border-left: 1px solid var(--hair); background: var(--surface); color: var(--ink-3); cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.tree-zoom button:first-child { border-left: 0; }
+.tree-zoom button:hover { background: var(--sunk); }
+.tree-flow { height: 595px; }
+.tree-canvas.narrow .tree-flow { height: 535px; }
+.seg-sm { flex-shrink: 0; padding: 2px; gap: 2px; }
+.seg-sm button { flex: 0 0 auto; min-height: 26px; padding: 0 11px; font-size: 11.5px; }
+/* Inside the card, the selected node reads as a band above the diagram rather than a card of its own */
+.tree-canvas .tree-detail { align-self: stretch; min-width: 0; border: 0; border-bottom: 1px solid var(--hair); border-radius: 0; box-shadow: none; }
+/* Plain-language view: the path read top to bottom, then the steps it did not take */
+.plain .p-sec { padding: 14px 16px 8px; border-top: 1px solid var(--hair); }
+.plain .p-sec:first-child { border-top: 0; }
+.plain .steps { border: 0; border-radius: 0; box-shadow: none; }
+.step.dim { opacity: 0.6; }
+.s-num.node { background: var(--sunk); color: var(--muted); }
+.s-num.you { background: var(--primary); }
+.s-num.tree { background: var(--amber-dot); }
+.react-flow__node-tree { cursor: pointer; }
+.tn { box-sizing: border-box; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px 10px; box-shadow: var(--shadow-card); transition: border-color 0.15s, box-shadow 0.15s, opacity 0.15s; font-family: 'Figtree', system-ui, sans-serif; }
+.tn .react-flow__handle { opacity: 0; width: 6px; height: 6px; min-width: 0; min-height: 0; border: 0; pointer-events: none; }
+.tn-head { display: flex; align-items: center; gap: 8px; }
+.tn-kick { flex-grow: 1; font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+.tn-title { margin-top: 4px; font-size: 12.5px; font-weight: 600; line-height: 1.3; letter-spacing: -0.005em; color: var(--ink); }
+.tn.missing { border-color: #E4C48E; background: #FDFAF3; }
+.tn.gap { border: 1.5px dashed var(--purple); background: #FAF8FE; }
+.tn.stop { border-color: #E4D3AE; background: #FDFBF6; }
+.tn.stop .tn-title { color: var(--amber); }
+.tn.cold { opacity: 0.62; }
+.tn.cold .tn-title { color: var(--faint); }
+/* Anything off the path the tree took is greyed, whatever its own status */
+.tn.off { opacity: 0.55; background: var(--surface); border-color: var(--border); box-shadow: none; }
+.tn.off.gap { border-color: #CFCCC3; }
+.tn.off .tn-title { color: var(--faint); }
+.tn.off.sel { opacity: 0.9; }
+/* After a change: the tree's own route stays visible, dashed */
+.tn.ai { opacity: 0.85; border: 1.5px dashed #8FA7CF; background: var(--surface); box-shadow: none; }
+.tn.ai .tn-title { color: var(--ink-3); }
+.tn.pick { cursor: pointer; }
+.tn.pick:hover, .tn.pick.target { outline: 2px solid var(--primary); outline-offset: 2px; opacity: 1; }
+.tn-sub { margin-top: 5px; font-size: 10.5px; font-weight: 600; color: var(--primary); }
+.tn.note { background: #F2F6FC; border: 1.5px solid #9DB3D9; }
+.tn.note .tn-kick { color: var(--primary); }
+.tn.note .tn-title { font-size: 12px; font-weight: 500; line-height: 1.45; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.tn.note .tn-by { margin-top: 5px; font-family: var(--mono); font-size: 10px; color: var(--faint); }
+.tree-bar.rerouting { background: var(--blue-bg); }
+.tree-bar.rerouting .tree-hint { color: var(--primary); font-weight: 600; visibility: visible; }
+.key { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+.key::before { content: ''; width: 16px; border-top: 2px solid var(--primary); }
+.key.ai::before { border-top-style: dashed; border-top-color: #8FA7CF; }
+.tn.on { border-color: var(--primary); opacity: 1; box-shadow: 0 2px 8px rgba(47, 95, 168, 0.14); }
+.tn.on .tn-kick { color: var(--primary); }
+.tn.sel { box-shadow: 0 0 0 3px rgba(47, 95, 168, 0.28); }
+.tree-detail { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card); padding: 14px 16px 15px; align-self: start; }
+.tree-detail .d-head { display: flex; align-items: center; gap: 8px; }
+.tree-detail .d-title { margin-top: 4px; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
+/* Source data behind a node: closed until asked for */
+.src-toggle { margin-left: 8px; padding: 2px 6px; border: 0; border-radius: 6px; background: transparent; color: var(--primary); font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.src-toggle:hover { background: var(--blue-bg); }
+.source { margin-top: 10px; border: 1px solid var(--border); border-radius: 10px; background: #FDFCF8; overflow: hidden; }
+.src-item { padding: 12px 14px; border-top: 1px solid var(--hair); }
+.src-item:first-child { border-top: 0; }
+.src-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 8px; }
+.src-kind { font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 6px; background: var(--sunk); color: var(--ink-3); }
+.src-title { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+.src-from { margin-top: 3px; font-size: 11px; color: var(--faint); }
+.src-scroll { overflow-x: auto; }
+.src-table { width: 100%; min-width: 360px; margin-top: 8px; border-collapse: collapse; font-size: 12px; }
+.src-table th { padding: 5px 8px 5px 0; text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); border-bottom: 1px solid var(--border); }
+.src-table td { padding: 6px 8px 6px 0; font-family: var(--mono); color: var(--ink-2); border-bottom: 1px solid var(--hair); }
+.src-table tr:last-child td { border-bottom: 0; }
+.src-table tr.flag td { color: var(--amber); font-weight: 600; }
+.src-kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; margin: 8px 0 0; font-size: 12.5px; line-height: 1.5; }
+.src-kv dt { color: var(--faint); }
+.src-kv dd { margin: 0; color: var(--ink-2); }
+.src-lines { margin: 8px 0 0; padding-left: 18px; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+.src-quote { margin: 8px 0 0; padding: 8px 12px; border-left: 3px solid var(--border-strong); background: var(--surface); font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+.src-foot { margin-top: 8px; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+.tree-detail .s-row { grid-template-columns: 76px minmax(0, 1fr); }
+.d-nav { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--hair); }
+.d-nav .pos { flex-grow: 1; text-align: center; font-size: 11px; color: var(--faint); font-family: var(--mono); }
+.steps { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card); overflow: hidden; }
+.step { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; column-gap: 13px; padding: 14px 16px 15px; border-bottom: 1px solid var(--hair); position: relative; }
+.step:last-child { border-bottom: 0; }
+.step.missing { background: #FDFAF3; box-shadow: inset 3px 0 0 var(--amber-dot); }
+.step.gap { background: #FAF8FE; box-shadow: inset 3px 0 0 var(--purple); }
+.s-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #FFFFFF; font-family: var(--mono); }
+.s-num.met { background: var(--green); }
+.s-num.missing { background: var(--amber-dot); }
+.s-num.gap { background: transparent; color: var(--purple); border: 1.5px dashed var(--purple); }
+.s-kick { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); font-family: var(--mono); }
+.s-q { font-size: 14px; font-weight: 600; letter-spacing: -0.005em; margin-top: 2px; }
+.s-row { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 10px; margin-top: 8px; font-size: 12.5px; line-height: 1.6; }
+.s-row .k { font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ghost); padding-top: 2px; }
+.s-row .v { color: var(--ink-2); max-width: 600px; }
+.s-row .src svg { vertical-align: -1px; margin-right: 6px; }
+.s-row .src { display: inline; line-height: 2; -webkit-box-decoration-break: clone; box-decoration-break: clone; font-family: var(--mono); font-size: 11px; color: var(--muted); background: var(--ground); border: 1px solid var(--hair); border-radius: 6px; padding: 2px 7px; }
+.s-aside { margin-top: 10px; padding: 9px 11px; border-radius: 9px; font-size: 12px; line-height: 1.5; }
+.s-aside.purple { background: var(--purple-bg); color: #3F3480; }
+.s-aside.blue { background: var(--blue-bg); color: #24497F; }
+
+/* Referral and history tabs */
+.box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-card); }
+.rec-row { display: flex; gap: 14px; align-items: flex-start; padding: 13px 14px; border-bottom: 1px solid var(--hair); }
+.rec-row:last-child { border-bottom: 0; }
+.rec-row.missing { background: #FDFBF6; }
+.rec-row .k { width: 150px; flex-shrink: 0; font-size: 12px; color: var(--faint); }
+.rec-row .v { flex-grow: 1; min-width: 0; font-size: 13px; font-weight: 500; line-height: 1.5; }
+.rec-row.missing .v { color: var(--amber); }
+.lab-grid { display: grid; grid-template-columns: 110px repeat(5, 1fr) 140px; gap: 10px; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--hair); font-size: 12px; font-family: var(--mono); }
+.lab-grid:last-child { border-bottom: 0; }
+.lab-grid.head { padding: 9px 14px; background: var(--ground); border-bottom: 1px solid var(--border); font-family: inherit; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
+.lab-grid .low { color: var(--amber); font-weight: 600; }
+.lab-grid .src { font-family: inherit; color: var(--muted); }
+.h-row { display: flex; gap: 12px; padding: 13px 14px; border-bottom: 1px solid var(--hair); }
+.h-row:last-child { border-bottom: 0; }
+.h-dot { width: 11px; height: 11px; flex-shrink: 0; margin-top: 4px; border-radius: 50%; border: 2px solid; }
+.h-date { width: 104px; flex-shrink: 0; font-size: 11px; color: var(--faint); font-family: var(--mono); padding-top: 1px; }
+.h-t { font-size: 13px; font-weight: 600; }
+.h-b { font-size: 12px; line-height: 1.55; margin-top: 3px; color: var(--muted); max-width: 560px; }
+.n-row { padding: 12px 14px; border-bottom: 1px solid var(--hair); }
+.n-row:last-child { border-bottom: 0; }
+.n-meta { display: flex; align-items: baseline; gap: 7px; font-size: 10.5px; }
+.n-meta .d { font-weight: 600; color: var(--ink-3); font-family: var(--mono); }
+.n-meta .w { color: var(--faint); }
+.n-text { font-size: 12.5px; line-height: 1.55; margin-top: 4px; color: var(--ink-2); }
+
+/* Right pane */
+.track { width: 380px; flex-shrink: 0; transition: width 0.18s ease; display: flex; flex-direction: column; background: var(--surface); border-left: 1px solid var(--border); }
+.t-head { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 9px 8px 9px 14px; border-bottom: 1px solid var(--border); }
+.rail-top { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 12px 8px 10px 12px; }
+.col-toggle { width: 30px; height: 30px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: transparent; color: var(--faint); cursor: pointer; }
+.col-toggle:hover { background: var(--sunk); color: var(--ink); }
+/* A collapsed column leaves a slim strip with a way back in */
+.strip { display: none; flex-direction: column; align-items: center; gap: 6px; padding: 10px 0; height: 100%; }
+.strip button { width: 32px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 8px 0; font-size: 12px; font-weight: 600; }
+.strip button:hover { background: var(--sunk); color: var(--ink); }
+.strip .vert { writing-mode: vertical-rl; letter-spacing: 0.02em; white-space: nowrap; }
+.rail .strip .vert { transform: rotate(180deg); }
+.strip .count { writing-mode: horizontal-tb; font-family: var(--mono); font-size: 10.5px; padding: 1px 6px; border-radius: 8px; background: var(--amber-bg); color: var(--amber); }
+.t-head .title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aw-grid { display: grid; grid-template-columns: minmax(0, 1fr) 56px 70px; gap: 8px; align-items: center; }
+.aw-cols { flex-shrink: 0; padding: 8px 14px; background: var(--ground); border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
+.aw-list { flex: 0 1 auto; min-height: 0; max-height: 40%; overflow: auto; border-bottom: 1px solid var(--border); }
+.aw-row { padding: 9px 14px; border-bottom: 1px solid #F4F2ED; }
+.aw-row:last-child { border-bottom: 0; }
+.aw-item { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.aw-text { font-size: 12px; line-height: 1.4; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aw-row.done .aw-text { color: var(--ghost); text-decoration: line-through; }
+.aw-sub { font-size: 11px; color: var(--faint); font-family: var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.due { font-size: 11px; font-family: var(--mono); color: var(--muted); text-align: right; white-space: nowrap; }
+.due.late { color: var(--red); font-weight: 600; }
+.due.soon { color: var(--amber); font-weight: 600; }
+.aw-row.done .due { color: var(--ghost); font-weight: 400; }
+.tick { width: 16px; height: 16px; padding: 0; flex-shrink: 0; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--surface); border: 1.5px solid #C9C6BD; }
+.tick[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); }
+.tick:hover { border-color: var(--primary); }
+.t-empty { padding: 18px 16px; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
+.t-empty p { margin: 0 0 6px; }
+.t-empty strong { color: var(--ink); font-weight: 600; }
+.aw-none { padding: 18px 14px; font-size: 12px; line-height: 1.5; color: var(--faint); }
+
+/* Running notes — the notes column from the spreadsheet */
+.log-sec { flex: 1 1 0; min-height: 200px; display: flex; flex-direction: column; }
+.log-head { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 14px 14px 6px; }
+.log-head .title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
+.log-head .count { font-size: 10.5px; color: var(--faint); font-family: var(--mono); }
+.log-list { flex-grow: 1; min-height: 0; overflow: auto; padding: 0 14px; }
+.log-list .n-row { padding: 11px 0; border-bottom: 1px solid #F4F2ED; }
+.log-list .n-row:last-child { border-bottom: 0; }
+.log-list .n-meta .d { font-size: 10.5px; }
+.log-list .n-text { font-size: 12px; line-height: 1.55; white-space: pre-line; }
+
+/* Chat in the centre — where the decision note is drafted */
+.chat { margin-top: 26px; padding-top: 18px; border-top: 1px dashed var(--border-strong); }
+.msg-you { display: flex; justify-content: flex-end; margin-top: 12px; }
+.msg-you .bubble { max-width: 70%; padding: 9px 13px; border-radius: 14px 14px 4px 14px; background: var(--blue-bg); color: #24497F; font-size: 13px; line-height: 1.5; }
+.msg-bot { display: flex; gap: 10px; margin-top: 12px; }
+.msg-bot .logo.sm { margin-top: 2px; }
+.bot-card { flex-grow: 1; min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card); }
+.bot-text { padding: 11px 14px; font-size: 13px; line-height: 1.55; color: var(--ink-2); }
+.note-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px 9px; }
+.note-body { margin: 0 14px; padding: 13px 14px; border: 1px solid var(--border); border-radius: 10px; background: #FDFCF8; font-size: 12.5px; line-height: 1.65; white-space: pre-line; color: var(--ink-2); user-select: text; }
+.ai-tag { display: inline-flex; align-items: center; gap: 5px; height: 19px; padding: 0 8px; border-radius: 10px; background: var(--purple-bg); color: var(--purple); font-size: 10px; font-weight: 600; }
+.note-foot { display: flex; align-items: center; gap: 8px; padding: 10px 14px 12px; }
+.note-foot .why { flex-grow: 1; min-width: 0; font-size: 11px; line-height: 1.4; color: var(--faint); }
+.suggest { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 9px; }
+.suggest .lab { font-size: 11px; color: var(--faint); margin-right: 2px; }
+
+/* Follow-me window */
+.desk { position: absolute; inset: 0; background: #E8E6E1; }
+.ghost-win { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--surface); }
+.ghost-bar { flex-shrink: 0; height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 14px; background: var(--sunk); border-bottom: 1px solid var(--border-strong); font-size: 12.5px; color: var(--ghost); }
+.ghost-bar .lights span { background: #D8D5CD; }
+.ghost-body { flex-grow: 1; display: flex; min-height: 0; }
+.ghost-nav { width: 196px; flex-shrink: 0; padding: 18px 14px; background: #FAF9F6; border-right: 1px solid #EDEBE5; }
+.g { border-radius: 4px; background: #F0EEE8; }
+.ghost-main { flex-grow: 1; min-width: 0; padding: 26px 30px; }
+.ghost-rows { margin-top: 22px; border: 1px solid #EDEBE5; border-radius: 10px; overflow: hidden; }
+.ghost-row { display: flex; align-items: center; gap: 18px; padding: 12px 16px; border-bottom: 1px solid #F2F0EB; }
+.ghost-row:last-child { border-bottom: 0; }
+.pip { position: absolute; right: 24px; bottom: 24px; width: 304px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 14px; box-shadow: 0 18px 42px rgba(20, 20, 15, 0.22), 0 2px 6px rgba(20, 20, 15, 0.1); overflow: hidden; }
+.pip-bar { display: flex; align-items: center; gap: 8px; padding: 9px 8px 9px 12px; border-bottom: 1px solid var(--hair); }
+.pip-bar .icon-btn { width: 28px; height: 28px; border-radius: 7px; }
+.pip-bar .icon-btn:hover { background: var(--sunk); color: var(--ink); }
+.pip-body { padding: 12px; }
+.pip .aw-row { padding: 9px 0; }
+.pip-note { display: flex; align-items: center; gap: 7px; margin-top: 11px; padding: 9px 10px; background: var(--ground); border-radius: 9px; font-size: 11px; line-height: 1.4; color: var(--muted); }
+.btn-full { display: flex; width: 100%; align-items: center; justify-content: center; gap: 7px; min-height: 38px; margin-top: 10px; border: 0; border-radius: 9px; color: #FFFFFF; font-size: 12.5px; font-weight: 600; cursor: pointer; background: var(--primary); }
+.pill-win { position: absolute; right: 24px; bottom: 24px; display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 8px 0 12px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 23px; box-shadow: 0 14px 32px rgba(20, 20, 15, 0.2), 0 2px 5px rgba(20, 20, 15, 0.08); cursor: pointer; font-size: 12.5px; font-weight: 600; }
+.pill-win .chev { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--faint); }
+
+/* ---------- Responsive ----------
+   ≥1280  three panes side by side
+   1024+  narrower rail and tracking pane
+   <1024  the rail becomes a drawer from the left
+   <768   the awaiting pane becomes a drawer from the right; one column of work
+   The centre adapts to its own width with container queries. */
+
+@media (max-width: 1279px) {
+  .rail { width: 272px; }
+  .track { width: 328px; }
+  .facts { gap: 16px; }
+}
+
+@media (max-width: 1023px) {
+  .tb-btn.for-rail { display: flex; }
+  .rail {
+    position: absolute; top: 0; bottom: 0; left: 0; z-index: 20;
+    width: min(320px, 88vw);
+    transform: translateX(-102%); transition: transform 0.22s ease;
+    box-shadow: 0 0 0 rgba(20, 20, 15, 0);
+  }
+  .rail.open { transform: none; box-shadow: 12px 0 32px rgba(20, 20, 15, 0.16); }
+  .scrim.on { display: block; position: absolute; inset: 0; z-index: 15; background: rgba(27, 27, 25, 0.28); border: 0; padding: 0; cursor: pointer; }
+  .track { width: 312px; }
+  .aw-text { white-space: normal; }
+  .aw-grid { align-items: start; }
+  .today { display: none; }
+}
+
+@media (max-width: 767px) {
+  .tb-btn.for-track { display: flex; }
+  .titlebar { gap: 8px; padding: 0 10px; }
+  .app-name { font-size: 13px; }
+  .follow-btn .lbl, .tb-btn .lbl { display: none; }
+  .follow-btn, .tb-btn { padding: 0 9px; min-height: 34px; }
+  .avatar { display: none; }
+  .track {
+    position: absolute; top: 0; bottom: 0; right: 0; z-index: 20;
+    width: min(380px, 92vw);
+    transform: translateX(102%); transition: transform 0.22s ease;
+  }
+  .track.open { transform: none; box-shadow: -12px 0 32px rgba(20, 20, 15, 0.16); }
+  .aw-list { max-height: 45%; }
+  .pip { right: 16px; bottom: 16px; width: min(304px, calc(100% - 32px)); }
+  .pill-win { right: 16px; bottom: 16px; max-width: calc(100% - 32px); }
+  .pill-win > span:nth-child(2) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .ghost-nav { display: none; }
+  .ghost-main { padding: 18px 16px; }
+}
+
+@media (pointer: coarse) {
+  .tick { width: 22px; height: 22px; border-radius: 5px; }
+  .cal .cell { min-height: 42px; }
+}
+
+/* Collapsing applies where the column sits beside the work, not as a drawer */
+@media (min-width: 1024px) {
+  .rail.collapsed { width: 48px; }
+  .rail.collapsed > :not(.strip) { display: none; }
+  .rail.collapsed > .strip { display: flex; }
+}
+@media (min-width: 768px) {
+  .track.collapsed { width: 48px; }
+  .track.collapsed > :not(.strip) { display: none; }
+  .track.collapsed > .strip { display: flex; }
+}
+
+/* The centre column, by its own width */
+
+@container (max-width: 760px) {
+  .q-head { padding: 16px 16px 14px; }
+  .q-head h1 { font-size: 19px; }
+  .q-head .mono { display: none; }
+  .p-head { padding: 14px 16px 0; }
+  .facts { margin-left: 0; width: 100%; gap: 14px 20px; flex-wrap: wrap; }
+  .tabs { overflow-x: auto; scrollbar-width: none; }
+  .tabs button { flex-shrink: 0; white-space: nowrap; }
+  .pad { padding: 16px 16px 22px; }
+  .search { padding: 10px 12px 12px; }
+  .search .kbd { display: none; }
+}
+
+@container (max-width: 640px) {
+  .cards { gap: 8px; }
+  .card-btn .num { font-size: 22px; }
+  .welcome h2 { font-size: 23px; }
+  .welcome p { font-size: 13.5px; }
+}
+
+@container (max-width: 560px) {
+  .p-id h1 { font-size: 18px; }
+  .p-id .meta { font-size: 11px; }
+  .p-av { width: 36px; height: 36px; font-size: 12.5px; }
+  .verdict { padding: 14px; }
+  .verdict .top { flex-wrap: wrap; }
+  .v-mark { width: 34px; height: 34px; }
+  .v-title { font-size: 17px; }
+  .v-tree { width: 100%; text-align: left; display: flex; align-items: baseline; gap: 8px; padding-left: 47px; }
+  .v-tree .k { display: none; }
+  .step { grid-template-columns: 26px minmax(0, 1fr); column-gap: 10px; padding: 13px 13px 14px; }
+  .step > .pill { grid-column: 2; grid-row: 1; justify-self: end; }
+  .step > div { grid-column: 1 / -1; grid-row: 2; }
+  .s-num { grid-row: 1; }
+  .s-row { grid-template-columns: 1fr; gap: 2px; }
+  .sec-head { flex-wrap: wrap; row-gap: 2px; }
+  .rec-row { flex-wrap: wrap; gap: 4px 14px; }
+  .rec-row .k { width: 100%; }
+  .h-row { flex-wrap: wrap; row-gap: 4px; }
+  .h-date { width: auto; }
+  .h-row > div:last-child { flex-basis: 100%; padding-left: 23px; }
+  .msg-you .bubble { max-width: 88%; }
+  .note-foot { flex-wrap: wrap; }
+  .note-foot .why { flex-basis: 100%; }
+}
+
+.scroll-x { overflow-x: auto; }
+.scroll-x .lab-table { min-width: 600px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="frame" id="app"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/reactflow@11.11.4/dist/umd/index.js"></script>
+<script>
+const TODAY = { m: 10, d: 27 };
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const key = (m, d) => m * 100 + d;
+
+const ICON = {
+  logo: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-7 4 14 2.5-7H22"/></svg>',
+  logoSm: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-7 4 14 2.5-7H22"/></svg>',
+  left: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
+  right: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
+  up: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>',
+  search: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#85827A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg>',
+  send: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>',
+  check: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>',
+  doc: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#A5A29A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h4"/></svg>',
+  person: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+  clock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v5l3 2M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18z"/></svg>',
+  pip: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><rect x="12" y="12" width="7" height="6" rx="1" fill="currentColor" stroke="none"/></svg>',
+  minus: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>',
+  close: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  out: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-8 8M10 5H5v14h14v-5"/></svg>',
+  plus: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8C8980" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  cal: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  panelL: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 10l-2 2 2 2"/></svg>',
+  panelR: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16M9 10l2 2-2 2"/></svg>',
+  list: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>'
+};
+
+/* ---------- Data ---------- */
+
+const COUNTS = { 1: 9, 2: 7, 5: 14, 6: 11, 7: 10, 8: 8, 9: 12, 12: 15, 13: 9, 14: 11, 15: 10, 16: 7, 19: 14, 20: 13, 21: 9, 22: 12, 23: 8, 26: 15, 27: 13 };
+
+const PEOPLE = [
+  { name: 'Alvarez, Rosa M.', mrn: '40-118-772', rm: 9, rd: 18, status: 'awaiting', waiting: 'Repeat CBC with differential', days: 39, ref: 'REF-2026-4471', source: 'External', meta: 'F · 54 y · DOB Mar 12, 1972' },
+  { name: 'Okonkwo, Daniel', mrn: '40-221-905', rm: 10, rd: 27, status: 'new', waiting: '', days: 0, ref: 'REF-2026-5102', source: 'Internal' },
+  { name: 'Bhatt, Priya', mrn: '40-198-443', rm: 10, rd: 27, status: 'new', waiting: '', days: 0, ref: 'REF-2026-5104', source: 'External' },
+  { name: 'Ferreira, Luis A.', mrn: '40-205-118', rm: 10, rd: 12, status: 'awaiting', waiting: 'Outside records from Mesa Clinic', days: 15, ref: 'REF-2026-4839', source: 'External' },
+  { name: 'Nakamura, Hana', mrn: '40-176-330', rm: 10, rd: 27, status: 'new', waiting: '', days: 0, ref: 'REF-2026-5107', source: 'Internal' },
+  { name: 'Whitfield-Cruz, Ana', mrn: '40-212-667', rm: 10, rd: 6, status: 'awaiting', waiting: 'Provider review of results', days: 21, ref: 'REF-2026-4688', source: 'Internal' },
+  { name: 'Delgado, Marisol', mrn: '40-189-024', rm: 10, rd: 27, status: 'declined', decline: 'malig', waiting: '', days: 0, ref: 'REF-2026-5111', source: 'External' },
+  { name: 'Haddad, Omar', mrn: '40-230-551', rm: 10, rd: 19, status: 'accepted', waiting: '', days: 8, ref: 'REF-2026-4950', source: 'Internal' },
+  { name: 'Pierce, Gwen', mrn: '40-144-806', rm: 10, rd: 5, status: 'declined', decline: 'invest', waiting: '', days: 22, ref: 'REF-2026-4652', source: 'External' },
+  { name: 'Sorensen, Erik', mrn: '40-227-913', rm: 10, rd: 27, status: 'new', waiting: '', days: 0, ref: 'REF-2026-5115', source: 'Internal' },
+  { name: 'Park, Jin-Ho', mrn: '40-162-740', rm: 10, rd: 13, status: 'awaiting', waiting: 'Consult type change to eConsult', days: 14, ref: 'REF-2026-4851', source: 'Internal' },
+  { name: 'Oyelaran, Tope', mrn: '40-233-089', rm: 10, rd: 15, status: 'awaiting', waiting: 'Ferritin and iron studies', days: 12, ref: 'REF-2026-4877', source: 'External' },
+  { name: 'Lindqvist, Mia', mrn: '40-219-374', rm: 10, rd: 18, status: 'awaiting', waiting: 'Provider review of results', days: 9, ref: 'REF-2026-4930', source: 'Internal' },
+  { name: 'Abadi, Noor', mrn: '40-187-612', rm: 10, rd: 20, status: 'accepted', waiting: '', days: 7, ref: 'REF-2026-4968', source: 'External' }
+];
+PEOPLE.forEach((p) => { p.received = MONTHS[p.rm - 1] + ' ' + p.rd; });
+const byMrn = (mrn) => PEOPLE.find((p) => p.mrn === mrn);
+
+const STATUS = {
+  awaiting: { label: 'Awaiting', dot: '#C98A2B' },
+  new: { label: 'New', dot: '#2F5FA8' },
+  accepted: { label: 'Accepted', dot: '#0E7A52' },
+  declined: { label: 'Declined', dot: '#8A3324' }
+};
+
+// Declined referrals say what happened next; each is its own filter under Declined.
+const DECLINE = {
+  malig: 'Referred to malignant hematology',
+  invest: 'Further investigations requested'
+};
+const FILTERS = {
+  all: 'All referrals',
+  awaiting: 'Awaiting',
+  accepted: 'Accepted',
+  declined: 'Declined',
+  'declined-malig': 'Declined · ' + DECLINE.malig,
+  'declined-invest': 'Declined · ' + DECLINE.invest
+};
+
+// One flat list. Every view reads the same items, so a tick lands everywhere.
+const AWAITING = [
+  { id: 'cbc', item: 'Repeat CBC with differential', mrn: '40-118-772', asked: 'Oct 2', dm: 10, dd: 29 },
+  { id: 'mesa', item: 'Outside records from Mesa Clinic', mrn: '40-205-118', asked: 'Oct 13', dm: 10, dd: 24 },
+  { id: 'fax', item: 'Return fax for Northgate', mrn: '40-118-772', asked: 'Oct 2', dm: 10, dd: 28 },
+  { id: 'review667', item: 'Provider review of results', mrn: '40-212-667', asked: 'Oct 8', dm: 10, dd: 28 },
+  { id: 'econsult', item: 'Consult type change to eConsult', mrn: '40-162-740', asked: 'Oct 14', dm: 10, dd: 30 },
+  { id: 'review374', item: 'Provider review of results', mrn: '40-219-374', asked: 'Oct 20', dm: 11, dd: 2 },
+  { id: 'iron', item: 'Ferritin and iron studies', mrn: '40-233-089', asked: 'Oct 16', dm: 11, dd: 3 },
+  { id: 'previsit', item: 'Pre-visit labs: CMP and LDH', mrn: '40-230-551', asked: 'Oct 21', dm: 11, dd: 3 },
+  { id: 'subset', item: 'Lymphocyte subset panel', mrn: '40-118-772', asked: '—', dm: 11, dd: 12 }
+].sort((a, b) => key(a.dm, a.dd) - key(b.dm, b.dd));
+
+const STEPS = [
+  {
+    n: 1, status: 'met', q: 'Is the finding isolated?',
+    found: 'Yes. ALC 0.78 K/µL is low, and Hgb 13.2, Plt 239 and ANC 3.21 are all inside the reference range, so no other cell line is involved. That keeps the referral on this branch rather than the cytopenia path.',
+    field: 'Results · CBC collected Sep 16, 2026'
+  },
+  {
+    n: 2, status: 'missing', q: 'Is the lymphopenia persistent?',
+    found: 'Not established. The branch needs two confirmed result sets at least two weeks apart, both inside 12 weeks. Only Sep 16 is on file. A repeat was requested from the practice on Oct 2 and no order has come back against it — this is what holds the referral.',
+    field: 'Results · one set found  ·  Orders · no matching order returned'
+  },
+  {
+    n: 3, status: 'met', q: 'Is the newest result recent enough?',
+    found: 'It was. The Sep 16 draw was 29 days old when the decision was written on Oct 15, inside the 30-day limit. It passed 30 days on Oct 16, so the repeat is now needed on recency as well as persistence.',
+    field: 'Results · CBC collected Sep 16, 2026'
+  },
+  {
+    n: 4, status: 'met', q: 'Has Allergy and Immunology seen the patient?',
+    found: 'Yes. Evaluation completed Oct 7 at Desert Allergy Associates, received Oct 9. No immunodeficiency identified and the lymphopenia persists, which clears the required-department step.',
+    field: 'Outside records · received Oct 9, 2026'
+  },
+  {
+    n: 5, status: 'gap', q: 'Does an exception apply?',
+    found: 'Cannot be answered. This branch defines no exception threshold for external referrals, so there is nothing to test the referral against. Nothing was assumed in its place.',
+    field: 'Tree · isolated lymphopenia, external, rev. 4'
+  }
+];
+const TONE = {
+  met: { label: 'Met', mark: '✓' },
+  missing: { label: 'Not met', mark: '!' },
+  gap: { label: 'Undefined', mark: '?' }
+};
+
+const RECORD = [
+  { k: 'Referring provider', v: 'J. Whitfield, MD · Northgate Primary Care' },
+  { k: 'Specialty requested', v: 'Hematology · face-to-face' },
+  { k: 'Reason for referral', v: 'Lymphopenia, unspecified · D72.810' },
+  { k: 'Clinical question', v: 'Persistent low lymphocyte count over six months. Patient asymptomatic, no recurrent infections. Please evaluate and advise.' },
+  { k: 'Orders on the referral', v: 'No order data returned — cannot confirm one was never placed', missing: true },
+  { k: 'Outside records', v: '9 pages received Sep 18 · Allergy and Immunology evaluation added Oct 9' },
+  { k: 'Prior hematology contact', v: 'No record on file for this MRN in the last 3 years' }
+];
+const RESULTS = [
+  { date: 'Sep 16, 2026', wbc: '4.4', alc: '0.78 L', hgb: '13.2', plt: '239', anc: '3.21', source: 'Outside records', low: true },
+  { date: 'Jun 3, 2026', wbc: '5.1', alc: '1.34', hgb: '13.0', plt: '248', anc: '3.52', source: 'Outside records', low: false }
+];
+const HISTORY = [
+  { date: 'SEP 18, 2026', fill: '#FFFFFF', ring: '#C9C6BD', t: 'Referral received', b: 'Whitfield, MD · Northgate Primary Care · external, face-to-face requested.' },
+  { date: 'SEP 24, 2026', fill: '#C98A2B', ring: '#C98A2B', t: 'Set to awaiting', b: 'Two required steps unmet: no Allergy and Immunology evaluation on file, and only one confirmed result set. Charted by you.' },
+  { date: 'OCT 2, 2026', fill: '#2F5FA8', ring: '#2F5FA8', t: 'Message sent to the practice', b: 'Both requirements spelled out. Read receipt Oct 3.' },
+  { date: 'OCT 9, 2026', fill: '#0E7A52', ring: '#0E7A52', t: 'Allergy and Immunology evaluation received', b: 'Completed Oct 7 at Desert Allergy Associates. One of the two requirements cleared.' },
+  { date: 'OCT 15, 2026', fill: '#8A3324', ring: '#8A3324', t: 'Still waiting on the repeat CBC', b: 'No order has come back. The window closes Dec 9, 2026.' }
+];
+const NOTES = [
+  { date: 'OCT 15', who: 'K. Lozano', text: 'Called Northgate. Front desk says Dr. Whitfield is back Monday and they will ask him to place the repeat CBC order. Nothing in writing yet.' },
+  { date: 'OCT 9', who: 'K. Lozano', text: 'A and I evaluation came through in the outside records packet. Filed against the referral. One requirement down.' },
+  { date: 'OCT 2', who: 'K. Lozano', text: 'Sent the requirements message through the chart. Both items spelled out. Read receipt the next day.' },
+  { date: 'SEP 24', who: 'K. Lozano', text: 'Set to awaiting — two steps unmet. Patient is asymptomatic so no rush flag, but watch the 12-week window.' }
+];
+const WORKED = '40-118-772';
+
+/* ---------- State ---------- */
+
+const S = {
+  view: 'queue',          // queue | patient | pip
+  day: null,
+  filter: 'all',
+  current: WORKED,        // the patient open now, or last opened
+  tab: 'decision',
+  pipCollapsed: false,
+  drawer: null,          // 'rail' | 'track' on narrow screens
+  railCollapsed: false,
+  trackCollapsed: true,  // nothing to track until a patient is open
+  added: {},             // notes added this session, by MRN
+  chat: {},              // chat thread per MRN
+  history: {},           // History-tab events recorded this session, by MRN
+  change: null,          // { target, why, addNode, at } once the triager changes the tree's decision
+  reroute: null,         // { target, why, addNode } while the change panel is open
+  treeFocus: null,       // { id, key } asks the tree to select a node
+  focusWhy: false,
+  scrollChat: false,
+  copied: null,          // index of the chat note just copied
+  searchMsg: '',
+  done: {}
+};
+
+
+/* ---------- Helpers ---------- */
+
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const surname = (p) => p.name.split(',')[0];
+const initials = (p) => p.name.split(',').map((s) => s.trim()[0]).reverse().join('');
+const dueLabel = (a) => MONTHS[a.dm - 1] + ' ' + a.dd;
+const dueTone = (a) => {
+  const k = key(a.dm, a.dd);
+  const t = key(TODAY.m, TODAY.d);
+  return k < t ? 'late' : k <= t + 1 ? 'soon' : '';
+};
+const openItems = (list) => list.filter((a) => !S.done[a.id]).length;
+const itemsFor = (mrn) => AWAITING.filter((a) => a.mrn === mrn);
+
+const matchesFilter = (p) => {
+  const f = S.filter;
+  if (f === 'all') return true;
+  if (f.startsWith('declined-')) return p.status === 'declined' && p.decline === f.slice('declined-'.length);
+  return p.status === f;
+};
+const onDay = (p) => S.day === null || (p.rm === 10 && p.rd === S.day);
+
+/* ---------- Rail ---------- */
+
+function renderRail() {
+  const cells = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d) => `<div class="dn">${d}</div>`);
+  for (let i = 0; i < 35; i += 1) {
+    const num = i - 3;
+    if (num < 1 || num > 31) { cells.push('<div class="blank"></div>'); continue; }
+    const n = COUNTS[num] || 0;
+    const cls = ['cell', num === TODAY.d && 'today', S.day === num && 'sel'].filter(Boolean).join(' ');
+    cells.push(`<button type="button" class="${cls}" data-act="day" data-v="${num}"
+      aria-label="October ${num}, ${n} received${S.day === num ? ', selected' : ''}">
+      <span class="n">${num}</span><span class="c">${n || '·'}</span></button>`);
+  }
+
+  const chip = (id, label, size) => `<button type="button" class="chip ${size || ''}" data-act="filter" data-v="${id}" aria-pressed="${S.filter === id}">${label}</button>`;
+  const declined = S.filter.startsWith('declined');
+  const filters = `
+    <div class="rail-filters">
+      <div class="chips" role="group" aria-label="Filter by decision">
+        ${chip('all', 'All')}${chip('awaiting', 'Awaiting')}${chip('accepted', 'Accepted')}
+        <button type="button" class="chip ${declined && S.filter !== 'declined' ? 'active' : ''}" data-act="filter" data-v="declined" aria-pressed="${S.filter === 'declined'}">Declined</button>
+      </div>
+      ${declined ? `<div class="chips sub" role="group" aria-label="Declined, and then">
+        ${chip('declined-malig', DECLINE.malig, 'sm')}${chip('declined-invest', DECLINE.invest, 'sm')}
+      </div>` : ''}
+    </div>`;
+
+  const rows = PEOPLE.filter((p) => onDay(p) && matchesFilter(p));
+  const title = (S.day === null ? '' : 'October ' + S.day + ' · ') + (S.filter === 'all' ? 'All referrals' : FILTERS[S.filter].replace('Declined · ', ''));
+  const count = S.day === null ? String(rows.length) : `${rows.length} of ${COUNTS[S.day] || 0} received`;
+  const list = rows.length
+    ? rows.map((p) => {
+      const here = S.view === 'patient' && S.current === p.mrn;
+      return `<button type="button" class="rail-row ${here ? 'here' : ''}" data-act="open" data-v="${p.mrn}" ${here ? 'aria-current="true"' : ''}>
+        <span class="dot" style="background: ${STATUS[p.status].dot}" title="${STATUS[p.status].label}"></span>
+        <span class="who"><span class="name">${p.name}</span><span class="mrn">${p.mrn}</span></span>
+        <span class="age ${p.days > 14 ? 'old' : ''}">${p.days}d</span>
+      </button>`;
+    }).join('')
+    : '<div class="rail-empty">No referrals match. Pick All, or clear the day.</div>';
+
+  return `
+    <aside class="rail ${S.drawer === 'rail' ? 'open' : ''} ${S.railCollapsed ? 'collapsed' : ''}" id="rail" aria-label="Find a patient">
+      <div class="strip">
+        <button type="button" data-act="expand" data-v="rail" aria-label="Show the patient list" title="Show the patient list">${ICON.panelR}<span class="vert">Patients</span></button>
+        ${S.view === 'patient' ? `<button type="button" data-act="toQueue" aria-label="Back to the day" title="Back to the day">${ICON.left}</button>` : ''}
+      </div>
+      <div class="rail-top">
+        <span class="month" style="font-size: 13px; font-weight: 600; letter-spacing: -0.005em">October 2026</span><span style="font-size: 11px; color: var(--faint)">by date received</span>
+        <span class="grow"></span>
+        <button type="button" class="col-toggle" data-act="collapse" data-v="rail" aria-label="Hide the patient list" title="Hide the patient list">${ICON.panelL}</button>
+      </div>
+      <div class="rail-scroll">
+        <div style="padding: 0 12px 10px"><div class="cal">${cells.join('')}</div></div>
+        ${filters}
+        <div class="rail-title"><span class="kicker">${title}</span><span class="grow"></span><span class="count">${count}</span>${S.day !== null ? '<button type="button" class="btn-ghost" data-act="clearDay">Show all</button>' : ''}</div>
+        <div style="padding: 0 8px 12px">${list}</div>
+      </div>
+      ${S.view === 'patient' ? `<div class="rail-foot"><button type="button" class="btn-back" data-act="toQueue">${ICON.left} Back to the day</button></div>` : ''}
+    </aside>`;
+}
+
+/* ---------- Centre: the day ---------- */
+
+function renderQueue() {
+  const dated = PEOPLE.filter(onDay);
+  const people = dated.filter(matchesFilter);
+  const count = (status, decline) => dated.filter((p) => p.status === status && (!decline || p.decline === decline)).length;
+  const oldest = Math.max(0, ...dated.filter((p) => p.status === 'awaiting').map((p) => p.days));
+  const cardDefs = [
+    { id: 'awaiting', label: 'Awaiting', accent: '#C98A2B', n: count('awaiting'), sub: oldest ? 'oldest ' + oldest + ' days' : 'none waiting' },
+    { id: 'accepted', label: 'Accepted', accent: '#0E7A52', n: count('accepted'), sub: 'sent to scheduling' },
+    { id: 'declined', label: 'Declined', accent: '#8A3324', n: count('declined'),
+      sub: count('declined', 'malig') + ' to malignant hematology · ' + count('declined', 'invest') + ' further investigations' }
+  ];
+  const cards = cardDefs.map((c) => {
+    const on = c.id === 'declined' ? S.filter.startsWith('declined') : S.filter === c.id;
+    return `<button type="button" class="card-btn" data-act="card" data-v="${c.id}" aria-pressed="${on}" style="${on ? 'border: 1.5px solid ' + c.accent : ''}">
+      <span class="lab"><span class="dot sm" style="background: ${c.accent}"></span>${c.label}</span>
+      <span class="num">${c.n}</span><span class="sub">${c.sub}</span></button>`;
+  }).join('');
+  const suffix = S.filter === 'all' ? ' in the queue' : ' · ' + FILTERS[S.filter].toLowerCase();
+  const kicker = S.day !== null ? 'Received October ' + S.day + ', 2026' : 'All referrals';
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const newToday = PEOPLE.filter((p) => p.status === 'new').length;
+  const awaiting = PEOPLE.filter((p) => p.status === 'awaiting').length;
+  const last = byMrn(S.current);
+  const welcome = `
+    <section class="welcome" aria-label="Welcome">
+      <div class="logo">${ICON.logo.replace(/width="14" height="14"/, 'width="22" height="22"')}</div>
+      <h2>${greeting}, Melissa</h2>
+      <p>${newToday} new referrals came in today and ${awaiting} are awaiting something. Pick a patient from the list to start, or search by MRN below.</p>
+      <button type="button" class="w-resume" data-act="open" data-v="${last.mrn}">
+        <span><span class="k">Pick up where you left off ·</span> <strong>${last.name}</strong></span>
+        <span class="pill xs t-${last.status}">${STATUS[last.status].label}${last.status === 'awaiting' ? ' · day ' + last.days : ''}</span>
+        <span class="go">${ICON.right}</span>
+      </button>
+    </section>`;
+
+  return `
+    <main class="centre" aria-label="The day">
+      <div class="q-head">
+        <div style="display: flex; align-items: flex-end; gap: 12px">
+          <div style="min-width: 0"><div class="kicker">${kicker}</div><h1>${people.length} ${people.length === 1 ? 'referral' : 'referrals'}${suffix}</h1></div>
+          <span class="grow"></span>
+          <span class="mono" style="font-size: 11px; color: var(--faint)">Swept 06:00 today</span>
+        </div>
+        <div class="cards">${cards}</div>
+      </div>
+      <div class="centre-scroll">${welcome}</div>
+      ${renderSearch('Search an MRN or ask a question about the queue')}
+    </main>`;
+}
+
+function renderSearch(placeholder, suggestions) {
+  const chips = (suggestions || []).map((q) => `<button type="button" class="chip sm" data-act="ask" data-v="${q}">${q}</button>`).join('');
+  return `
+    <div class="search">
+      ${chips ? `<div class="suggest"><span class="lab">Ask</span>${chips}</div>` : ''}
+      <form data-form="search" role="search">
+        ${ICON.search}
+        <input type="text" id="search" aria-label="Search an MRN or ask a question" placeholder="${placeholder}" autocomplete="off">
+        <span class="kbd">⌘K</span>
+        <button type="submit" class="btn-send" aria-label="Send">${ICON.send}</button>
+      </form>
+      ${S.searchMsg ? `<div class="search-msg" role="status">${esc(S.searchMsg)}</div>` : ''}
+    </div>`;
+}
+
+/* ---------- Centre: the patient ---------- */
+
+function renderPatient() {
+  const p = byMrn(S.current);
+  const worked = p.mrn === WORKED;
+  const tabs = [['decision', 'Decision'], ['referral', 'Referral and results'], ['history', 'History']]
+    .map(([id, label]) => `<button type="button" data-act="tab" data-v="${id}" aria-pressed="${S.tab === id}">${label}</button>`).join('');
+
+  let content;
+  if (!worked) {
+    content = `<div class="empty" style="padding-top: 60px">
+      <h2>The tree has not been run on this referral in the prototype</h2>
+      <p>The worked example is Alvarez, Rosa M. — isolated lymphopenia, external branch. ${p.waiting ? `This referral is awaiting <strong>${p.waiting.toLowerCase()}</strong>; tick it off on the right when it lands.` : ''}</p>
+      <div style="margin-top: 14px"><button type="button" class="btn secondary sm" data-act="open" data-v="${WORKED}">Open the worked example</button></div>
+    </div>`;
+  } else if (S.tab === 'decision') {
+    content = renderDecision();
+  } else if (S.tab === 'referral') {
+    content = renderReferral();
+  } else {
+    content = renderHistory();
+  }
+
+  return `
+    <main class="centre" aria-label="The patient">
+      <div class="p-head">
+        <button type="button" class="p-back" data-act="toQueue">${ICON.left} Back to the day</button>
+        <div class="p-id">
+          <div class="p-av">${initials(p)}</div>
+          <div class="p-name">
+            <h1>${p.name}</h1>
+            <div class="meta">MRN ${p.mrn}${p.meta ? ' · ' + p.meta : ''}</div>
+          </div>
+          <div class="facts">
+            <div><div class="k">Referral</div><div class="v mono">${p.ref}</div></div>
+            <div><div class="k">Received</div><div class="v mono">${p.received}, 2026</div></div>
+            <div><div class="k">Source</div><div class="v">${p.source}</div></div>
+            <div><div class="k">In triage</div><div class="v mono ${p.days > 14 ? 'late' : ''}">${p.days} ${p.days === 1 ? 'day' : 'days'}</div></div>
+          </div>
+        </div>
+        ${worked ? `<div class="tabs" role="group" aria-label="Sections">${tabs}</div>` : '<div style="height: 14px"></div>'}
+      </div>
+      <div class="centre-scroll"><div class="pad"><div class="measure">${content}${renderChat(p)}</div></div></div>
+      ${renderSearch('Ask about this referral, or search another MRN', ['Draft the decision note', 'What is still awaiting?'])}
+    </main>`;
+}
+
+function renderDecision() {
+  const c = S.change;
+  const r = S.reroute;
+  const verdict = c
+    ? `<div class="verdict over">
+        <div class="top">
+          <span class="v-mark">${ICON.person}</span>
+          <div class="grow" style="min-width: 0">
+            <div class="v-kicker">Your decision · changed from the tree</div>
+            <div class="v-title">${OUTCOME[c.target]}</div>
+            <div class="v-was">The tree decided <s>${OUTCOME[TREE_END]}</s>. You rerouted at ${stepLabel(c.at)}.</div>
+          </div>
+          ${treeTag()}
+        </div>
+        ${r ? '' : `<div class="v-actions">
+          <button type="button" class="btn secondary sm" data-act="changeStart">Change it again</button>
+          <button type="button" class="btn secondary sm" data-act="changeRevert">Go back to the tree's decision</button>
+          <span class="hint">Your reasoning is on the path below and in the patient's notes.</span>
+        </div>`}
+      </div>`
+    : `<div class="verdict">
+        <div class="top">
+          <span class="v-mark">${ICON.clock}</span>
+          <div class="grow" style="min-width: 0">
+            <div class="v-kicker">What the tree decided</div>
+            <div class="v-title">${OUTCOME[TREE_END]}</div>
+          </div>
+          ${treeTag()}
+        </div>
+        ${r ? '' : '<div class="v-actions"><button type="button" class="btn secondary sm" data-act="changeStart">Change the decision</button></div>'}
+      </div>`;
+
+  const panel = r ? `
+    <section class="change" aria-label="Change the decision">
+      <h3>Change the decision</h3>
+      <p class="sub">Say why, then pick where the path should end — here or by clicking an outcome in the tree below. Your reasoning is saved on the decision path and in the patient's notes.</p>
+      <label class="q" for="changeWhy">Why are you changing it? <span class="req">Required</span></label>
+      <textarea class="field" id="changeWhy" placeholder="Your rationale for overriding the tree" style="height: 72px; margin-top: 8px">${esc(r.why)}</textarea>
+      <span class="q">Where should it end?</span>
+      <div class="opts" role="group" aria-label="Outcome">
+        ${Object.keys(OUTCOME).filter((id) => id !== TREE_END).map((id) =>
+          `<button type="button" class="opt" data-act="pickTarget" data-v="${id}" aria-pressed="${r.target === id}">${OUTCOME[id]}</button>`).join('')}
+      </div>
+      <label class="check"><input type="checkbox" id="changeNode" ${r.addNode ? 'checked' : ''}> Add my reasoning to the tree as a node</label>
+      <div class="row">
+        <button type="button" class="btn primary sm" id="changeSave" data-act="changeSave" ${r.target && r.why.trim() ? '' : 'disabled'}>Save the change</button>
+        <button type="button" class="btn secondary sm" data-act="changeCancel">Cancel</button>
+        <span class="hint">${r.target ? 'Reroutes at ' + stepLabel(divergeAt(r.target)) + ' to ' + OUTCOME[r.target] + '.' : 'Pick an outcome to reroute the path.'}</span>
+      </div>
+    </section>` : '';
+
+  const cbcIn = !!S.done.cbc;
+  const steps = STEPS.map((s) => `
+    <div class="step ${s.status}">
+      <span class="s-num ${s.status}" aria-hidden="true">${s.n}</span>
+      <div style="min-width: 0">
+        <div class="s-kick">Step ${s.n}</div>
+        <div class="s-q">${s.q}</div>
+        <div class="s-row"><span class="k">Found</span><span class="v">${s.found}</span></div>
+        <div class="s-row"><span class="k">Read from</span><span class="v"><span class="src">${ICON.doc}${s.field}</span></span></div>
+        ${s.status === 'gap' ? '<div class="s-aside purple"><strong>A gap in the tree, not in the chart.</strong> Flagged for the tree owner. The decision above stands without it.</div>' : ''}
+        ${s.n === 2 && cbcIn ? '<div class="s-aside blue">You ticked the repeat CBC as in. The tree still reads one set until the result is filed in the chart — re-run on receipt, no new referral order needed.</div>' : ''}
+      </div>
+      <span class="pill t-${s.status}" style="align-self: start">${TONE[s.status].label}</span>
+    </div>`).join('');
+
+  return `
+    ${verdict}
+    ${panel}
+    <div class="sec-head"><span class="kicker">The path through the tree</span><span class="aside">As a diagram, or read in plain language</span></div>
+    ${TREE ? '<div id="tree-slot"></div>' : `<div class="steps">${steps}</div>`}`;
+}
+
+const treeTag = () => `
+  <div class="v-tree">
+    <div class="k">Decision tree</div>
+    <div class="v">Isolated lymphopenia</div>
+    <div class="s">External · rev. 4</div>
+  </div>`;
+
+function renderReferral() {
+  const rec = RECORD.map((f) => `
+    <div class="rec-row ${f.missing ? 'missing' : ''}">
+      <div class="k">${f.k}</div><div class="v">${f.v}</div>
+      ${f.missing ? '<button type="button" class="btn secondary sm" style="align-self: center" title="Opens a draft message to the referring practice">Ask the practice</button>' : ''}
+    </div>`).join('');
+  const labs = RESULTS.map((r) => `
+    <div class="lab-grid">
+      <span>${r.date}</span><span>${r.wbc}</span><span class="${r.low ? 'low' : ''}">${r.alc}</span><span>${r.hgb}</span><span>${r.plt}</span><span>${r.anc}</span><span class="src">${r.source}</span>
+    </div>`).join('');
+  return `
+    <div class="kicker" style="padding: 0 2px 10px">The referral as it arrived</div>
+    <div class="box">${rec}</div>
+    <div class="kicker" style="padding: 22px 2px 10px">Results read by the tree</div>
+    <div class="box scroll-x"><div class="lab-table">
+      <div class="lab-grid head"><span>Collected</span><span>WBC</span><span>ALC</span><span>Hgb</span><span>Plt</span><span>ANC</span><span>Source</span></div>
+      ${labs}
+    </div></div>`;
+}
+
+function renderHistory() {
+  // The referral's fixed history, then anything recorded this session (decision changes), oldest first.
+  const hist = HISTORY.concat(S.history[S.current] || []).map((h) => `
+    <div class="h-row">
+      <span class="h-dot" style="background: ${h.fill}; border-color: ${h.ring}"></span>
+      <div class="h-date">${h.date}</div>
+      <div style="min-width: 0">
+        <div class="h-t">${esc(h.t)}${h.fresh ? ' <span class="pill xs t-new" style="margin-left: 6px; vertical-align: 1px">Just added</span>' : ''}</div>
+        <div class="h-b">${esc(h.b)}</div>
+      </div>
+    </div>`).join('');
+  return `
+    <div class="kicker" style="padding: 0 2px 10px">Everything that has happened to this referral</div>
+    <div class="box">${hist}</div>`;
+}
+
+/* ---------- Chat: the decision note is drafted here ---------- */
+
+function ask(q) {
+  const p = byMrn(S.current);
+  const thread = S.chat[p.mrn] || (S.chat[p.mrn] = []);
+  const ql = q.toLowerCase();
+  thread.push({ who: 'you', text: q });
+  if (/note|draft|document|chart|write/.test(ql)) {
+    thread.push(p.mrn === WORKED
+      ? { who: 'copilot', kind: 'note' }
+      : { who: 'copilot', text: `The tree has not been run on ${p.name}'s referral in this prototype, so there is nothing to draft the note from.` });
+  } else if (/await|missing|outstanding|wait|left|due/.test(ql)) {
+    const open = itemsFor(p.mrn).filter((a) => !S.done[a.id]);
+    thread.push({ who: 'copilot', text: open.length
+      ? `${open.length} still open on ${surname(p)}: ` + open.map((a) => `${a.item} (due ${dueLabel(a)}${dueTone(a) === 'late' ? ', late' : ''})`).join('; ') + '.'
+      : `Nothing is still awaiting on ${p.name}.` });
+  } else {
+    thread.push({ who: 'copilot', text: 'In this prototype I can draft the decision note or list what is still awaiting. Try one of the suggestions above the box.' });
+  }
+  S.scrollChat = true;
+}
+
+function renderChat(p) {
+  const thread = S.chat[p.mrn] || [];
+  if (!thread.length) return '';
+  const msgs = thread.map((m, i) => {
+    if (m.who === 'you') return `<div class="msg-you"><div class="bubble">${esc(m.text)}</div></div>`;
+    if (m.kind !== 'note') return `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card"><div class="bot-text">${esc(m.text)}</div></div></div>`;
+    const text = m.frozen || draftNote();
+    const meta = m.frozen ? 'Added to the notes on the right' : (S.change ? 'Redrafted with your change' : 'Drafted from the tree');
+    return `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card">
+      <div class="note-head"><span class="kicker">Decision note · draft</span><span class="grow"></span>
+        <span class="ai-tag" title="Drafted by the copilot. Review before charting.">AI draft</span></div>
+      <div class="note-body" aria-label="Decision note draft, read only">${esc(text)}</div>
+      <div class="note-foot">
+        <span class="why">${meta}. Nothing is charted until you paste it.</span>
+        <button type="button" class="btn secondary sm" data-act="copy" data-v="${i}">${S.copied === i ? '✓ Copied' : 'Copy'}</button>
+        <button type="button" class="btn primary sm ${m.frozen ? 'done' : ''}" data-act="noteToLog" data-v="${i}" ${m.frozen ? 'disabled' : ''}>${m.frozen ? '✓ Added to notes' : 'Add to notes'}</button>
+      </div>
+    </div></div>`;
+  }).join('');
+  return `<div class="chat" aria-label="Chat about this referral"><div class="kicker">Asked in chat</div>${msgs}</div>`;
+}
+
+/* ---------- Right pane: awaiting, running notes ---------- */
+
+const TAG_TONE = { 'Decision note': 't-gap', 'Decision changed': 't-new', 'Decision restored': 't-cold' };
+
+function logEvent(t, b, color) {
+  const list = S.history[S.current] || (S.history[S.current] = []);
+  list.push({ date: 'OCT 27, 2026', fill: color, ring: color, t, b, fresh: true });
+}
+
+function logNote(tag, text) {
+  S.added[S.current] = [{ date: 'OCT 27', who: 'Melissa', text, tag, fresh: true }].concat(S.added[S.current] || []);
+}
+
+function awaitingRow(a, scope) {
+  const done = !!S.done[a.id];
+  const tick = `<button type="button" class="tick" data-act="tick" data-v="${a.id}" aria-pressed="${done}" aria-label="${done ? 'Mark not done' : 'Mark done'}: ${a.item}">${done ? ICON.check : ''}</button>`;
+  const due = `<span class="due ${done ? '' : dueTone(a)}">${dueTone(a) === 'late' && !done ? 'Late · ' : ''}${dueLabel(a)}</span>`;
+  if (scope === 'pip') {
+    return `<div class="aw-row ${done ? 'done' : ''}"><div class="aw-item">${tick}<span class="aw-text grow">${a.item}</span>${due}</div></div>`;
+  }
+  return `<div class="aw-row ${done ? 'done' : ''}"><div class="aw-grid">
+    <span class="aw-item">${tick}<span class="aw-text">${a.item}</span></span>
+    <span class="aw-sub" style="text-align: right">${a.asked}</span>${due}
+  </div></div>`;
+}
+
+function draftNote() {
+  const facts = 'Isolated lymphopenia confirmed — ALC 0.78 K/µL (Sep 16, 2026), with Hgb 13.2, Plt 239 and ANC 3.21 inside range.\n\nAllergy and Immunology evaluation received Oct 9, 2026, which clears the required-department step.';
+  const c = S.change;
+  if (c) {
+    return `Triage decision: ${OUTCOME[c.target].toUpperCase()} — changed by the triager from the tree's decision.\n\nTree applied: isolated lymphopenia, external referral, rev. 4. The tree reached ${OUTCOME[TREE_END].toUpperCase()}, stopping at step 2 (persistence not established).\n\nRerouted at ${stepLabel(c.at)}. Reason: ${c.why}\n\n${facts}\n\nThe disagreement is recorded on the decision path and in the patient's notes.`;
+  }
+  return `Triage decision: AWAITING — holding for the repeat CBC with differential.\n\nTree applied: isolated lymphopenia, external referral, rev. 4.\n\n${facts}\n\nOutstanding: a second confirmed result set inside the 12-week window. Requested Oct 2; no order has come back against it. Window closes Dec 9, 2026.\n\nStep 5 (exception check) is undefined for external referrals on this branch and was not inferred.\n\nRe-triage on receipt. No new referral order required.`;
+}
+
+function renderTrack() {
+  const strip = (open) => `
+      <div class="strip">
+        <button type="button" data-act="expand" data-v="track" aria-label="Show awaiting and notes${open ? ', ' + open + ' open' : ''}" title="Show awaiting and notes">${ICON.panelL}${open ? `<span class="count">${open}</span>` : ''}<span class="vert">Awaiting</span></button>
+      </div>`;
+  const toggle = '<button type="button" class="col-toggle" data-act="collapse" data-v="track" aria-label="Hide awaiting and notes" title="Hide awaiting and notes">' + ICON.panelR + '</button>';
+  const cls = `track ${S.drawer === 'track' ? 'open' : ''} ${S.trackCollapsed ? 'collapsed' : ''}`;
+
+  // The day has no patient open, so there is no awaiting list or notes to show yet.
+  if (S.view === 'queue') {
+    return `
+    <aside class="${cls}" id="track" aria-label="Awaiting and notes">
+      ${strip(0)}
+      <div class="t-head"><span class="title">Awaiting and notes</span><span class="grow"></span>${toggle}</div>
+      <div class="t-empty">
+        <p><strong>No patient open.</strong></p>
+        <p>Pick a patient from the list and their awaiting items and notes appear here.</p>
+      </div>
+    </aside>`;
+  }
+
+  const cur = byMrn(S.current);
+  const items = itemsFor(cur.mrn);
+  const open = openItems(items);
+  const chip = items.length === 0 ? '' : `<span class="pill ${open ? 't-awaiting' : 't-met'}" style="height: 20px">${open ? open + ' open' : 'All in'}</span>`;
+  const list = items.length
+    ? items.map((a) => awaitingRow(a, 'patient')).join('')
+    : `<div class="aw-none">Nothing awaiting on ${cur.name}. ${cur.status === 'new' ? 'Untouched — nothing has been asked for yet.' : ''}</div>`;
+
+  const log = (S.added[cur.mrn] || []).concat(cur.mrn === WORKED ? NOTES : []);
+  const notes = log.length
+    ? log.map((n) => `
+      <div class="n-row">
+        <div class="n-meta"><span class="d">${n.date}</span><span class="w">${n.who}</span><span class="grow"></span>
+          ${n.tag ? `<span class="pill xs ${TAG_TONE[n.tag] || 't-gap'}">${n.tag}</span>` : ''}
+          ${n.fresh ? '<span class="pill xs t-new">Just added</span>' : ''}</div>
+        <div class="n-text">${esc(n.text)}</div>
+      </div>`).join('')
+    : `<div class="aw-none" style="padding: 6px 0">No notes on ${cur.name} yet.</div>`;
+
+  return `
+    <aside class="${cls}" id="track" aria-label="Awaiting and notes">
+      ${strip(open)}
+      <div class="t-head"><span class="title">Awaiting on ${surname(cur)}</span><span class="grow"></span>${chip}${toggle}</div>
+      ${items.length ? '<div class="aw-cols aw-grid"><span>Item</span><span class="r">Asked</span><span class="r">Due</span></div>' : ''}
+      <div class="aw-list">${list}</div>
+      <div class="log-sec">
+        <div class="log-head">
+          <span class="title">Notes on this patient</span><span class="grow"></span>
+          <span class="count">${log.length} ${log.length === 1 ? 'entry' : 'entries'}</span>
+        </div>
+        <div class="log-list">${notes}</div>
+      </div>
+    </aside>`;
+}
+
+/* ---------- Board C: follow-me window ---------- */
+
+function renderPip() {
+  const p = byMrn(S.current);
+  const items = itemsFor(p.mrn);
+  const open = openItems(items);
+  const openLabel = items.length === 0 ? 'nothing' : (open === 0 ? 'all in' : open + ' open');
+  const nav = [100, 73, 86, 64, 91, 68, 80].map((w, i) =>
+    `<div class="g" style="height: 10px; width: ${w}%; margin-bottom: ${i === 2 ? 22 : 14}px; background: ${i === 1 ? '#E6E3DC' : '#F0EEE8'}"></div>`).join('');
+  let rows = '';
+  for (let i = 0; i < 9; i += 1) {
+    const head = i === 0;
+    rows += `<div class="ghost-row" style="background: ${head ? '#FAF9F6' : '#FFFFFF'}">
+      <div class="g" style="height: 9px; width: 96px; background: ${head ? '#E6E3DC' : '#F2F0EB'}"></div>
+      <div class="g grow" style="height: 9px; background: ${head ? '#E6E3DC' : '#F4F2ED'}"></div>
+      <div class="g" style="height: 9px; width: 64px; background: ${head ? '#E6E3DC' : '#F2F0EB'}"></div></div>`;
+  }
+  const status = `<span class="pill xs t-${p.status}">${STATUS[p.status].label}${p.status === 'awaiting' ? ' · day ' + p.days : ''}</span>`;
+
+  const panel = S.pipCollapsed
+    ? `<button type="button" class="pill-win" data-act="pipExpand" aria-label="Expand the Triage Copilot window">
+        <span class="logo sm">${ICON.logoSm}</span>
+        <span>${p.name}</span>
+        <span class="pill xs ${open ? 't-awaiting' : 't-met'}">${openLabel}</span>
+        <span class="chev">${ICON.up}</span>
+      </button>`
+    : `<section class="pip" aria-label="Triage Copilot follow-me window">
+        <div class="pip-bar">
+          <span class="logo sm">${ICON.logoSm}</span>
+          <span style="font-size: 12px; font-weight: 600">Triage Copilot</span>
+          <span class="grow"></span>
+          <button type="button" class="icon-btn" data-act="pipCollapse" aria-label="Collapse to a pill" title="Collapse to a pill">${ICON.minus}</button>
+          <button type="button" class="icon-btn" data-act="toFull" aria-label="Close the follow-me window" title="Close">${ICON.close}</button>
+        </div>
+        <div class="pip-body">
+          <div class="kicker" style="font-size: 10px">Open in the app</div>
+          <div style="font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; margin-top: 4px">${p.name}</div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px">
+            <span class="mono" style="font-size: 11px; color: var(--faint)">${p.mrn}</span>${status}
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 13px; padding-bottom: 7px; border-bottom: 1px solid var(--hair)">
+            <span class="kicker" style="font-size: 10px">Awaiting</span><span class="grow"></span>
+            <span class="mono" style="font-size: 10.5px; color: var(--faint)">${openLabel}</span>
+          </div>
+          ${items.length ? items.map((a) => awaitingRow(a, 'pip')).join('') : '<div class="aw-none" style="padding: 12px 0">Nothing awaiting on this referral.</div>'}
+          <div class="pip-note">${ICON.plus}<span>Tick one here and it lands on the referral.</span></div>
+          <button type="button" class="btn-full" data-act="toFull">${ICON.out} Back to the full window</button>
+        </div>
+      </section>`;
+
+  return `
+    <div class="desk">
+      <div class="ghost-win" aria-hidden="true">
+        <div class="ghost-bar"><div class="lights"><span></span><span></span><span></span></div><span style="margin-left: 6px">Another window — the chart, a lab portal, email</span></div>
+        <div class="ghost-body">
+          <div class="ghost-nav">${nav}</div>
+          <div class="ghost-main">
+            <div class="g" style="height: 15px; width: 230px; background: #EDEBE5"></div>
+            <div class="g" style="height: 10px; width: 150px; margin-top: 10px; background: #F2F0EB"></div>
+            <div style="display: flex; gap: 14px; margin-top: 26px">
+              <div class="g grow" style="height: 108px; border-radius: 10px; background: #F4F2ED"></div>
+              <div class="g grow" style="height: 108px; border-radius: 10px; background: #F4F2ED"></div>
+              <div class="g grow" style="height: 108px; border-radius: 10px; background: #F4F2ED"></div>
+            </div>
+            <div class="ghost-rows">${rows}</div>
+          </div>
+        </div>
+      </div>
+      ${panel}
+    </div>`;
+}
+
+/* ---------- Decision tree: a React Flow graph that survives redraws ---------- */
+
+// The rest of the page redraws from strings; the tree keeps one React root on a
+// host element that is moved into each new #tree-slot, so selection and zoom persist.
+const TREE = (() => {
+  if (!window.React || !window.ReactDOM || !window.ReactFlow) return null;
+  const host = document.createElement('div');
+  return { host, root: ReactDOM.createRoot(host) };
+})();
+
+function mountTree() {
+  if (!TREE) return;
+  const slot = document.getElementById('tree-slot');
+  if (slot) slot.replaceWith(TREE.host);
+  if (!TREE.host.isConnected) return;
+  TREE.root.render(React.createElement(DecisionTree, {
+    cbcIn: !!S.done.cbc, change: S.change, reroute: S.reroute, focus: S.treeFocus, onPickEnd: pickFromTree
+  }));
+}
+
+// Clicking an outcome in the canvas while rerouting picks it as the new end of the path.
+function pickFromTree(id) {
+  if (!S.reroute || !OUTCOME[id] || id === TREE_END) return;
+  S.reroute.target = id;
+  redraw();
+}
+
+const GRAPH = [
+  { id: 'root', parent: null, kind: 'root', kicker: 'Referral', title: 'Lymphopenia · external request',
+    reason: 'Matched on the reason for referral and the Sep 16 CBC — ALC low with the other cell lines in range. The referral came from outside, so the external criteria apply rather than the internal ones.',
+    source: 'Referral REF-2026-4471 · received Sep 18, 2026' },
+  { id: 'g1', parent: 'root', kind: 'step', step: 0 },
+  { id: 'g2', parent: 'g1', kind: 'step', step: 1 },
+  { id: 'g3', parent: 'g2', kind: 'step', step: 2 },
+  { id: 'g4', parent: 'g3', kind: 'step', step: 3 },
+  { id: 'g5', parent: 'g4', kind: 'step', step: 4 },
+  { id: 'accept', parent: 'g5', kind: 'end', end: 'cold', kicker: 'If all pass', title: 'Accept · face-to-face',
+    reason: 'Where this tree ends when every step passes. Not reached on this referral: step 2 is not met and step 5 is undefined, so it needs the repeat CBC and your judgement on the exception.',
+    source: 'Outcome · not reached' },
+  { id: 'b1', parent: 'g1', branch: true, kind: 'end', end: 'cold', kicker: 'If no', title: 'Leave for the cytopenia path',
+    reason: 'The cytopenia tree, used when more than one cell line is abnormal. Not taken here: Hgb 13.2, Plt 239 and ANC 3.21 are all in range, so the finding is isolated.',
+    source: 'Tree · cytopenia branch, not entered' },
+  { id: 'b2', parent: 'g2', branch: true, kind: 'end', end: 'stop', kicker: 'If no', title: 'Awaiting · hold for the repeat CBC',
+    reason: 'Where this referral stopped. Only one confirmed result set is on file, so the tree holds here rather than carrying on down the spine. The window closes Dec 9, 2026 — re-triage on receipt, no new referral order needed.',
+    source: 'Outcome · set Sep 24, 2026 · still current' },
+  { id: 'b3', parent: 'g3', branch: true, kind: 'end', end: 'cold', kicker: 'If no', title: 'Awaiting · newest draw too old',
+    reason: 'Reached when the newest result is over 30 days old. Not reached on this referral, though the Sep 16 draw passed 30 days on Oct 16 — the repeat would now satisfy this step and the one above it.',
+    source: 'Outcome · not reached' },
+  { id: 'b4', parent: 'g4', branch: true, kind: 'end', end: 'cold', kicker: 'If no', title: 'Decline · Allergy and Immunology first',
+    reason: 'Reached when the patient has not been seen by Allergy and Immunology. Not reached: the evaluation was completed Oct 7 and received Oct 9, which cleared that step.',
+    source: 'Outcome · not reached' }
+];
+const NODE = Object.fromEntries(GRAPH.map((n) => [n.id, n]));
+const READ_ORDER = ['root', 'g1', 'b1', 'g2', 'b2', 'g3', 'b3', 'g4', 'b4', 'g5', 'accept'];
+
+// What each node was read from, opened on request. The kind varies with the step:
+// labs, orders, clinical notes, outside reports, the referral itself or the tree definition.
+const LAB_COLS = ['Test', 'Result', 'Reference', 'Flag'];
+const SOURCES = {
+  root: [{ kind: 'Referral', title: 'REF-2026-4471 · received Sep 18, 2026', kv: RECORD.map((f) => [f.k, f.v]) }],
+  g1: [{
+    kind: 'Labs', title: 'CBC with differential · collected Sep 16, 2026', from: 'Outside records · Northgate Primary Care',
+    cols: LAB_COLS,
+    rows: [['WBC', '4.4 K/µL', '4.0–11.0', ''], ['Lymphocytes (ALC)', '0.78 K/µL', '1.00–4.80', 'Low'], ['Hemoglobin', '13.2 g/dL', '12.0–15.5', ''],
+      ['Platelets', '239 K/µL', '150–400', ''], ['Neutrophils (ANC)', '3.21 K/µL', '1.80–7.70', '']]
+  }],
+  g2: [
+    {
+      kind: 'Labs', title: 'Lymphocyte count over time', from: 'Outside records',
+      cols: ['Collected', 'ALC', 'Reference', 'Flag'],
+      rows: [['Sep 16, 2026', '0.78 K/µL', '1.00–4.80', 'Low'], ['Jun 3, 2026', '1.34 K/µL', '1.00–4.80', '']],
+      foot: 'One low result on file. The branch needs two low results at least two weeks apart, both within 12 weeks.'
+    },
+    {
+      kind: 'Orders', title: 'Orders against this referral',
+      lines: ['Repeat CBC with differential — asked of Northgate on Oct 2, 2026', 'No order has come back for it. This does not confirm that none was placed.']
+    },
+    { kind: 'Clinical note', title: 'K. Lozano · Oct 15, 2026', quote: NOTES[0].text }
+  ],
+  g3: [{
+    kind: 'Labs', title: 'CBC with differential · collected Sep 16, 2026',
+    kv: [['Age when decided (Oct 15)', '29 days — inside the 30-day limit'], ['Age today (Oct 27)', '41 days — past the limit']]
+  }],
+  g4: [{
+    kind: 'Report', title: 'Allergy and Immunology evaluation', from: 'Desert Allergy Associates · completed Oct 7, received Oct 9, 2026 · outside records',
+    quote: 'Evaluated for recurrent infection and immunodeficiency. Immunoglobulin levels within normal limits. No primary immunodeficiency identified. Lymphopenia persists; defer to hematology as referred.'
+  }],
+  g5: [{
+    kind: 'Tree definition', title: 'Isolated lymphopenia · rev. 4 · step 5, exception check',
+    kv: [['Internal referrals', 'Exception criteria are listed'], ['External referrals', 'No exception criteria in this revision']],
+    foot: 'Read from the decision tree document. Nothing is inferred where the tree is silent.'
+  }],
+  b2: [
+    { kind: 'Status history', title: 'Set to awaiting', kv: [['Set', 'Sep 24, 2026 · K. Lozano'], ['Waiting on', 'Repeat CBC with differential'], ['Window closes', 'Dec 9, 2026']] },
+    { kind: 'Tree definition', title: 'Outcome · awaiting, persistence not confirmed', kv: [['Action', 'Hold; request a repeat CBC; re-triage on receipt']] }
+  ],
+  accept: [{ kind: 'Tree definition', title: 'Outcome · accept, face-to-face', kv: [['Action', 'Send to scheduling for a new-patient hematology visit']] }],
+  b1: [{ kind: 'Tree definition', title: 'Outcome · leave this tree', kv: [['Action', 'Triage on the cytopenia tree instead']] }],
+  b3: [{ kind: 'Tree definition', title: 'Outcome · awaiting, newest draw too old', kv: [['Action', 'Request a repeat CBC; hold until it is drawn']] }],
+  b4: [{ kind: 'Tree definition', title: 'Outcome · decline', kv: [['Action', 'Recommend Allergy and Immunology evaluation first; re-refer after']] }]
+};
+const chainOf = (id) => { const out = []; for (let c = id; c; c = NODE[c].parent) out.push(c); return out; };
+const TREE_END = 'b2';
+const TAKEN = chainOf(TREE_END);
+const OUTCOME = {
+  b2: 'Awaiting — hold for the repeat CBC',
+  accept: 'Accept · face-to-face',
+  b4: 'Decline · Allergy and Immunology first',
+  b3: 'Awaiting · newest draw too old',
+  b1: 'Leave for the cytopenia path'
+};
+// Where a rerouted path leaves the tree's own: the deepest node both share.
+const divergeAt = (end) => chainOf(end).find((id) => TAKEN.includes(id));
+const stepLabel = (id) => (NODE[id].kind === 'step' ? 'step ' + (NODE[id].step + 1) : 'the referral');
+
+function nodeInfo(n) {
+  if (n.kind === 'step') {
+    const s = STEPS[n.step];
+    return { kicker: 'Step ' + s.n, title: s.q, status: s.status, chip: TONE[s.status].label, chipCls: 't-' + s.status };
+  }
+  if (n.end === 'stop') return { kicker: n.kicker, title: n.title, status: 'stop', chip: 'Stopped here', chipCls: 't-awaiting' };
+  if (n.end === 'cold') return { kicker: n.kicker, title: n.title, status: 'cold', chip: 'Not reached', chipCls: 't-cold' };
+  return { kicker: n.kicker, title: n.title, status: 'root', chip: '', chipCls: '' };
+}
+
+function layoutFor(narrow) {
+  const L = narrow
+    ? { spineW: 200, branchX: 232, branchW: 172, row: 80 }
+    : { spineW: 260, branchX: 330, branchW: 260, row: 84 };
+  const pos = {};
+  ['root', 'g1', 'g2', 'g3', 'g4', 'g5', 'accept'].forEach((id, i) => { pos[id] = { x: 0, y: i * L.row, w: L.spineW }; });
+  GRAPH.filter((n) => n.branch).forEach((n) => { pos[n.id] = { x: L.branchX, y: pos[n.parent].y + 4, w: L.branchW }; });
+  pos.noteW = narrow ? 170 : 220;
+  pos.noteGap = narrow ? 40 : 56;
+  return pos;
+}
+
+const h = window.React ? React.createElement : null;
+
+function TreeNode({ data }) {
+  const RF = window.ReactFlow;
+  const cls = ['tn', data.status, data.state, data.sel && 'sel', data.pick && 'pick', data.target && 'target'].filter(Boolean).join(' ');
+  return h('div', { className: cls, style: { width: data.w } },
+    h(RF.Handle, { type: 'target', position: RF.Position.Top, id: 't', isConnectable: false }),
+    h(RF.Handle, { type: 'target', position: RF.Position.Left, id: 'l', isConnectable: false }),
+    h('div', { className: 'tn-head' },
+      h('span', { className: 'tn-kick' }, data.kicker),
+      data.chip ? h('span', { className: 'pill xs ' + data.chipCls }, data.chip) : null),
+    h('div', { className: 'tn-title' }, data.title),
+    data.sub ? h('div', { className: 'tn-sub' }, '↳ ' + data.sub) : null,
+    h(RF.Handle, { type: 'source', position: RF.Position.Bottom, id: 'b', isConnectable: false }),
+    h(RF.Handle, { type: 'source', position: RF.Position.Right, id: 'r', isConnectable: false }));
+}
+
+// The triager's reasoning, pinned beside the step where they left the tree's path.
+function NoteNode({ data }) {
+  const RF = window.ReactFlow;
+  return h('div', { className: 'tn note' + (data.sel ? ' sel' : ''), style: { width: data.w } },
+    h('div', { className: 'tn-head' }, h('span', { className: 'tn-kick' }, data.draft ? 'Your reasoning · draft' : 'Your reasoning')),
+    h('div', { className: 'tn-title' }, data.why),
+    h('div', { className: 'tn-by' }, 'Melissa · Oct 27'),
+    h(RF.Handle, { type: 'source', position: RF.Position.Right, id: 'r', isConnectable: false }));
+}
+const NODE_TYPES = { tree: TreeNode, note: NoteNode };
+
+function SourcePanel({ items }) {
+  return h('div', { className: 'source' }, items.map((it, i) => h('div', { className: 'src-item', key: i },
+    h('div', { className: 'src-head' }, h('span', { className: 'src-kind' }, it.kind), h('span', { className: 'src-title' }, it.title)),
+    it.from ? h('div', { className: 'src-from' }, it.from) : null,
+    it.rows ? h('div', { className: 'src-scroll' }, h('table', { className: 'src-table' },
+      h('thead', null, h('tr', null, it.cols.map((c) => h('th', { key: c, scope: 'col' }, c)))),
+      h('tbody', null, it.rows.map((r, j) => h('tr', { key: j, className: r[r.length - 1] ? 'flag' : '' }, r.map((c, k) => h('td', { key: k }, c))))))) : null,
+    it.kv ? h('dl', { className: 'src-kv' }, it.kv.map(([k, v]) => h(React.Fragment, { key: k }, h('dt', null, k), h('dd', null, v)))) : null,
+    it.lines ? h('ul', { className: 'src-lines' }, it.lines.map((l, j) => h('li', { key: j }, l))) : null,
+    it.quote ? h('blockquote', { className: 'src-quote' }, it.quote) : null,
+    it.foot ? h('div', { className: 'src-foot' }, it.foot) : null)));
+}
+
+// "Read from" with a way to open what it names; the source stays closed until asked for.
+function readFromRow(row, text, id, open, toggle) {
+  const items = SOURCES[id];
+  return h(React.Fragment, null,
+    row('Read from', h(React.Fragment, null,
+      h('span', { className: 'src', dangerouslySetInnerHTML: { __html: ICON.doc + esc(text) } }),
+      items ? h('button', { type: 'button', className: 'src-toggle', 'aria-expanded': open, onClick: toggle }, open ? 'Hide source' : 'Show source') : null)),
+    open && items ? h(SourcePanel, { items }) : null);
+}
+
+function TreeDetail({ id, cbcIn, onPick, order, chip, at, end, why, draft }) {
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => setOpen(false), [id]);
+  const i = order.indexOf(id);
+  const row = (k, v) => h('div', { className: 's-row' }, h('span', { className: 'k' }, k), h('span', { className: 'v' }, v));
+  const nav = h('div', { className: 'd-nav' },
+    h('button', { type: 'button', className: 'btn secondary sm', disabled: i === 0, onClick: () => onPick(order[i - 1]) }, '← Previous'),
+    h('span', { className: 'pos' }, (i + 1) + ' of ' + order.length),
+    h('button', { type: 'button', className: 'btn secondary sm', disabled: i === order.length - 1, onClick: () => onPick(order[i + 1]) }, 'Next →'));
+
+  if (id === 'note') {
+    return h('section', { className: 'tree-detail', 'aria-live': 'polite', 'aria-label': 'Selected node' },
+      h('div', { className: 'd-head' },
+        h('span', { className: 's-kick grow' }, draft ? 'Your reasoning · draft' : 'Your reasoning'),
+        h('span', { className: 'pill t-new' }, 'Decision changed')),
+      h('div', { className: 'd-title' }, 'Rerouted at ' + stepLabel(at) + ' → ' + OUTCOME[end]),
+      row('Why', why),
+      row('Recorded', draft ? 'Not saved yet — save the change to record it' : 'Melissa · Oct 27, 2026 · also saved to the patient\'s notes'),
+      nav);
+  }
+
+  const n = NODE[id];
+  const info = nodeInfo(n);
+  const step = n.kind === 'step' ? STEPS[n.step] : null;
+  return h('section', { className: 'tree-detail', 'aria-live': 'polite', 'aria-label': 'Selected node' },
+    h('div', { className: 'd-head' },
+      h('span', { className: 's-kick grow' }, info.kicker),
+      chip.chip ? h('span', { className: 'pill ' + chip.chipCls }, chip.chip) : null),
+    step ? null : h('div', { className: 'd-title' }, info.title),
+    step ? row('Asked', step.q) : null,
+    row(step ? 'Found' : 'Why', step ? step.found : n.reason),
+    readFromRow(row, step ? step.field : n.source, id, open, () => setOpen(!open)),
+    id === at && end !== TREE_END
+      ? h('div', { className: 's-aside blue' }, h('strong', null, 'You rerouted here'), ', to ' + OUTCOME[end] + '.' + (why ? ' Your reasoning: “' + why + '”' : ''))
+      : null,
+    step && step.status === 'gap'
+      ? h('div', { className: 's-aside purple' }, h('strong', null, 'A gap in the tree, not in the chart. '), 'Flagged for the tree owner. The decision above stands without it.')
+      : null,
+    step && step.n === 2 && cbcIn
+      ? h('div', { className: 's-aside blue' }, 'You ticked the repeat CBC as in. The tree still reads one set until the result is filed in the chart — re-run on receipt, no new referral order needed.')
+      : null,
+    nav);
+}
+
+// The same path as the diagram, read top to bottom: the referral, each step on the path,
+// where it ended, and then the steps the path did not go through.
+function PlainView({ end, changed, at, why, cbcIn, draft }) {
+  const [openSrc, setOpenSrc] = React.useState({});
+  const flip = (id) => setOpenSrc((o) => Object.assign({}, o, { [id]: !o[id] }));
+  const path = chainOf(end).reverse();
+  const row = (k, v) => h('div', { className: 's-row' }, h('span', { className: 'k' }, k), h('span', { className: 'v' }, v));
+
+  const stepItem = (id, dim) => {
+    const s = STEPS[NODE[id].step];
+    return h('div', { className: 'step ' + s.status + (dim ? ' dim' : ''), key: id },
+      h('span', { className: 's-num ' + s.status, 'aria-hidden': true }, s.n),
+      h('div', { style: { minWidth: 0 } },
+        h('div', { className: 's-kick' }, 'Step ' + s.n),
+        h('div', { className: 's-q' }, s.q),
+        row('Found', s.found),
+        readFromRow(row, s.field, id, !!openSrc[id], () => flip(id)),
+        s.status === 'gap' ? h('div', { className: 's-aside purple' }, h('strong', null, 'A gap in the tree, not in the chart. '), 'Flagged for the tree owner. The decision stands without it.') : null,
+        s.n === 2 && cbcIn ? h('div', { className: 's-aside blue' }, 'You ticked the repeat CBC as in. The tree still reads one set until the result is filed in the chart.') : null,
+        changed && id === at
+          ? h('div', { className: 's-aside blue' }, h('strong', null, 'You rerouted here'), ' — the path goes on to ' + OUTCOME[end] + ' instead of stopping at ' + OUTCOME[TREE_END] + '.' + (why ? ' ' + (draft ? 'Your reasoning (not saved yet): “' : 'Your reasoning: “') + why + '”' : ''))
+          : null),
+      h('span', { className: 'pill t-' + s.status, style: { alignSelf: 'start' } }, TONE[s.status].label));
+  };
+
+  const plainItem = (key, mark, markCls, kicker, title, rows, chip) => h('div', { className: 'step', key },
+    h('span', { className: 's-num ' + markCls, 'aria-hidden': true }, mark),
+    h('div', { style: { minWidth: 0 } }, h('div', { className: 's-kick' }, kicker), h('div', { className: 's-q' }, title), ...rows),
+    chip ? h('span', { className: 'pill ' + chip[0], style: { alignSelf: 'start' } }, chip[1]) : h('span'));
+
+  const root = NODE.root;
+  const onPath = [plainItem('root', 'R', 'node', 'Referral', root.title, [row('Why', root.reason), readFromRow(row, root.source, 'root', !!openSrc.root, () => flip('root'))])];
+  path.filter((id) => NODE[id].kind === 'step').forEach((id) => onPath.push(stepItem(id, false)));
+  onPath.push(changed
+    ? plainItem('end', '✓', 'you', 'Your decision', OUTCOME[end],
+        [row('The tree decided', OUTCOME[TREE_END]), row('Why it differs', why || 'No reason given yet')], ['t-new', draft ? 'Previewing' : 'Changed by you'])
+    : plainItem('end', '•', 'tree', 'Where it ended', OUTCOME[end], [row('Why', NODE[end].reason), readFromRow(row, NODE[end].source, end, !!openSrc[end], () => flip(end))], ['t-awaiting', 'The tree\'s decision']));
+
+  const offPath = GRAPH.filter((n) => n.kind === 'step' && !path.includes(n.id)).map((n) => stepItem(n.id, true));
+
+  return h('div', { className: 'plain' },
+    h('div', { className: 'p-sec' }, h('span', { className: 'kicker' }, changed ? 'How you got to this decision' : 'How the tree got to this decision')),
+    h('div', { className: 'steps' }, onPath),
+    offPath.length ? h('div', { className: 'p-sec' }, h('span', { className: 'kicker' }, 'Also checked, not on this path')) : null,
+    offPath.length ? h('div', { className: 'steps' }, offPath) : null);
+}
+
+function TreeCanvas({ cbcIn, change, reroute, focus, onPickEnd }) {
+  const RF = window.ReactFlow;
+  const { useState, useEffect, useRef, useMemo } = React;
+  const [selected, setSelected] = useState('g2');
+  const [narrow, setNarrow] = useState(false);
+  // Diagram or plain language; remembered in this browser only, as a convenience.
+  const [view, setView] = useState(() => { try { return localStorage.getItem('triage.treeView') || 'diagram'; } catch (e) { return 'diagram'; } });
+  const pickView = (v) => { setView(v); try { localStorage.setItem('triage.treeView', v); } catch (e) { /* storage unavailable */ } };
+  const box = useRef(null);
+  const flow = RF.useReactFlow();
+
+  // Pick the layout from the canvas's own width, and refit whenever it changes.
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return undefined;
+    const ro = new ResizeObserver(([entry]) => {
+      const w = entry.contentRect.width;
+      if (w === 0) return;
+      setNarrow(w < 600);
+      requestAnimationFrame(() => flow.fitView({ padding: 0.06, maxZoom: 1, duration: 0 }));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [flow]);
+
+  // Only the route to the current decision is lit: the tree's own, or the one the triager rerouted to.
+  // While rerouting, the outcome being picked previews in its place.
+  const end = (reroute && reroute.target) || (change ? change.target : TREE_END);
+  const lit = chainOf(end);
+  const changed = end !== TREE_END;
+  const at = changed ? divergeAt(end) : null;
+  const why = reroute ? reroute.why.trim() : (change ? change.why : '');
+  const hasNote = changed && !!why && (reroute ? reroute.addNode : change.addNode);
+  const sel = selected === 'note' && !hasNote ? (at || 'g2') : selected;
+  const pos = useMemo(() => layoutFor(narrow), [narrow]);
+
+  // A save or revert outside the canvas asks for a particular node to be selected.
+  useEffect(() => { if (focus) setSelected(focus.id); }, [focus && focus.key]);
+  // The reasoning node widens the graph, so refit once it has been measured, whenever it or the path changes.
+  useEffect(() => {
+    const t = setTimeout(() => flow.fitView({ padding: 0.06, maxZoom: 1, duration: 200 }), 80);
+    return () => clearTimeout(t);
+  }, [hasNote, end, flow]);
+
+  const chipFor = (n) => {
+    if (changed && n.id === end) return { chip: 'Your decision', chipCls: 't-new' };
+    if (changed && n.id === TREE_END) return { chip: 'Tree\'s decision', chipCls: 't-awaiting' };
+    const info = nodeInfo(n);
+    return { chip: info.chip, chipCls: info.chipCls };
+  };
+
+  const nodes = GRAPH.map((n) => {
+    const info = nodeInfo(n);
+    const chip = chipFor(n);
+    const state = lit.includes(n.id) ? 'on' : (changed && TAKEN.includes(n.id) ? 'ai' : 'off');
+    return {
+      id: n.id, type: 'tree', position: { x: pos[n.id].x, y: pos[n.id].y },
+      data: Object.assign({}, info, chip, {
+        w: pos[n.id].w, state, sel: sel === n.id,
+        pick: !!reroute && !!OUTCOME[n.id] && n.id !== TREE_END,
+        target: !!reroute && reroute.target === n.id,
+        sub: n.id === at ? 'You rerouted here' : ''
+      }),
+      ariaLabel: info.kicker + ': ' + info.title + (chip.chip ? ', ' + chip.chip : '')
+    };
+  });
+  if (hasNote) {
+    nodes.push({
+      id: 'note', type: 'note', position: { x: -(pos.noteW + pos.noteGap), y: pos[at].y - 6 },
+      data: { w: pos.noteW, why, sel: sel === 'note', draft: !!reroute },
+      ariaLabel: 'Your reasoning: ' + why
+    });
+  }
+
+  const edges = GRAPH.filter((n) => n.parent).map((n) => {
+    const on = lit.includes(n.id) && lit.includes(n.parent);
+    const ai = !on && changed && TAKEN.includes(n.id) && TAKEN.includes(n.parent);
+    const label = n.parent === 'root' ? undefined : (n.branch ? 'no' : 'yes');
+    return {
+      id: n.parent + '-' + n.id, source: n.parent, target: n.id,
+      sourceHandle: n.branch ? 'r' : 'b', targetHandle: n.branch ? 'l' : 't',
+      type: n.branch ? 'smoothstep' : 'straight',
+      label,
+      labelStyle: { fontSize: 9.5, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', fill: on ? '#2F5FA8' : (ai ? '#7F98C2' : '#A5A29A') },
+      labelBgStyle: { fill: '#FFFFFF' }, labelBgPadding: [4, 2],
+      style: { stroke: on ? '#2F5FA8' : (ai ? '#8FA7CF' : '#D3D0C8'), strokeWidth: on || ai ? 2 : 1.5, strokeDasharray: on ? undefined : (ai ? '6 4' : '5 4') }
+    };
+  });
+  if (hasNote) {
+    edges.push({
+      id: 'note-' + at, source: 'note', target: at, sourceHandle: 'r', targetHandle: 'l', type: 'smoothstep',
+      style: { stroke: '#9DB3D9', strokeWidth: 1.5, strokeDasharray: '3 3' }
+    });
+  }
+
+  const order = READ_ORDER.slice();
+  if (hasNote) order.splice(order.indexOf(at) + 1, 0, 'note');
+  const hint = reroute
+    ? 'Rerouting — click an outcome in the tree to end the path there'
+    : (changed ? 'Highlighted: your path to this decision · drag to pan' : 'Highlighted: the path the tree took to this decision · drag to pan');
+
+  // One card: the view toggle on top, then either the selected node above the diagram, or the plain reading.
+  const diagram = view === 'diagram';
+  return h('div', { className: 'tree-wrap' },
+    h('div', { className: 'tree-canvas' + (narrow ? ' narrow' : ''), ref: box },
+      h('div', { className: 'tree-bar' + (reroute ? ' rerouting' : '') },
+        h('div', { className: 'seg seg-sm', role: 'group', 'aria-label': 'Show the tree as' },
+          h('button', { type: 'button', 'aria-pressed': diagram, onClick: () => pickView('diagram') }, 'Diagram'),
+          h('button', { type: 'button', 'aria-pressed': !diagram, onClick: () => pickView('plain') }, 'Plain language')),
+        h('span', { className: 'tree-hint' }, diagram ? hint : (reroute ? 'Rerouting — pick an outcome in the panel above' : 'The same path, read step by step')),
+        diagram && changed ? h('span', { className: 'key' }, 'Your path') : null,
+        diagram && changed ? h('span', { className: 'key ai' }, 'Tree\'s path') : null,
+        diagram ? h('span', { className: 'pill xs t-met' }, 'Met') : null,
+        diagram ? h('span', { className: 'pill xs t-missing' }, 'Not met') : null,
+        diagram ? h('span', { className: 'pill xs t-gap' }, 'Undefined') : null,
+        diagram ? h('div', { className: 'tree-zoom', role: 'group', 'aria-label': 'Zoom' },
+          h('button', { type: 'button', 'aria-label': 'Zoom out', onClick: () => flow.zoomOut() }, '−'),
+          h('button', { type: 'button', 'aria-label': 'Zoom in', onClick: () => flow.zoomIn() }, '+'),
+          h('button', { type: 'button', 'aria-label': 'Fit the whole tree', title: 'Fit', onClick: () => flow.fitView({ padding: 0.06, maxZoom: 1, duration: 200 }) },
+            h('span', { 'aria-hidden': true, dangerouslySetInnerHTML: { __html: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>' } }))) : null),
+      diagram ? h(TreeDetail, { id: sel, cbcIn, onPick: setSelected, order, chip: sel === 'note' ? {} : chipFor(NODE[sel]), at, end, why, draft: !!reroute }) : null,
+      diagram ? h('div', { className: 'tree-flow' }, h(RF.default, {
+        nodes, edges, nodeTypes: NODE_TYPES,
+        fitView: true, fitViewOptions: { padding: 0.06, maxZoom: 1 },
+        minZoom: 0.4, maxZoom: 1.6,
+        nodesDraggable: false, nodesConnectable: false, elementsSelectable: false,
+        zoomOnScroll: false, panOnScroll: false, preventScrolling: false, zoomOnDoubleClick: false,
+        onNodeClick: (e, node) => { setSelected(node.id); onPickEnd(node.id); }
+      },
+        h(RF.Background, { gap: 18, size: 1, color: '#E7E5DF' })))
+        : h(PlainView, { end, changed, at, why, cbcIn, draft: !!reroute })));
+}
+
+function DecisionTree(props) {
+  return h(window.ReactFlow.ReactFlowProvider, null, h(TreeCanvas, props));
+}
+
+/* ---------- Shell ---------- */
+
+function render() {
+  const app = document.getElementById('app');
+  if (S.view === 'pip') {
+    app.innerHTML = renderPip();
+    return;
+  }
+  const openNow = openItems(itemsFor(S.current));
+  app.innerHTML = `
+    <header class="titlebar">
+      <div class="logo">${ICON.logo}</div>
+      <span class="app-name">Triage Copilot</span>
+      <span class="grow"></span>
+      <span class="today">Tue Oct 27, 2026</span>
+      <button type="button" class="tb-btn for-rail" data-act="drawer" data-v="rail" aria-controls="rail" aria-expanded="${S.drawer === 'rail'}">${ICON.list}<span class="lbl">Patients</span></button>
+      ${S.view === 'queue' ? '' : `<button type="button" class="tb-btn for-track" data-act="drawer" data-v="track" aria-controls="track" aria-expanded="${S.drawer === 'track'}" aria-label="Awaiting, ${openNow} open">${ICON.cal}<span class="lbl">Awaiting</span>${openNow ? `<span class="count">${openNow}</span>` : ''}</button>`}
+      <button type="button" class="follow-btn" data-act="toPip" title="Collapse the app to a small window pinned over whatever else is open">${ICON.pip}<span class="lbl">Follow me</span></button>
+      <span class="avatar" aria-label="Signed in as Melissa">M</span>
+    </header>
+    <div class="cols">
+      <button type="button" class="scrim ${S.drawer ? 'on' : ''}" data-act="closeDrawer" aria-label="Close panel" tabindex="-1"></button>
+      ${renderRail()}
+      ${S.view === 'queue' ? renderQueue() : renderPatient()}
+      ${renderTrack()}
+    </div>`;
+  mountTree();
+}
+
+/* ---------- Events ---------- */
+
+const ACT = {
+  day: (v) => { const n = +v; S.day = S.day === n ? null : n; },
+  clearDay: () => { S.day = null; },
+  filter: (v) => { S.filter = v; },
+  // The count cards narrow the patient list, opening it if it is folded away or a drawer.
+  card: (v) => {
+    const on = v === 'declined' ? S.filter.startsWith('declined') : S.filter === v;
+    S.filter = on ? 'all' : v;
+    S.railCollapsed = false;
+    if (matchMedia('(max-width: 1023px)').matches) S.drawer = 'rail';
+  },
+  open: (v) => {
+    if (S.current !== v) { S.tab = 'decision'; S.copied = null; S.reroute = null; }
+    // Opening a profile from the day shows only the awaiting column; the list is one click away.
+    if (S.view === 'queue') Object.assign(S, { railCollapsed: true, trackCollapsed: false });
+    S.current = v; S.view = 'patient'; S.searchMsg = ''; S.drawer = null;
+  },
+  toQueue: () => { S.view = 'queue'; S.railCollapsed = false; S.trackCollapsed = true; S.searchMsg = ''; S.drawer = null; },
+  drawer: (v) => { S.drawer = S.drawer === v ? null : v; },
+  closeDrawer: () => { S.drawer = null; },
+  // Where the column is a drawer, its hide button closes the drawer instead.
+  collapse: (v) => {
+    const drawer = matchMedia(v === 'rail' ? '(max-width: 1023px)' : '(max-width: 767px)').matches;
+    if (drawer) S.drawer = null;
+    else S[v + 'Collapsed'] = true;
+  },
+  expand: (v) => { S[v + 'Collapsed'] = false; },
+  tab: (v) => { S.tab = v; },
+  ask: (v) => { ask(v); },
+  tick: (v) => { S.done[v] = !S.done[v]; },
+  changeStart: () => {
+    S.reroute = { target: S.change ? S.change.target : null, why: '', addNode: S.change ? S.change.addNode : true };
+    S.focusWhy = true;
+  },
+  pickTarget: (v) => { if (S.reroute && v !== TREE_END) S.reroute.target = v; },
+  changeCancel: () => { S.reroute = null; },
+  // Saving records the disagreement twice: on the decision path, and as a note on the patient.
+  changeSave: () => {
+    const r = S.reroute;
+    const why = r.why.trim();
+    if (!r.target || !why) return;
+    const at = divergeAt(r.target);
+    S.change = { target: r.target, why, addNode: r.addNode, at };
+    S.reroute = null;
+    logNote('Decision changed', `Changed the decision from "${OUTCOME[TREE_END]}" to "${OUTCOME[r.target]}", rerouting at ${stepLabel(at)} of the isolated lymphopenia tree (external, rev. 4).\nReason: ${why}`);
+    logEvent('Decision changed by Melissa', `From "${OUTCOME[TREE_END]}" to "${OUTCOME[r.target]}", rerouting at ${stepLabel(at)}. Reason: ${why} Recorded on the decision path and in the notes.`, '#2F5FA8');
+    S.treeFocus = { id: r.addNode ? 'note' : at, key: Date.now() };
+  },
+  changeRevert: () => {
+    const was = S.change;
+    S.change = null;
+    logNote('Decision restored', `Went back to the tree's decision, "${OUTCOME[TREE_END]}". Set aside: "${OUTCOME[was.target]}".`);
+    logEvent('Back to the tree\'s decision', `Melissa restored "${OUTCOME[TREE_END]}" and set aside "${OUTCOME[was.target]}". Noted in the patient's notes.`, '#8C8980');
+    S.treeFocus = { id: 'g2', key: Date.now() };
+  },
+  noteToLog: (v) => {
+    const m = S.chat[S.current][+v];
+    m.frozen = draftNote();
+    S.added[S.current] = [{ date: 'OCT 27', who: 'Melissa', text: m.frozen, tag: 'Decision note', fresh: true }].concat(S.added[S.current] || []);
+  },
+  copy: (v) => {
+    const m = S.chat[S.current][+v];
+    const text = m.frozen || draftNote();
+    const keep = () => [...document.querySelectorAll('.centre-scroll')].map((c) => c.scrollTop);
+    const done = () => {
+      const top = keep(); S.copied = +v; render();
+      document.querySelectorAll('.centre-scroll').forEach((c, i) => { c.scrollTop = top[i]; });
+      setTimeout(() => { const t = keep(); S.copied = null; render(); document.querySelectorAll('.centre-scroll').forEach((c, i) => { c.scrollTop = t[i]; }); }, 1800);
+    };
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done);
+    else done();
+  },
+  toPip: () => { S.view = 'pip'; S.pipCollapsed = false; S.drawer = null; },
+  pipCollapse: () => { S.pipCollapsed = true; },
+  pipExpand: () => { S.pipCollapsed = false; },
+  toFull: () => { S.view = 'patient'; S.trackCollapsed = false; }
+};
+
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  const fn = ACT[el.dataset.act];
+  if (!fn) return;
+  const scrollers = [...document.querySelectorAll('.rail-scroll, .centre-scroll, .aw-list, .log-list')].map((s) => s.scrollTop);
+  fn(el.dataset.v);
+  if (el.dataset.act === 'copy') return;
+  render();
+  // Keep scroll positions when the same view redraws, so ticking does not jump the list.
+  if (!['open', 'toQueue', 'tab', 'toFull', 'mode'].includes(el.dataset.act)) {
+    document.querySelectorAll('.rail-scroll, .centre-scroll, .aw-list, .log-list').forEach((s, i) => { if (scrollers[i] != null) s.scrollTop = scrollers[i]; });
+  }
+  scrollToChat();
+});
+
+// Redraw from outside a click (the tree canvas), keeping every pane where it was scrolled.
+function redraw() {
+  const panes = '.rail-scroll, .centre-scroll, .aw-list, .log-list';
+  const keep = [...document.querySelectorAll(panes)].map((el) => el.scrollTop);
+  render();
+  document.querySelectorAll(panes).forEach((el, i) => { if (keep[i] != null) el.scrollTop = keep[i]; });
+}
+
+function scrollToChat() {
+  if (S.focusWhy) {
+    S.focusWhy = false;
+    const why = document.getElementById('changeWhy');
+    if (why) { why.focus({ preventScroll: true }); why.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+  }
+  if (!S.scrollChat) return;
+  S.scrollChat = false;
+  const c = document.querySelector('.centre-scroll');
+  if (c) c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' });
+}
+
+// The rationale updates the tree preview without redrawing the page, so typing keeps focus.
+document.addEventListener('input', (e) => {
+  if (e.target.id !== 'changeWhy' || !S.reroute) return;
+  S.reroute.why = e.target.value;
+  document.getElementById('changeSave').disabled = !(S.reroute.target && S.reroute.why.trim());
+  mountTree();
+});
+
+document.addEventListener('change', (e) => {
+  if (e.target.id === 'changeNode' && S.reroute) {
+    S.reroute.addNode = e.target.checked;
+    mountTree();
+    return;
+  }
+});
+
+document.addEventListener('submit', (e) => {
+  if (e.target.dataset.form !== 'search') return;
+  e.preventDefault();
+  const q = document.getElementById('search').value.trim();
+  if (!q) return;
+  const digits = q.replace(/\D/g, '');
+  const ql = q.toLowerCase();
+  const hit = PEOPLE.find((p) => (digits.length >= 3 && p.mrn.replace(/\D/g, '').includes(digits)) || (ql.length >= 3 && surname(p).toLowerCase().startsWith(ql)));
+  if (hit) {
+    ACT.open(hit.mrn);
+  } else if (S.view === 'patient') {
+    S.searchMsg = '';
+    ask(q);
+  } else {
+    S.searchMsg = digits.length >= 3
+      ? `No open referral matches “${q}”. Check the MRN — closed referrals live in the master list.`
+      : `No patient matches “${q}”. Open a patient to ask about their referral, or search by MRN or surname.`;
+  }
+  render();
+  scrollToChat();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && S.drawer) { S.drawer = null; render(); return; }
+  if (e.key === 'Escape' && S.reroute) { S.reroute = null; redraw(); return; }
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    const s = document.getElementById('search');
+    if (s) { e.preventDefault(); s.focus(); }
+  }
+});
+
+render();
+</script>
+</body>
+</html>
