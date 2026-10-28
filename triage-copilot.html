@@ -103,7 +103,15 @@ button { font-family: inherit; color: inherit; }
 .cal-month:hover, .cal-month[aria-expanded="true"] { background: var(--sunk); }
 .cal-month svg { color: var(--faint); transition: transform 0.15s; }
 .cal-month[aria-expanded="true"] svg { transform: rotate(180deg); }
-.cal-cap { padding: 0 2px 8px; font-size: 11px; color: var(--faint); }
+.cal-cap { display: flex; align-items: center; gap: 8px; padding: 0 2px 8px; font-size: 11px; color: var(--faint); }
+.cal-mode { flex-shrink: 0; min-height: 24px; padding: 0 9px; border: 1px solid #E2DFD8; border-radius: 12px; background: var(--surface); font-size: 11px; font-weight: 600; color: var(--muted); cursor: pointer; }
+.cal-mode[aria-pressed="true"] { background: var(--blue-bg); border-color: var(--primary); color: var(--primary); }
+/* Date range: typed or picked on the grid, across months */
+.range-in { display: flex; align-items: center; gap: 6px; padding: 0 2px 9px; font-size: 11px; color: var(--faint); }
+.range-in input { flex: 1 1 0; min-width: 0; height: 28px; padding: 0 6px; border: 1px solid var(--border-strong); border-radius: 7px; background: var(--surface); font-family: var(--mono); font-size: 11px; color: var(--ink); }
+.range-in input:focus { outline: none; border-color: var(--primary); }
+.cal .cell.inrange { background: var(--blue-bg); }
+.cal .cell.inrange .n { color: var(--primary); font-weight: 600; }
 .rail-top .icon-btn { width: 28px; height: 28px; border-radius: 7px; }
 .rail-top .icon-btn:not(:disabled):hover { background: var(--sunk); color: var(--ink); }
 /* Month and year picker: replaces the grid until a month is chosen */
@@ -754,6 +762,8 @@ const WORKED = '40-118-772';
 const S = {
   view: 'queue',          // queue | patient | pip
   day: null,             // 'y-m-d' picked in the calendar
+  rangeMode: false,      // the calendar picks a start and end day instead of one day
+  range: { from: null, to: null }, // 'y-m-d' each; 'to' is null until the end day is picked
   cal: { y: 2026, m: 10 }, // month shown in the calendar
   calPicker: null,       // year being browsed in the month picker, when open
   filter: 'all',
@@ -798,9 +808,28 @@ const matchesFilter = (p) => {
   return p.status === f;
 };
 const dayKey = (y, m, d) => `${y}-${m}-${d}`;
-const onDay = (p) => S.day === null || S.day === dayKey(2026, p.rm, p.rd);
+const keyNum = (k) => { const [y, m, d] = k.split('-').map(Number); return ymd(y, m, d); };
+const toIso = (k) => { const [y, m, d] = k.split('-'); return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`; };
+const fromIso = (v) => (v ? v.split('-').map(Number).join('-') : null);
+// A picked day, or a range once both ends are set (a start alone matches just that day).
+const onDay = (p) => {
+  const k = keyNum(dayKey(2026, p.rm, p.rd));
+  if (S.rangeMode && S.range.from) return k >= keyNum(S.range.from) && k <= keyNum(S.range.to || S.range.from);
+  return S.day === null || k === keyNum(S.day);
+};
+const dateFiltered = () => (S.rangeMode ? !!S.range.from : S.day !== null);
 const ymd = (y, m, d) => y * 10000 + m * 100 + d;
 const isFuture = (y, m, d) => ymd(y, m, d) > ymd(TODAY.y, TODAY.m, TODAY.d);
+const shortLabel = (k) => { const [y, m, d] = k.split('-').map(Number); return MONTHS[m - 1] + ' ' + d + (y === TODAY.y ? '' : ', ' + y); };
+// Referrals received over a range, summed day by day.
+function receivedBetween(a, b) {
+  let total = 0;
+  const [y, m, d] = a.split('-').map(Number);
+  for (let t = new Date(y, m - 1, d); ymd(t.getFullYear(), t.getMonth() + 1, t.getDate()) <= keyNum(b); t.setDate(t.getDate() + 1)) {
+    total += receivedOn(t.getFullYear(), t.getMonth() + 1, t.getDate()) || 0;
+  }
+  return total;
+}
 const dayLabel = (k) => { const [y, m, d] = k.split('-').map(Number); return MONTH_NAMES[m - 1] + ' ' + d + (y === TODAY.y ? '' : ', ' + y); };
 // Referrals received each day. October 2026 is the sample month; other months get steady sample volumes.
 function receivedOn(y, m, d) {
@@ -823,9 +852,13 @@ function renderRail() {
     const n = receivedOn(y, m, d);
     const k = dayKey(y, m, d);
     const future = n === null;
-    const cls = ['cell', k === dayKey(TODAY.y, TODAY.m, TODAY.d) && 'today', S.day === k && 'sel', future && 'future'].filter(Boolean).join(' ');
+    const r = S.range;
+    const end = r.from && (k === r.from || k === r.to);
+    const inside = r.from && r.to && keyNum(k) > keyNum(r.from) && keyNum(k) < keyNum(r.to);
+    const sel = S.rangeMode ? end : S.day === k;
+    const cls = ['cell', k === dayKey(TODAY.y, TODAY.m, TODAY.d) && 'today', sel && 'sel', S.rangeMode && inside && 'inrange', future && 'future'].filter(Boolean).join(' ');
     cells.push(`<button type="button" class="${cls}" data-act="day" data-v="${k}" ${future ? 'disabled' : ''}
-      aria-label="${MONTH_NAMES[m - 1]} ${d}, ${future ? 'not yet' : n + ' received'}${S.day === k ? ', selected' : ''}">
+      aria-label="${MONTH_NAMES[m - 1]} ${d}, ${future ? 'not yet' : n + ' received'}${sel ? ', selected' : (S.rangeMode && inside ? ', in range' : '')}">
       <span class="n">${d}</span><span class="c">${future ? '' : (n || '·')}</span></button>`);
   }
   const atStart = y === FIRST_YEAR && m === 1;
@@ -864,8 +897,22 @@ function renderRail() {
     </div>`;
 
   const rows = PEOPLE.filter((p) => onDay(p) && matchesFilter(p));
-  const title = (S.day === null ? '' : dayLabel(S.day) + ' · ') + (S.filter === 'all' ? 'All referrals' : FILTERS[S.filter].replace('Declined · ', ''));
-  const count = S.day === null ? String(rows.length) : `${rows.length} of ${receivedOn(...S.day.split('-').map(Number)) || 0} received`;
+  const r = S.range;
+  const span = S.rangeMode
+    ? (r.from ? (r.to && r.to !== r.from ? shortLabel(r.from) + ' – ' + shortLabel(r.to) : shortLabel(r.from) + (r.to ? '' : ' – pick an end day')) : '')
+    : (S.day === null ? '' : dayLabel(S.day));
+  const title = (span ? span + ' · ' : '') + (S.filter === 'all' ? 'All referrals' : FILTERS[S.filter].replace('Declined · ', ''));
+  const received = !dateFiltered() ? null
+    : S.rangeMode ? receivedBetween(r.from, r.to || r.from)
+      : receivedOn(...S.day.split('-').map(Number)) || 0;
+  const count = received === null ? String(rows.length) : `${rows.length} of ${received} received`;
+  const maxIso = toIso(dayKey(TODAY.y, TODAY.m, TODAY.d));
+  const rangeInputs = S.rangeMode ? `
+    <div class="range-in">
+      <input type="date" id="rangeFrom" aria-label="From" value="${r.from ? toIso(r.from) : ''}" min="${FIRST_YEAR}-01-01" max="${maxIso}">
+      <span>to</span>
+      <input type="date" id="rangeTo" aria-label="To" value="${r.to ? toIso(r.to) : ''}" min="${r.from ? toIso(r.from) : FIRST_YEAR + '-01-01'}" max="${maxIso}">
+    </div>` : '';
   const list = rows.length
     ? rows.map((p) => {
       const here = S.view === 'patient' && S.current === p.mrn;
@@ -891,9 +938,9 @@ function renderRail() {
         <button type="button" class="col-toggle" data-act="collapse" data-v="rail" aria-label="Hide the patient list" title="Hide the patient list">${ICON.panelL}</button>
       </div>
       <div class="rail-fixed">
-        <div style="padding: 0 12px 10px">${picker || `<div class="cal-cap">Referrals by date received</div><div class="cal">${cells.join('')}</div>`}</div>
+        <div style="padding: 0 12px 10px">${picker || `<div class="cal-cap"><span class="grow">Referrals by date received</span><button type="button" class="cal-mode" data-act="rangeMode" aria-pressed="${S.rangeMode}">Date range</button></div>${rangeInputs}<div class="cal">${cells.join('')}</div>`}</div>
         ${filters}
-        <div class="rail-title"><span class="kicker">${title}</span><span class="grow"></span><span class="count">${count}</span>${S.day !== null ? '<button type="button" class="btn-ghost" data-act="clearDay">Show all</button>' : ''}</div>
+        <div class="rail-title"><span class="kicker">${title}</span><span class="grow"></span><span class="count">${count}</span>${dateFiltered() ? '<button type="button" class="btn-ghost" data-act="clearDay">Show all</button>' : ''}</div>
       </div>
       <div class="rail-scroll"><div style="padding: 0 8px 12px">${list}</div></div>
       ${S.view === 'patient' ? `<div class="rail-foot"><button type="button" class="btn-back" data-act="toQueue">${ICON.left} Back to the day</button></div>` : ''}
@@ -1815,7 +1862,18 @@ function render() {
 /* ---------- Events ---------- */
 
 const ACT = {
-  day: (v) => { S.day = S.day === v ? null : v; },
+  day: (v) => {
+    if (!S.rangeMode) { S.day = S.day === v ? null : v; return; }
+    // First click starts a range, second click ends it (in either order); a third starts again.
+    const r = S.range;
+    if (!r.from || r.to) { S.range = { from: v, to: null }; return; }
+    S.range = keyNum(v) < keyNum(r.from) ? { from: v, to: r.from } : { from: r.from, to: v };
+  },
+  rangeMode: () => {
+    S.rangeMode = !S.rangeMode;
+    S.range = S.rangeMode && S.day ? { from: S.day, to: null } : { from: null, to: null };
+    S.day = null;
+  },
   // Month arrows step one month, from January of the first year up to this month.
   calStep: (v) => {
     const t = S.cal.y * 12 + (S.cal.m - 1) + +v;
@@ -1829,7 +1887,7 @@ const ACT = {
   calYear: (v) => { S.calPicker = Math.min(TODAY.y, Math.max(FIRST_YEAR, S.calPicker + +v)); },
   calMonth: (v) => { S.cal = { y: S.calPicker, m: +v }; S.calPicker = null; },
   calToday: () => { S.cal = { y: TODAY.y, m: TODAY.m }; S.calPicker = null; },
-  clearDay: () => { S.day = null; },
+  clearDay: () => { S.day = null; S.range = { from: null, to: null }; },
   filter: (v) => { S.filter = v; },
   open: (v) => {
     if (S.current !== v) { S.tab = 'decision'; S.copied = null; S.reroute = null; }
@@ -1974,6 +2032,17 @@ document.addEventListener('input', (e) => {
 });
 
 document.addEventListener('change', (e) => {
+  if (e.target.id === 'rangeFrom' || e.target.id === 'rangeTo') {
+    const v = fromIso(e.target.value);
+    const r = Object.assign({}, S.range, { [e.target.id === 'rangeFrom' ? 'from' : 'to']: v });
+    if (!r.from && r.to) { r.from = r.to; r.to = null; }
+    if (r.from && r.to && keyNum(r.to) < keyNum(r.from)) S.range = { from: r.to, to: r.from };
+    else S.range = r;
+    // Show the month the range starts in.
+    if (S.range.from) { const [y, m] = S.range.from.split('-').map(Number); S.cal = { y, m }; }
+    redraw();
+    return;
+  }
   if (e.target.id === 'changeNode' && S.reroute) {
     S.reroute.addNode = e.target.checked;
     mountTree();
