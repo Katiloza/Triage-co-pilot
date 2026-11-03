@@ -600,10 +600,16 @@ textarea.field:focus { border-color: var(--primary); }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/reactflow@11.11.4/dist/umd/index.js"></script>
 <script>
-const TODAY = { y: 2026, m: 10, d: 27 };
+// Today is the viewer's real date; the sample referrals stay where they are on the calendar.
+const NOW = new Date();
+const TODAY = { y: NOW.getFullYear(), m: NOW.getMonth() + 1, d: NOW.getDate() };
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const FIRST_YEAR = 2024; // how far back the calendar goes
+const TODAY_SHORT = MONTHS[TODAY.m - 1] + ' ' + TODAY.d;          // e.g. Nov 3
+const TODAY_LONG = TODAY_SHORT + ', ' + TODAY.y;                    // e.g. Nov 3, 2026
+const TODAY_HEAD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][NOW.getDay()] + ' ' + TODAY_LONG;
+const daysSince = (y, m, d) => Math.round((Date.UTC(TODAY.y, TODAY.m - 1, TODAY.d) - Date.UTC(y, m - 1, d)) / 864e5);
 const key = (m, d) => m * 100 + d;
 
 const ICON = {
@@ -635,22 +641,23 @@ const ICON = {
 const COUNTS = { 1: 9, 2: 7, 5: 14, 6: 11, 7: 10, 8: 8, 9: 12, 12: 15, 13: 9, 14: 11, 15: 10, 16: 7, 19: 14, 20: 13, 21: 9, 22: 12, 23: 8, 26: 15, 27: 13 };
 
 const PEOPLE = [
-  { name: 'Alvarez, Rosa M.', mrn: '40-118-772', rm: 9, rd: 18, status: 'awaiting', waiting: 'Repeat CBC with differential', days: 39, ref: 'REF-2026-4471', source: 'External', meta: 'F · 54 y · DOB Mar 12, 1972' },
-  { name: 'Okonkwo, Daniel', mrn: '40-221-905', rm: 10, rd: 27, status: 'new', waiting: '', days: 0, ref: 'REF-2026-5102', source: 'Internal' },
-  { name: 'Bhatt, Priya', mrn: '40-198-443', rm: 10, rd: 27, status: 'new', waiting: '', days: 0, ref: 'REF-2026-5104', source: 'External' },
-  { name: 'Ferreira, Luis A.', mrn: '40-205-118', rm: 10, rd: 12, status: 'awaiting', waiting: 'Outside records from Mesa Clinic', days: 15, ref: 'REF-2026-4839', source: 'External' },
-  { name: 'Nakamura, Hana', mrn: '40-176-330', rm: 10, rd: 27, status: 'new', waiting: '', days: 0, ref: 'REF-2026-5107', source: 'Internal' },
-  { name: 'Whitfield-Cruz, Ana', mrn: '40-212-667', rm: 10, rd: 6, status: 'awaiting', waiting: 'Provider review of results', days: 21, ref: 'REF-2026-4688', source: 'Internal' },
-  { name: 'Delgado, Marisol', mrn: '40-189-024', rm: 10, rd: 27, status: 'declined', decline: 'malig', waiting: '', days: 0, ref: 'REF-2026-5111', source: 'External' },
-  { name: 'Haddad, Omar', mrn: '40-230-551', rm: 10, rd: 19, status: 'accepted', waiting: '', days: 8, ref: 'REF-2026-4950', source: 'Internal' },
-  { name: 'Pierce, Gwen', mrn: '40-144-806', rm: 10, rd: 5, status: 'declined', decline: 'invest', waiting: '', days: 22, ref: 'REF-2026-4652', source: 'External' },
-  { name: 'Sorensen, Erik', mrn: '40-227-913', rm: 10, rd: 27, status: 'new', waiting: '', days: 0, ref: 'REF-2026-5115', source: 'Internal' },
-  { name: 'Park, Jin-Ho', mrn: '40-162-740', rm: 10, rd: 13, status: 'awaiting', waiting: 'Consult type change to eConsult', days: 14, ref: 'REF-2026-4851', source: 'Internal' },
-  { name: 'Oyelaran, Tope', mrn: '40-233-089', rm: 10, rd: 15, status: 'awaiting', waiting: 'Ferritin and iron studies', days: 12, ref: 'REF-2026-4877', source: 'External' },
-  { name: 'Lindqvist, Mia', mrn: '40-219-374', rm: 10, rd: 18, status: 'awaiting', waiting: 'Provider review of results', days: 9, ref: 'REF-2026-4930', source: 'Internal' },
-  { name: 'Abadi, Noor', mrn: '40-187-612', rm: 10, rd: 20, status: 'accepted', waiting: '', days: 7, ref: 'REF-2026-4968', source: 'External' }
+  { name: 'Alvarez, Rosa M.', mrn: '40-118-772', rm: 10, rd: 27, status: 'awaiting', waiting: 'Repeat CBC with differential', ref: 'REF-2026-4471', source: 'External', meta: 'F · 54 y · DOB Mar 12, 1972' },
+  { name: 'Okonkwo, Daniel', mrn: '40-221-905', rm: 10, rd: 27, status: 'new', waiting: '', ref: 'REF-2026-5102', source: 'Internal' },
+  { name: 'Bhatt, Priya', mrn: '40-198-443', rm: 10, rd: 27, status: 'new', waiting: '', ref: 'REF-2026-5104', source: 'External' },
+  { name: 'Ferreira, Luis A.', mrn: '40-205-118', rm: 10, rd: 12, status: 'awaiting', waiting: 'Outside records from Mesa Clinic', ref: 'REF-2026-4839', source: 'External' },
+  { name: 'Nakamura, Hana', mrn: '40-176-330', rm: 10, rd: 27, status: 'new', waiting: '', ref: 'REF-2026-5107', source: 'Internal' },
+  { name: 'Whitfield-Cruz, Ana', mrn: '40-212-667', rm: 10, rd: 6, status: 'awaiting', waiting: 'Provider review of results', ref: 'REF-2026-4688', source: 'Internal' },
+  { name: 'Delgado, Marisol', mrn: '40-189-024', rm: 10, rd: 27, status: 'declined', decline: 'malig', waiting: '', ref: 'REF-2026-5111', source: 'External' },
+  { name: 'Haddad, Omar', mrn: '40-230-551', rm: 10, rd: 19, status: 'accepted', waiting: '', ref: 'REF-2026-4950', source: 'Internal' },
+  { name: 'Pierce, Gwen', mrn: '40-144-806', rm: 10, rd: 5, status: 'declined', decline: 'invest', waiting: '', ref: 'REF-2026-4652', source: 'External' },
+  { name: 'Sorensen, Erik', mrn: '40-227-913', rm: 10, rd: 27, status: 'new', waiting: '', ref: 'REF-2026-5115', source: 'Internal' },
+  { name: 'Park, Jin-Ho', mrn: '40-162-740', rm: 10, rd: 13, status: 'awaiting', waiting: 'Consult type change to eConsult', ref: 'REF-2026-4851', source: 'Internal' },
+  { name: 'Oyelaran, Tope', mrn: '40-233-089', rm: 10, rd: 15, status: 'awaiting', waiting: 'Ferritin and iron studies', ref: 'REF-2026-4877', source: 'External' },
+  { name: 'Lindqvist, Mia', mrn: '40-219-374', rm: 10, rd: 18, status: 'awaiting', waiting: 'Provider review of results', ref: 'REF-2026-4930', source: 'Internal' },
+  { name: 'Abadi, Noor', mrn: '40-187-612', rm: 10, rd: 20, status: 'accepted', waiting: '', ref: 'REF-2026-4968', source: 'External' }
 ];
-PEOPLE.forEach((p) => { p.received = MONTHS[p.rm - 1] + ' ' + p.rd; });
+// Days in triage are counted from the received date to today.
+PEOPLE.forEach((p) => { p.received = MONTHS[p.rm - 1] + ' ' + p.rd; p.days = daysSince(2026, p.rm, p.rd); });
 const byMrn = (mrn) => PEOPLE.find((p) => p.mrn === mrn);
 
 const STATUS = {
@@ -676,37 +683,37 @@ const FILTERS = {
 
 // One flat list. Every view reads the same items, so a tick lands everywhere.
 const AWAITING = [
-  { id: 'cbc', item: 'Repeat CBC with differential', mrn: '40-118-772', asked: 'Oct 2', dm: 10, dd: 29 },
+  { id: 'cbc', item: 'Repeat CBC with differential', mrn: '40-118-772', asked: 'Oct 28', dm: 11, dd: 6 },
   { id: 'mesa', item: 'Outside records from Mesa Clinic', mrn: '40-205-118', asked: 'Oct 13', dm: 10, dd: 24 },
-  { id: 'fax', item: 'Return fax for Northgate', mrn: '40-118-772', asked: 'Oct 2', dm: 10, dd: 28 },
+  { id: 'fax', item: 'Return fax for Northgate', mrn: '40-118-772', asked: 'Oct 28', dm: 11, dd: 4 },
   { id: 'review667', item: 'Provider review of results', mrn: '40-212-667', asked: 'Oct 8', dm: 10, dd: 28 },
   { id: 'econsult', item: 'Consult type change to eConsult', mrn: '40-162-740', asked: 'Oct 14', dm: 10, dd: 30 },
   { id: 'review374', item: 'Provider review of results', mrn: '40-219-374', asked: 'Oct 20', dm: 11, dd: 2 },
   { id: 'iron', item: 'Ferritin and iron studies', mrn: '40-233-089', asked: 'Oct 16', dm: 11, dd: 3 },
   { id: 'previsit', item: 'Pre-visit labs: CMP and LDH', mrn: '40-230-551', asked: 'Oct 21', dm: 11, dd: 3 },
-  { id: 'subset', item: 'Lymphocyte subset panel', mrn: '40-118-772', asked: '—', dm: 11, dd: 12 }
+  { id: 'subset', item: 'Lymphocyte subset panel', mrn: '40-118-772', asked: '—', dm: 11, dd: 20 }
 ].sort((a, b) => key(a.dm, a.dd) - key(b.dm, b.dd));
 
 const STEPS = [
   {
     n: 1, status: 'met', q: 'Is the finding isolated?',
     found: 'Yes. ALC 0.78 K/µL is low, and Hgb 13.2, Plt 239 and ANC 3.21 are all inside the reference range, so no other cell line is involved. That keeps the referral on this branch rather than the cytopenia path.',
-    field: 'Results · CBC collected Sep 16, 2026'
+    field: 'Results · CBC collected Oct 20, 2026'
   },
   {
     n: 2, status: 'missing', q: 'Is the lymphopenia persistent?',
-    found: 'Not established. The branch needs two confirmed result sets at least two weeks apart, both inside 12 weeks. Only Sep 16 is on file. A repeat was requested from the practice on Oct 2 and no order has come back against it — this is what holds the referral.',
+    found: 'Not established. The branch needs two confirmed result sets at least two weeks apart, both inside 12 weeks. Only Oct 20 is on file. A repeat was requested from the practice on Oct 28 and no order has come back against it — this is what holds the referral.',
     field: 'Results · one set found  ·  Orders · no matching order returned'
   },
   {
     n: 3, status: 'met', q: 'Is the newest result recent enough?',
-    found: 'It was. The Sep 16 draw was 29 days old when the decision was written on Oct 15, inside the 30-day limit. It passed 30 days on Oct 16, so the repeat is now needed on recency as well as persistence.',
-    field: 'Results · CBC collected Sep 16, 2026'
+    found: 'It is. The Oct 20 draw was 8 days old when the decision was written on Oct 28, inside the 30-day limit. It passes 30 days on Nov 19, so the repeat is needed by then on recency as well as persistence.',
+    field: 'Results · CBC collected Oct 20, 2026'
   },
   {
     n: 4, status: 'met', q: 'Has Allergy and Immunology seen the patient?',
-    found: 'Yes. Evaluation completed Oct 7 at Desert Allergy Associates, received Oct 9. No immunodeficiency identified and the lymphopenia persists, which clears the required-department step.',
-    field: 'Outside records · received Oct 9, 2026'
+    found: 'Yes. Evaluation completed Oct 22 at Desert Allergy Associates and included in the outside records that came with the referral on Oct 27. No immunodeficiency identified and the lymphopenia persists, which clears the required-department step.',
+    field: 'Outside records · received Oct 27, 2026'
   },
   {
     n: 5, status: 'gap', q: 'Does an exception apply?',
@@ -731,25 +738,24 @@ const RECORD = [
   { k: 'Reason for referral', v: 'Lymphopenia, unspecified · D72.810' },
   { k: 'Clinical question', v: 'Persistent low lymphocyte count over six months. Patient asymptomatic, no recurrent infections. Please evaluate and advise.' },
   { k: 'Orders on the referral', v: 'No order data returned — cannot confirm one was never placed', missing: true },
-  { k: 'Outside records', v: '9 pages received Sep 18 · Allergy and Immunology evaluation added Oct 9' },
+  { k: 'Outside records', v: '9 pages received Oct 27 · includes the Allergy and Immunology evaluation of Oct 22' },
   { k: 'Prior hematology contact', v: 'No record on file for this MRN in the last 3 years' }
 ];
 const RESULTS = [
-  { date: 'Sep 16, 2026', wbc: '4.4', alc: '0.78 L', hgb: '13.2', plt: '239', anc: '3.21', source: 'Outside records', low: true },
+  { date: 'Oct 20, 2026', wbc: '4.4', alc: '0.78 L', hgb: '13.2', plt: '239', anc: '3.21', source: 'Outside records', low: true },
   { date: 'Jun 3, 2026', wbc: '5.1', alc: '1.34', hgb: '13.0', plt: '248', anc: '3.52', source: 'Outside records', low: false }
 ];
 const HISTORY = [
-  { date: 'SEP 18, 2026', fill: '#FFFFFF', ring: '#C9C6BD', t: 'Referral received', b: 'Whitfield, MD · Northgate Primary Care · external, face-to-face requested.' },
-  { date: 'SEP 24, 2026', fill: '#C98A2B', ring: '#C98A2B', t: 'Set to awaiting', b: 'Two required steps unmet: no Allergy and Immunology evaluation on file, and only one confirmed result set. Charted by you.' },
-  { date: 'OCT 2, 2026', fill: '#2F5FA8', ring: '#2F5FA8', t: 'Message sent to the practice', b: 'Both requirements spelled out. Read receipt Oct 3.' },
-  { date: 'OCT 9, 2026', fill: '#0E7A52', ring: '#0E7A52', t: 'Allergy and Immunology evaluation received', b: 'Completed Oct 7 at Desert Allergy Associates. One of the two requirements cleared.' },
-  { date: 'OCT 15, 2026', fill: '#8A3324', ring: '#8A3324', t: 'Still waiting on the repeat CBC', b: 'No order has come back. The window closes Dec 9, 2026.' }
+  { date: 'OCT 27, 2026', fill: '#FFFFFF', ring: '#C9C6BD', t: 'Referral received', b: 'Whitfield, MD · Northgate Primary Care · external, face-to-face requested. Outside records include the Oct 20 CBC and the Oct 22 Allergy and Immunology evaluation.' },
+  { date: 'OCT 28, 2026', fill: '#C98A2B', ring: '#C98A2B', t: 'Set to awaiting', b: 'One required step unmet: only one confirmed result set. The Allergy and Immunology evaluation was already in the outside records. Charted by K. Lozano.' },
+  { date: 'OCT 28, 2026', fill: '#2F5FA8', ring: '#2F5FA8', t: 'Message sent to the practice', b: 'Repeat CBC requested. Read receipt Oct 29.' },
+  { date: 'NOV 2, 2026', fill: '#8A3324', ring: '#8A3324', t: 'Still waiting on the repeat CBC', b: 'No order has come back. The window closes Jan 12, 2027.' }
 ];
 const NOTES = [
-  { date: 'OCT 15', who: 'K. Lozano', text: 'Called Northgate. Front desk says Dr. Whitfield is back Monday and they will ask him to place the repeat CBC order. Nothing in writing yet.' },
-  { date: 'OCT 9', who: 'K. Lozano', text: 'A and I evaluation came through in the outside records packet. Filed against the referral. One requirement down.' },
-  { date: 'OCT 2', who: 'K. Lozano', text: 'Sent the requirements message through the chart. Both items spelled out. Read receipt the next day.' },
-  { date: 'SEP 24', who: 'K. Lozano', text: 'Set to awaiting — two steps unmet. Patient is asymptomatic so no rush flag, but watch the 12-week window.' }
+  { date: 'NOV 2', who: 'K. Lozano', text: 'Called Northgate. Front desk says Dr. Whitfield is back Wednesday and they will ask him to place the repeat CBC order. Nothing in writing yet.' },
+  { date: 'OCT 28', who: 'K. Lozano', text: 'Sent the requirements message through the chart. Repeat CBC spelled out. Read receipt the next day.' },
+  { date: 'OCT 28', who: 'K. Lozano', text: 'A and I evaluation was already in the outside records packet that came with the referral. That requirement is met.' },
+  { date: 'OCT 28', who: 'K. Lozano', text: 'Set to awaiting — persistence not confirmed. Patient is asymptomatic so no rush flag, but watch the 12-week window.' }
 ];
 const WORKED = '40-118-772';
 
@@ -760,7 +766,7 @@ const S = {
   day: null,             // 'y-m-d' picked in the calendar
   rangeMode: false,      // the calendar picks a start and end day instead of one day
   range: { from: null, to: null }, // 'y-m-d' each; 'to' is null until the end day is picked
-  cal: { y: 2026, m: 10 }, // month shown in the calendar
+  cal: { y: TODAY.y, m: TODAY.m }, // month shown in the calendar; opens on this month
   calPicker: null,       // year being browsed in the month picker, when open
   filter: 'all',
   current: WORKED,        // the patient open now, or last opened
@@ -790,9 +796,8 @@ const surname = (p) => p.name.split(',')[0];
 const initials = (p) => p.name.split(',').map((s) => s.trim()[0]).reverse().join('');
 const dueLabel = (a) => MONTHS[a.dm - 1] + ' ' + a.dd;
 const dueTone = (a) => {
-  const k = key(a.dm, a.dd);
-  const t = key(TODAY.m, TODAY.d);
-  return k < t ? 'late' : k <= t + 1 ? 'soon' : '';
+  const left = -daysSince(2026, a.dm, a.dd);
+  return left < 0 ? 'late' : left <= 1 ? 'soon' : '';
 };
 const openItems = (list) => list.filter((a) => !S.done[a.id]).length;
 const itemsFor = (mrn) => AWAITING.filter((a) => a.mrn === mrn);
@@ -954,7 +959,7 @@ function renderQueue() {
     <section class="welcome" aria-label="Welcome">
       <div class="logo">${ICON.logo.replace(/width="14" height="14"/, 'width="22" height="22"')}</div>
       <h2>${greeting}, Melissa</h2>
-      <p>${newToday} new referrals came in today and ${awaiting} are awaiting something. Pick a patient from the list to start, or search by MRN below.</p>
+      <p>${newToday} new ${newToday === 1 ? 'referral is' : 'referrals are'} waiting for a first look and ${awaiting} are awaiting something. Pick a patient from the list to start, or search by MRN below.</p>
     </section>`;
 
   return `
@@ -984,7 +989,7 @@ function renderSearch(placeholder, suggestions) {
 function renderPatient() {
   const p = byMrn(S.current);
   const worked = p.mrn === WORKED;
-  const tabs = [['decision', 'Decision Algorithm'], ['referral', 'Referral and results'], ['history', 'History']]
+  const tabs = [['decision', 'AI Decision'], ['referral', 'Referral and results'], ['history', 'History']]
     .map(([id, label]) => `<button type="button" data-act="tab" data-v="${id}" aria-pressed="${S.tab === id}">${label}</button>`).join('');
 
   let content;
@@ -1186,7 +1191,7 @@ function messageBody(p, m) {
   const asks = itemsFor(p.mrn).filter((a) => !S.done[a.id] && m.include[a.id]);
   const lines = asks.map((a) => `• ${a.item} — ${a.asked !== '—' ? 'first requested ' + a.asked + ', ' : ''}needed by ${dueLabel(a)}`).join('\n');
   const need = asks.length
-    ? `Thank you for this referral to hematology. To finish triaging it, we still need:\n${lines}\n\nOnce these are in, we will re-triage it — no new referral order is needed.${p.mrn === WORKED ? ' The window for this referral closes Dec 9, 2026.' : ''}`
+    ? `Thank you for this referral to hematology. To finish triaging it, we still need:\n${lines}\n\nOnce these are in, we will re-triage it — no new referral order is needed.${p.mrn === WORKED ? ' The window for this referral closes Jan 12, 2027.' : ''}`
     : 'Thank you for this referral to hematology. We have what we need for now and will be in touch once triage is complete.';
   return `Dear ${prov ? prov.salutation : 'colleague'},\n\nRe: ${p.name} · MRN ${p.mrn} · referral ${p.ref}, received ${p.received}, 2026\n\n${need}\n\nThank you,\nMelissa\nHematology referral triage`;
 }
@@ -1210,7 +1215,7 @@ function renderMessage(p, m, i) {
     </div>
     <div class="note-foot">
       <span class="why">${m.sent
-        ? 'Logged as sent by Melissa, Oct 27 — in the notes and the history.'
+        ? `Logged as sent by Melissa, ${TODAY_SHORT} — in the notes and the history.`
         : 'Nothing is sent from here. Copy it into the EHR message or a fax, then mark it sent so it is logged.' + (m.edited ? ' Ticking an item redrafts the text.' : '')}</span>
       <button type="button" class="btn secondary sm" data-act="copy" data-v="${i}">${S.copied === i ? '✓ Copied' : 'Copy message'}</button>
       ${m.sent ? '' : `<button type="button" class="btn primary sm" id="msgSent${i}" data-act="msgSent" data-v="${i}" ${m.to.trim() ? '' : 'disabled'}>Mark as sent</button>`}
@@ -1247,11 +1252,11 @@ const TAG_TONE = { 'Decision note': 't-gap', 'Decision changed': 't-new', 'Decis
 
 function logEvent(t, b, color) {
   const list = S.history[S.current] || (S.history[S.current] = []);
-  list.push({ date: 'OCT 27, 2026', fill: color, ring: color, t, b, fresh: true });
+  list.push({ date: TODAY_LONG.toUpperCase(), fill: color, ring: color, t, b, fresh: true });
 }
 
 function logNote(tag, text) {
-  S.added[S.current] = [{ date: 'OCT 27', who: 'Melissa', text, tag, fresh: true }].concat(S.added[S.current] || []);
+  S.added[S.current] = [{ date: TODAY_SHORT.toUpperCase(), who: 'Melissa', text, tag, fresh: true }].concat(S.added[S.current] || []);
 }
 
 function awaitingRow(a, scope) {
@@ -1268,12 +1273,12 @@ function awaitingRow(a, scope) {
 }
 
 function draftNote() {
-  const facts = 'Isolated lymphopenia confirmed — ALC 0.78 K/µL (Sep 16, 2026), with Hgb 13.2, Plt 239 and ANC 3.21 inside range.\n\nAllergy and Immunology evaluation received Oct 9, 2026, which clears the required-department step.';
+  const facts = 'Isolated lymphopenia confirmed — ALC 0.78 K/µL (Oct 20, 2026), with Hgb 13.2, Plt 239 and ANC 3.21 inside range.\n\nAllergy and Immunology evaluation (Oct 22, 2026) came with the referral, which clears the required-department step.';
   const c = S.change;
   if (c) {
     return `Triage decision: ${OUTCOME[c.target].toUpperCase()} — changed by the triager from the tree's decision.\n\nTree applied: isolated lymphopenia, external referral, rev. 4. The tree reached ${OUTCOME[TREE_END].toUpperCase()}, stopping at step 2 (persistence not established).\n\nRerouted at ${stepLabel(c.at)}. Reason: ${c.why}\n\n${facts}\n\nThe disagreement is recorded on the decision path and in the patient's notes.`;
   }
-  return `Triage decision: AWAITING — holding for the repeat CBC with differential.\n\nTree applied: isolated lymphopenia, external referral, rev. 4.\n\n${facts}\n\nOutstanding: a second confirmed result set inside the 12-week window. Requested Oct 2; no order has come back against it. Window closes Dec 9, 2026.\n\nStep 5 (exception check) is undefined for external referrals on this branch and was not inferred.\n\nRe-triage on receipt. No new referral order required.`;
+  return `Triage decision: AWAITING — holding for the repeat CBC with differential.\n\nTree applied: isolated lymphopenia, external referral, rev. 4.\n\n${facts}\n\nOutstanding: a second confirmed result set inside the 12-week window. Requested Oct 28; no order has come back against it. Window closes Jan 12, 2027.\n\nStep 5 (exception check) is undefined for external referrals on this branch and was not inferred.\n\nRe-triage on receipt. No new referral order required.`;
 }
 
 function renderTrack() {
@@ -1433,8 +1438,8 @@ function pickFromTree(id) {
 
 const GRAPH = [
   { id: 'root', parent: null, kind: 'root', kicker: 'Referral', title: 'Lymphopenia · external request',
-    reason: 'Matched on the reason for referral and the Sep 16 CBC — ALC low with the other cell lines in range. The referral came from outside, so the external criteria apply rather than the internal ones.',
-    source: 'Referral REF-2026-4471 · received Sep 18, 2026' },
+    reason: 'Matched on the reason for referral and the Oct 20 CBC — ALC low with the other cell lines in range. The referral came from outside, so the external criteria apply rather than the internal ones.',
+    source: 'Referral REF-2026-4471 · received Oct 27, 2026' },
   { id: 'g1', parent: 'root', kind: 'step', step: 0 },
   { id: 'g2', parent: 'g1', kind: 'step', step: 1 },
   { id: 'g3', parent: 'g2', kind: 'step', step: 2 },
@@ -1447,13 +1452,13 @@ const GRAPH = [
     reason: 'The cytopenia tree, used when more than one cell line is abnormal. Not taken here: Hgb 13.2, Plt 239 and ANC 3.21 are all in range, so the finding is isolated.',
     source: 'Tree · cytopenia branch, not entered' },
   { id: 'b2', parent: 'g2', branch: true, kind: 'end', end: 'stop', kicker: 'If no', title: 'Awaiting · hold for the repeat CBC',
-    reason: 'Where this referral stopped. Only one confirmed result set is on file, so the tree holds here rather than carrying on down the spine. The window closes Dec 9, 2026 — re-triage on receipt, no new referral order needed.',
-    source: 'Outcome · set Sep 24, 2026 · still current' },
+    reason: 'Where this referral stopped. Only one confirmed result set is on file, so the tree holds here rather than carrying on down the spine. The window closes Jan 12, 2027 — re-triage on receipt, no new referral order needed.',
+    source: 'Outcome · set Oct 28, 2026 · still current' },
   { id: 'b3', parent: 'g3', branch: true, kind: 'end', end: 'cold', kicker: 'If no', title: 'Awaiting · newest draw too old',
-    reason: 'Reached when the newest result is over 30 days old. Not reached on this referral, though the Sep 16 draw passed 30 days on Oct 16 — the repeat would now satisfy this step and the one above it.',
+    reason: 'Reached when the newest result is over 30 days old. Not reached on this referral: the Oct 20 draw stays inside the limit until Nov 19, and the repeat would satisfy this step and the one above it.',
     source: 'Outcome · not reached' },
   { id: 'b4', parent: 'g4', branch: true, kind: 'end', end: 'cold', kicker: 'If no', title: 'Decline · Allergy and Immunology first',
-    reason: 'Reached when the patient has not been seen by Allergy and Immunology. Not reached: the evaluation was completed Oct 7 and received Oct 9, which cleared that step.',
+    reason: 'Reached when the patient has not been seen by Allergy and Immunology. Not reached: the evaluation was completed Oct 22 and came with the referral, which cleared that step.',
     source: 'Outcome · not reached' }
 ];
 const NODE = Object.fromEntries(GRAPH.map((n) => [n.id, n]));
@@ -1463,9 +1468,9 @@ const READ_ORDER = ['root', 'g1', 'b1', 'g2', 'b2', 'g3', 'b3', 'g4', 'b4', 'g5'
 // labs, orders, clinical notes, outside reports, the referral itself or the tree definition.
 const LAB_COLS = ['Test', 'Result', 'Reference', 'Flag'];
 const SOURCES = {
-  root: [{ kind: 'Referral', title: 'REF-2026-4471 · received Sep 18, 2026', kv: RECORD.map((f) => [f.k, f.v]) }],
+  root: [{ kind: 'Referral', title: 'REF-2026-4471 · received Oct 27, 2026', kv: RECORD.map((f) => [f.k, f.v]) }],
   g1: [{
-    kind: 'Labs', title: 'CBC with differential · collected Sep 16, 2026', from: 'Outside records · Northgate Primary Care',
+    kind: 'Labs', title: 'CBC with differential · collected Oct 20, 2026', from: 'Outside records · Northgate Primary Care',
     cols: LAB_COLS,
     rows: [['WBC', '4.4 K/µL', '4.0–11.0', ''], ['Lymphocytes (ALC)', '0.78 K/µL', '1.00–4.80', 'Low'], ['Hemoglobin', '13.2 g/dL', '12.0–15.5', ''],
       ['Platelets', '239 K/µL', '150–400', ''], ['Neutrophils (ANC)', '3.21 K/µL', '1.80–7.70', '']]
@@ -1474,21 +1479,22 @@ const SOURCES = {
     {
       kind: 'Labs', title: 'Lymphocyte count over time', from: 'Outside records',
       cols: ['Collected', 'ALC', 'Reference', 'Flag'],
-      rows: [['Sep 16, 2026', '0.78 K/µL', '1.00–4.80', 'Low'], ['Jun 3, 2026', '1.34 K/µL', '1.00–4.80', '']],
+      rows: [['Oct 20, 2026', '0.78 K/µL', '1.00–4.80', 'Low'], ['Jun 3, 2026', '1.34 K/µL', '1.00–4.80', '']],
       foot: 'One low result on file. The branch needs two low results at least two weeks apart, both within 12 weeks.'
     },
     {
       kind: 'Orders', title: 'Orders against this referral',
-      lines: ['Repeat CBC with differential — asked of Northgate on Oct 2, 2026', 'No order has come back for it. This does not confirm that none was placed.']
+      lines: ['Repeat CBC with differential — asked of Northgate on Oct 28, 2026', 'No order has come back for it. This does not confirm that none was placed.']
     },
-    { kind: 'Clinical note', title: 'K. Lozano · Oct 15, 2026', quote: NOTES[0].text }
+    { kind: 'Clinical note', title: 'K. Lozano · Nov 2, 2026', quote: NOTES[0].text }
   ],
   g3: [{
-    kind: 'Labs', title: 'CBC with differential · collected Sep 16, 2026',
-    kv: [['Age when decided (Oct 15)', '29 days — inside the 30-day limit'], ['Age today (Oct 27)', '41 days — past the limit']]
+    kind: 'Labs', title: 'CBC with differential · collected Oct 20, 2026',
+    kv: [['Age when decided (Oct 28)', '8 days — inside the 30-day limit'],
+      ['Age today (' + TODAY_SHORT + ')', daysSince(2026, 10, 20) + ' days — ' + (daysSince(2026, 10, 20) <= 30 ? 'inside' : 'past') + ' the limit']]
   }],
   g4: [{
-    kind: 'Report', title: 'Allergy and Immunology evaluation', from: 'Desert Allergy Associates · completed Oct 7, received Oct 9, 2026 · outside records',
+    kind: 'Report', title: 'Allergy and Immunology evaluation', from: 'Desert Allergy Associates · completed Oct 22, 2026 · in the outside records received Oct 27',
     quote: 'Evaluated for recurrent infection and immunodeficiency. Immunoglobulin levels within normal limits. No primary immunodeficiency identified. Lymphopenia persists; defer to hematology as referred.'
   }],
   g5: [{
@@ -1497,7 +1503,7 @@ const SOURCES = {
     foot: 'Read from the decision tree document. Nothing is inferred where the tree is silent.'
   }],
   b2: [
-    { kind: 'Status history', title: 'Set to awaiting', kv: [['Set', 'Sep 24, 2026 · K. Lozano'], ['Waiting on', 'Repeat CBC with differential'], ['Window closes', 'Dec 9, 2026']] },
+    { kind: 'Status history', title: 'Set to awaiting', kv: [['Set', 'Oct 28, 2026 · K. Lozano'], ['Waiting on', 'Repeat CBC with differential'], ['Window closes', 'Jan 12, 2027']] },
     { kind: 'Tree definition', title: 'Outcome · awaiting, persistence not confirmed', kv: [['Action', 'Hold; request a repeat CBC; re-triage on receipt']] }
   ],
   accept: [{ kind: 'Tree definition', title: 'Outcome · accept, face-to-face', kv: [['Action', 'Send to scheduling for a new-patient hematology visit']] }],
@@ -1564,7 +1570,7 @@ function NoteNode({ data }) {
   return h('div', { className: 'tn note' + (data.sel ? ' sel' : ''), style: { width: data.w } },
     h('div', { className: 'tn-head' }, h('span', { className: 'tn-kick' }, data.draft ? 'Your reasoning · draft' : 'Your reasoning')),
     h('div', { className: 'tn-title' }, data.why),
-    h('div', { className: 'tn-by' }, 'Melissa · Oct 27'),
+    h('div', { className: 'tn-by' }, 'Melissa · ' + TODAY_SHORT),
     h(RF.Handle, { type: 'source', position: RF.Position.Right, id: 'r', isConnectable: false }));
 }
 const NODE_TYPES = { tree: TreeNode, note: NoteNode };
@@ -1609,7 +1615,7 @@ function TreeDetail({ id, cbcIn, onPick, order, chip, at, end, why, draft }) {
         h('span', { className: 'pill t-new' }, 'Decision changed')),
       h('div', { className: 'd-title' }, 'Rerouted at ' + stepLabel(at) + ' → ' + OUTCOME[end]),
       row('Why', why),
-      row('Recorded', draft ? 'Not saved yet — save the change to record it' : 'Melissa · Oct 27, 2026 · also saved to the patient\'s notes'),
+      row('Recorded', draft ? 'Not saved yet — save the change to record it' : 'Melissa · ' + TODAY_LONG + ' · also saved to the patient\'s notes'),
       nav);
   }
 
@@ -1834,7 +1840,7 @@ function render() {
       <div class="logo">${ICON.logo}</div>
       <span class="app-name">Triage Copilot</span>
       <span class="grow"></span>
-      <span class="today">Tue Oct 27, 2026</span>
+      <span class="today">${TODAY_HEAD}</span>
       <button type="button" class="tb-btn for-rail" data-act="drawer" data-v="rail" aria-controls="rail" aria-expanded="${S.drawer === 'rail'}">${ICON.list}<span class="lbl">Patients</span></button>
       ${S.view === 'queue' ? '' : `<button type="button" class="tb-btn for-track" data-act="drawer" data-v="track" aria-controls="track" aria-expanded="${S.drawer === 'track'}" aria-label="Awaiting, ${openNow} open">${ICON.cal}<span class="lbl">Awaiting</span>${openNow ? `<span class="count">${openNow}</span>` : ''}</button>`}
       <button type="button" class="follow-btn" data-act="toPip" title="Collapse the app to a small window pinned over whatever else is open">${ICON.pip}<span class="lbl">Follow me</span></button>
@@ -1926,7 +1932,7 @@ const ACT = {
   noteToLog: (v) => {
     const m = S.chat[S.current][+v];
     m.frozen = draftNote();
-    S.added[S.current] = [{ date: 'OCT 27', who: 'Melissa', text: m.frozen, tag: 'Decision note', fresh: true }].concat(S.added[S.current] || []);
+    S.added[S.current] = [{ date: TODAY_SHORT.toUpperCase(), who: 'Melissa', text: m.frozen, tag: 'Decision note', fresh: true }].concat(S.added[S.current] || []);
   },
   msgItem: (v) => {
     const [i, id] = v.split(':');
@@ -1941,7 +1947,7 @@ const ACT = {
     const m = S.chat[S.current][+v];
     if (!m.to.trim() || m.sent) return;
     const asked = itemsFor(S.current).filter((a) => m.include[a.id]);
-    asked.forEach((a) => { a.asked = 'Oct 27'; });
+    asked.forEach((a) => { a.asked = TODAY_SHORT; });
     m.sent = true;
     const what = asked.length ? asked.map((a) => a.item).join('; ') : 'no outstanding items';
     logNote('Message sent', `Sent a message to ${m.to}.\nAsked for: ${what}.\nSubject: ${m.subject}`);
