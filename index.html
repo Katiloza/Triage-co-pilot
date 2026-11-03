@@ -432,7 +432,9 @@ textarea.field:focus { border-color: var(--primary); }
 .bot-card { flex-grow: 1; min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card); }
 .bot-text { padding: 11px 14px; font-size: 13px; line-height: 1.55; color: var(--ink-2); }
 .note-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px 9px; }
-.note-body { margin: 0 14px; padding: 13px 14px; border: 1px solid var(--border); border-radius: 10px; background: #FDFCF8; font-size: 12.5px; line-height: 1.65; white-space: pre-line; color: var(--ink-2); user-select: text; }
+/* The decision note is edited in place; once added to the notes it locks */
+.note-edit { display: block; width: calc(100% - 28px); min-height: 300px; margin: 0 14px; padding: 13px 14px; resize: vertical; background: #FDFCF8; font-size: 12.5px; line-height: 1.65; color: var(--ink-2); }
+.note-edit:disabled { color: var(--ink-2); background: var(--ground); }
 .ai-tag { display: inline-flex; align-items: center; gap: 5px; height: 19px; padding: 0 8px; border-radius: 10px; background: var(--purple-bg); color: var(--purple); font-size: 10px; font-weight: 600; }
 .note-foot { display: flex; align-items: center; gap: 8px; padding: 10px 14px 12px; }
 .note-foot .why { flex-grow: 1; min-width: 0; font-size: 11px; line-height: 1.4; color: var(--faint); }
@@ -1223,6 +1225,9 @@ function renderMessage(p, m, i) {
   </div></div>`;
 }
 
+// What the note says now: frozen once added, the triager's edits if any, otherwise the live draft.
+const noteText = (m) => m.frozen || (m.edited ? m.text : draftNote());
+
 function renderChat(p) {
   const thread = S.chat[p.mrn] || [];
   if (!thread.length) return '';
@@ -1230,14 +1235,20 @@ function renderChat(p) {
     if (m.who === 'you') return `<div class="msg-you"><div class="bubble">${esc(m.text)}</div></div>`;
     if (m.kind === 'message') return renderMessage(p, m, i);
     if (m.kind !== 'note') return `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card"><div class="bot-text">${esc(m.text)}</div></div></div>`;
-    const text = m.frozen || draftNote();
-    const meta = m.frozen ? 'Added to the notes on the right' : (S.change ? 'Redrafted with your change' : 'Drafted from the tree');
+    const text = noteText(m);
+    const meta = m.frozen ? 'Added to the notes on the right. Undo to edit it again'
+      : m.edited ? 'Edited by you; it no longer redrafts on its own'
+        : (S.change ? 'Redrafted with your change' : 'Drafted from the tree');
     return `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card">
-      <div class="note-head"><span class="kicker">Decision note · draft</span><span class="grow"></span>
-        <span class="ai-tag" title="Drafted by the copilot. Review before charting.">AI draft</span></div>
-      <div class="note-body" aria-label="Decision note draft, read only">${esc(text)}</div>
+      <div class="note-head"><span class="kicker">Decision note · ${m.frozen ? 'added' : 'draft'}</span><span class="grow"></span>
+        <span class="ai-tag" title="Drafted by the copilot. Review before charting.">${m.edited ? 'AI draft · edited' : 'AI draft'}</span></div>
+      <textarea class="field note-edit" data-note="${i}" aria-label="Decision note" ${m.frozen ? 'disabled' : ''}>${esc(text)}</textarea>
       <div class="note-foot">
         <span class="why">${meta}. Nothing is charted until you paste it.</span>
+        ${m.frozen
+          ? `<button type="button" class="btn secondary sm" data-act="noteUndo" data-v="${i}">Undo</button>`
+          : `<button type="button" class="btn secondary sm" data-act="noteDiscard" data-v="${i}">Discard</button>
+             ${m.edited ? `<button type="button" class="btn secondary sm" data-act="noteReset" data-v="${i}">Reset to draft</button>` : ''}`}
         <button type="button" class="btn secondary sm" data-act="copy" data-v="${i}">${S.copied === i ? '✓ Copied' : 'Copy'}</button>
         <button type="button" class="btn primary sm ${m.frozen ? 'done' : ''}" data-act="noteToLog" data-v="${i}" ${m.frozen ? 'disabled' : ''}>${m.frozen ? '✓ Added to notes' : 'Add to notes'}</button>
       </div>
@@ -1931,8 +1942,32 @@ const ACT = {
   },
   noteToLog: (v) => {
     const m = S.chat[S.current][+v];
-    m.frozen = draftNote();
-    S.added[S.current] = [{ date: TODAY_SHORT.toUpperCase(), who: 'Melissa', text: m.frozen, tag: 'Decision note', fresh: true }].concat(S.added[S.current] || []);
+    if (!noteText(m).trim()) return;
+    m.frozen = noteText(m);
+    m.logged = { date: TODAY_SHORT.toUpperCase(), who: 'Melissa', text: m.frozen, tag: 'Decision note', fresh: true };
+    S.added[S.current] = [m.logged].concat(S.added[S.current] || []);
+  },
+  // Undo takes the note back out of the patient's notes and makes it editable again.
+  noteUndo: (v) => {
+    const m = S.chat[S.current][+v];
+    S.added[S.current] = (S.added[S.current] || []).filter((n) => n !== m.logged);
+    m.text = m.frozen;
+    m.edited = m.edited || m.frozen !== draftNote();
+    m.frozen = null;
+    m.logged = null;
+  },
+  // Discard drops the draft, and the request that asked for it, from the chat.
+  noteDiscard: (v) => {
+    const thread = S.chat[S.current];
+    const i = +v;
+    const from = i > 0 && thread[i - 1].who === 'you' ? i - 1 : i;
+    thread.splice(from, i - from + 1);
+    S.copied = null;
+  },
+  noteReset: (v) => {
+    const m = S.chat[S.current][+v];
+    m.edited = false;
+    m.text = null;
   },
   msgItem: (v) => {
     const [i, id] = v.split(':');
@@ -1955,7 +1990,7 @@ const ACT = {
   },
   copy: (v) => {
     const m = S.chat[S.current][+v];
-    const text = m.kind === 'message' ? messageText(m) : (m.frozen || draftNote());
+    const text = m.kind === 'message' ? messageText(m) : noteText(m);
     const keep = () => [...document.querySelectorAll('.centre-scroll')].map((c) => c.scrollTop);
     const done = () => {
       const top = keep(); S.copied = +v; render();
@@ -2006,6 +2041,16 @@ function scrollToChat() {
   const c = document.querySelector('.centre-scroll');
   if (c) c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' });
 }
+
+// Typing in the decision note keeps focus; the edits replace the live draft.
+document.addEventListener('input', (e) => {
+  const i = e.target.dataset && e.target.dataset.note;
+  if (i == null) return;
+  const m = (S.chat[S.current] || [])[+i];
+  if (!m || m.frozen) return;
+  m.text = e.target.value;
+  m.edited = true;
+});
 
 // Typing in the message keeps focus: fields update the draft in place.
 document.addEventListener('input', (e) => {
