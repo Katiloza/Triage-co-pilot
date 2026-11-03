@@ -158,10 +158,6 @@ button { font-family: inherit; color: inherit; }
 .welcome .logo { width: 44px; height: 44px; border-radius: 13px; margin-bottom: 6px; }
 .welcome h2 { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; }
 .welcome p { margin: 0; max-width: 460px; font-size: 14px; line-height: 1.6; color: var(--muted); }
-.w-resume { display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; min-height: 44px; padding: 0 8px 0 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-card); cursor: pointer; font-size: 13px; color: var(--ink); text-align: left; }
-.w-resume:hover { border-color: #C9C6BD; }
-.w-resume .k { color: var(--faint); }
-.w-resume .go { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: var(--sunk); color: var(--ink-3); }
 .r { text-align: right; }
 .pill { display: inline-flex; align-items: center; height: 21px; padding: 0 9px; border-radius: 11px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
 .pill.xs { height: 19px; padding: 0 8px; font-size: 10px; }
@@ -954,17 +950,11 @@ function renderQueue() {
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const newToday = PEOPLE.filter((p) => p.status === 'new').length;
   const awaiting = PEOPLE.filter((p) => p.status === 'awaiting').length;
-  const last = byMrn(S.current);
   const welcome = `
     <section class="welcome" aria-label="Welcome">
       <div class="logo">${ICON.logo.replace(/width="14" height="14"/, 'width="22" height="22"')}</div>
       <h2>${greeting}, Melissa</h2>
       <p>${newToday} new referrals came in today and ${awaiting} are awaiting something. Pick a patient from the list to start, or search by MRN below.</p>
-      <button type="button" class="w-resume" data-act="open" data-v="${last.mrn}">
-        <span><span class="k">Pick up where you left off ·</span> <strong>${last.name}</strong></span>
-        <span class="pill xs t-${last.status}">${STATUS[last.status].label}${last.status === 'awaiting' ? ' · day ' + last.days : ''}</span>
-        <span class="go">${ICON.right}</span>
-      </button>
     </section>`;
 
   return `
