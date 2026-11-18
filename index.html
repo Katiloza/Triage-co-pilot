@@ -718,6 +718,16 @@ textarea.field:focus { border-color: var(--primary); }
 .tm-side .ov-h span, .tm-side .ov-hint { font-size: 13px; }
 .tm-side .opt { font-size: 14px; }
 .tm .ver, .tm .ver span { font-size: 13px; }
+/* Next step after a change */
+.next-step { margin-top: 14px; padding: 14px 16px; border: 1.5px solid #C5D4EC; border-radius: 12px; background: var(--blue-bg); }
+.next-step.card { margin: 12px 18px 0; }
+.ns-h { display: flex; align-items: center; gap: 8px; }
+.ns-h .kicker { font-size: 13px; color: #24497F; }
+.ns-h .icon-btn { width: 28px; height: 28px; border-radius: 7px; color: #24497F; }
+.next-step p { margin: 6px 0 0; font-size: 15px; line-height: 1.55; color: var(--ink); }
+.next-step p .pill { margin-left: 4px; vertical-align: 1px; }
+.ns-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.ns-acts .btn { font-size: 14px; min-height: 36px; }
 .tm .decision .pill { font-size: 13px; }
 .tm .sn-badge { font-size: 13px; }
 .tm-side .pill { font-size: 13px; }
@@ -1090,6 +1100,7 @@ const S = {
   labEdit: null, // { k, date, val, why, err }: a lab value being changed inline in the Lab summary
   labTrend: null, // the lab whose trend is open from a link in the triage note
   noteOpen: {}, // earlier notes opened to read in full, by key
+  lastOv: null, // { step, n, dismissed }: the change that made the latest version, so the next step can be offered
   // provider notes added in the tree, by node; which node's add form is open
   view: 'queue',          // queue | patient | pip
   home: 'cards',          // cards | dash (the home screen, or the dashboard it opens)
@@ -1553,6 +1564,34 @@ function decisionLine(short) {
 }
 
 // The roadmap card: the five steps in a row, the outcome at the end. A click opens the full tree there.
+// After a change, the next decision point on the path: the step right after the one changed,
+// or, for a change with no step (a lab value, a restore), the step where the path now stops.
+function nextAfterChange() {
+  const latest = latestVer();
+  if (!S.lastOv || S.lastOv.n !== latest.n) return null;
+  const ev = evaluate(latest);
+  const path = chainOf(ev.end).reverse().filter((id) => NODE[id].kind === 'step');
+  const from = S.lastOv.step;
+  let next = null;
+  if (from && path.includes(from)) next = path[path.indexOf(from) + 1] || null;
+  else if (!from) { const last = path[path.length - 1]; next = last && ev.steps[last].status !== 'met' ? last : null; }
+  return { from, next, ev };
+}
+
+function nextStepPanel(where) {
+  const info = nextAfterChange();
+  if (!info || (where === 'card' && S.lastOv.dismissed)) return '';
+  const { from, next, ev } = info;
+  const label = (id) => `Step ${NODE[id].step + 1} · ${SHORT[id]}`;
+  const close = where === 'card' ? `<button type="button" class="icon-btn" data-act="nextDismiss" aria-label="Hide the next step">${ICON.close}</button>` : '';
+  const body = next
+    ? `<p>${from ? `With ${label(from)} changed, the path continues to` : 'After this change, the path stops at'} <strong>${label(next)}</strong> <span class="pill xs t-${ev.steps[next].status}">${stepSub(ev.steps[next])}</span></p>
+      <div class="ns-acts"><button type="button" class="btn primary sm" data-act="nextStep" data-v="${next}">Go to step ${NODE[next].step + 1}</button>
+        <button type="button" class="btn secondary sm" data-act="nextOverride" data-v="${next}">Override step ${NODE[next].step + 1}</button></div>`
+    : `<p>The path now ends at <strong>${OUTCOME[ev.end]}</strong>. There is no step after this one.</p>`;
+  return `<div class="next-step ${where}" role="status"><div class="ns-h"><span class="kicker">Next step · V${latestVer().n}</span><span class="grow"></span>${close}</div>${body}</div>`;
+}
+
 function algoCard() {
   const viewed = viewedVer();
   const ev = evaluate(viewed);
@@ -1588,6 +1627,7 @@ function algoCard() {
       </div>
       ${decisionLine(true)}
       ${restoreRow()}
+      ${nextStepPanel('card')}
       <div class="strip-wrap"><div class="strip-row">${nodes}${end}</div>
       </div>
     </section>`;
@@ -2353,6 +2393,7 @@ function addVersion({ step, what, why, via, data, answers, replaceAnswers }) {
   const after = evaluate(v).end;
   S.alg.versions.push(v);
   S.alg.view = null;
+  S.lastOv = { step: v.step, n: v.n, dismissed: false };
   const outcome = before === after ? `Decision unchanged: ${OUTCOME[after]}.` : `Decision changed from "${OUTCOME[before]}" to "${OUTCOME[after]}".`;
   logNote(`V${v.n} · ${v.via === 'companion' ? 'companion' : 'override'}`, `${what}. ${outcome}\nWhy: ${why}`);
   logEvent(`V${v.n}: ${what}`, `${outcome} By Melissa${v.via === 'companion' ? ' through the companion' : ''}. Why: ${why}`, '#2F5FA8');
@@ -2659,6 +2700,7 @@ function treeSide(id, ev, viewed) {
       ${st.status === 'gap' ? `<div class="s-aside purple"><strong>A gap in the tree, not in the chart.</strong> Flagged for the tree owner. Answer it with an override if you can.</div>` : ''}
       ${o ? sec('Change history', `<div class="s-aside blue" style="margin-top: 0"><strong>V${o.n}</strong> · ${o.by}, ${o.date}: ${esc(o.what)}.<br>Why: “${esc(o.why)}”</div>`) : ''}
       ${prevRow}
+      ${S.lastOv && S.lastOv.step === id ? nextStepPanel('side') : ''}
       ${sec('Override', readOnly ? '<p class="muted">This is an earlier version. Go back to the latest to change this step.</p>'
         : S.ov && S.ov.id === id ? overrideForm(id) : `<button type="button" class="btn secondary sm" data-act="ovOpen" data-v="${id}">Override this step</button>`)}`;
   } else if (n.kind === 'end') {
@@ -2851,6 +2893,13 @@ const ACT = {
   srcToggle: (v) => { S.srcOpen[v] = !S.srcOpen[v]; },
   treeOpen: (v) => { S.tree = { sel: v || null }; S.ov = null; },
   treeClose: () => { S.tree = null; S.ov = null; },
+  // Take the next step after a change: open it in the tree, or open it with the override form ready.
+  nextStep: (v) => { S.tree = S.tree || { sel: null }; S.tree.sel = v; S.ov = null; },
+  nextOverride: (v) => {
+    S.tree = S.tree || { sel: null }; S.tree.sel = v; ACT.ovOpen(v);
+    setTimeout(() => document.querySelector('.tm-side .ov')?.scrollIntoView({ block: 'center' }), 0);
+  },
+  nextDismiss: () => { if (S.lastOv) S.lastOv.dismissed = true; },
   treeSel: (v) => { S.tree.sel = v || null; S.ov = null; },
   // Overrides are written in the tree sidebar and saved as the next version.
   ovOpen: (v) => {
@@ -3008,7 +3057,7 @@ document.addEventListener('click', (e) => {
   if (el.dataset.act === 'copy') return;
   render();
   // Keep scroll positions when the same view redraws, so ticking does not jump the list.
-  if (!['open', 'toQueue', 'tab', 'toFull', 'mode', 'dashOpen', 'dashHome'].includes(el.dataset.act)) {
+  if (!['open', 'toQueue', 'tab', 'toFull', 'mode', 'dashOpen', 'dashHome', 'nextStep', 'nextOverride'].includes(el.dataset.act)) {
     document.querySelectorAll(PANES).forEach((s, i) => { if (scrollers[i] != null) s.scrollTop = scrollers[i]; });
   }
   scrollToChat();
