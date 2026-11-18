@@ -86,7 +86,8 @@ button { font-family: inherit; color: inherit; }
 .icon-btn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: transparent; color: var(--faint); cursor: pointer; }
 .icon-btn:disabled { color: #D3D0C8; cursor: default; }
 .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-.cal .dn { text-align: center; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; color: var(--ghost); padding-bottom: 3px; }
+/* Calendar header text: --muted is about 4.7:1 on the grey sidebar, passing WCAG AA; --ghost and --faint did not */
+.cal .dn { text-align: center; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--muted); padding-bottom: 4px; }
 .cal .cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-height: 38px; padding: 0; border-radius: 8px; border: 1px solid transparent; background: transparent; cursor: pointer; }
 .cal .cell .n { font-size: 11.5px; font-weight: 500; color: var(--ink); }
 .cal .cell .c { font-size: 9.5px; font-family: var(--mono); color: var(--ghost); }
@@ -99,12 +100,12 @@ button { font-family: inherit; color: inherit; }
 .cal .blank { min-height: 38px; }
 .cal .cell.future { cursor: default; }
 .cal .cell.future .n { color: #C9C6BD; }
-.cal-month { display: inline-flex; align-items: center; gap: 4px; min-height: 30px; padding: 0 8px; margin-left: -6px; border: 0; border-radius: 8px; background: transparent; font-size: 13px; font-weight: 600; letter-spacing: -0.005em; color: var(--ink); cursor: pointer; }
+.cal-month { display: inline-flex; align-items: center; gap: 4px; min-height: 34px; padding: 0 8px; margin-left: -6px; border: 0; border-radius: 8px; background: transparent; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); cursor: pointer; }
 .cal-month:hover, .cal-month[aria-expanded="true"] { background: var(--sunk); }
 .cal-month svg { color: var(--faint); transition: transform 0.15s; }
 .cal-month[aria-expanded="true"] svg { transform: rotate(180deg); }
-.cal-cap { display: flex; align-items: center; gap: 8px; padding: 0 2px 8px; font-size: 11px; color: var(--faint); }
-.cal-mode { flex-shrink: 0; min-height: 24px; padding: 0 9px; border: 1px solid #E2DFD8; border-radius: 12px; background: var(--surface); font-size: 11px; font-weight: 600; color: var(--muted); cursor: pointer; }
+.cal-cap { display: flex; align-items: center; gap: 8px; padding: 0 2px 10px; font-size: 13px; color: var(--muted); }
+.cal-mode { flex-shrink: 0; min-height: 28px; padding: 0 10px; border: 1px solid #E2DFD8; border-radius: 13px; background: var(--surface); font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; }
 .cal-mode[aria-pressed="true"] { background: var(--blue-bg); border-color: var(--primary); color: var(--primary); }
 /* Date range: typed or picked on the grid, across months */
 .range-in { display: flex; align-items: center; gap: 6px; padding: 0 2px 9px; font-size: 11px; color: var(--faint); }
@@ -263,7 +264,8 @@ textarea.field:focus { border-color: var(--primary); }
 .strip .count { writing-mode: horizontal-tb; font-family: var(--mono); font-size: 10.5px; padding: 1px 6px; border-radius: 8px; background: var(--amber-bg); color: var(--amber); }
 .t-head .title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .aw-grid { display: grid; grid-template-columns: minmax(0, 1fr) 56px 70px; gap: 8px; align-items: center; }
-.aw-cols { flex-shrink: 0; padding: 8px 14px; background: var(--ground); border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
+/* Table header rows: light blue with dark blue text (about 8:1, passes WCAG AA) */
+.aw-cols { flex-shrink: 0; padding: 8px 14px; background: var(--blue-bg); border-bottom: 1px solid #D3DDEC; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #24497F; }
 .aw-row { padding: 9px 14px; border-bottom: 1px solid var(--border); }
 .aw-row:last-child { border-bottom: 0; }
 .aw-item { display: flex; align-items: center; gap: 9px; min-width: 0; }
@@ -467,12 +469,12 @@ textarea.field:focus { border-color: var(--primary); }
 @container (max-width: 860px) { .duo { grid-template-columns: minmax(0, 1fr); } }
 .ctabs { display: flex; gap: 4px; padding: 12px 14px 0; overflow-x: auto; }
 .ctabs button { flex-shrink: 0; min-height: 34px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted); }
-.ctabs button[aria-selected="true"] { background: var(--sunk); color: var(--ink); font-weight: 600; }
+.ctabs button[aria-selected="true"] { background: var(--blue-bg); color: var(--primary); font-weight: 600; }
 .thr { margin-bottom: 10px; font-size: 12px; line-height: 1.5; color: var(--muted); }
 .thr strong { color: var(--ink-2); }
 .lsum-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
 .lsum { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-.lsum thead th { padding: 8px 10px; background: var(--ground); border-bottom: 1px solid var(--border); text-align: left; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+.lsum thead th { padding: 8px 10px; background: var(--blue-bg); border-bottom: 1px solid #D3DDEC; text-align: left; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #24497F; white-space: nowrap; }
 .lsum td, .lsum tbody th { padding: 9px 10px; border-bottom: 1px solid var(--hair); text-align: left; vertical-align: middle; font-weight: 500; }
 .lsum tbody th { font-weight: 600; white-space: nowrap; }
 .lsum tr:last-child td, .lsum tr:last-child th { border-bottom: 0; }
@@ -494,6 +496,21 @@ textarea.field:focus { border-color: var(--primary); }
 .trend { display: block; width: 100%; height: auto; overflow: visible; }
 .trend .ax { font-family: var(--mono); font-size: 9.5px; fill: var(--faint); }
 .trend .val { font-family: var(--mono); font-size: 10.5px; font-weight: 600; fill: var(--ink-2); }
+/* Lab links in the triage note, and the trend they open. Link blue is about 6:1 on white and 5:1 on the amber box. */
+.lab-link { display: inline; padding: 0; border: 0; background: none; font: inherit; color: var(--primary); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; cursor: pointer; border-radius: 3px; }
+.lab-link:hover { text-decoration-thickness: 2px; }
+.lt-wrap { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.lt-scrim { position: absolute; inset: 0; border: 0; padding: 0; background: rgba(27, 27, 25, 0.32); cursor: pointer; }
+.lt { position: relative; width: min(560px, 100%); max-height: calc(100% - 16px); overflow: auto; padding: 18px 20px 20px; background: var(--surface); border-radius: 16px; box-shadow: 0 24px 60px rgba(20, 20, 15, 0.25); }
+.lt-head { display: flex; align-items: flex-start; gap: 12px; }
+.lt-t { margin: 4px 0 0; font-size: 19px; font-weight: 600; letter-spacing: -0.015em; }
+.lt-sub { margin-top: 4px; font-size: 13px; color: var(--muted); }
+.lt .trend-box { margin-top: 14px; }
+.lt-table { margin-top: 12px; }
+.lt-table .u { color: var(--muted); font-size: 11px; }
+.lt-src { font-size: 12px; color: var(--muted); }
+.lt-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; font-size: 12px; color: var(--muted); }
+@media (max-width: 767px) { .lt-wrap { padding: 12px; } .lt { padding: 16px; } }
 .trend-box { margin-top: 10px; padding: 10px 8px 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
 .ev-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--hair); }
 .ev-row:last-child { border-bottom: 0; }
@@ -516,10 +533,6 @@ textarea.field:focus { border-color: var(--primary); }
 .gap-note { padding: 12px 14px; border: 1px dashed var(--amber-dot); border-radius: 10px; background: #FDFAF3; font-size: 13px; line-height: 1.55; color: var(--ink-2); }
 .exec-lines { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; font-size: 13px; line-height: 1.55; color: var(--ink); }
 .exec-lines li::marker { font-family: var(--mono); font-size: 11.5px; color: var(--faint); }
-.exec-miss { margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: var(--amber-bg); }
-.exec-miss .kicker { color: var(--amber); }
-.miss-row { margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: var(--ink-3); }
-.exec-miss .btn { margin-top: 10px; }
 @container (max-width: 560px) { .kv, .kv.tight { grid-template-columns: minmax(0, 1fr); gap: 2px; } .kv dd { margin-bottom: 8px; } }
 
 /* Right panel: tabs, with the chat box pinned at the bottom */
@@ -678,10 +691,14 @@ textarea.field:focus { border-color: var(--primary); }
 /* Executive summary: five directive lines, then what is missing, named */
 .exec-lines { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 7px; font-size: 13.5px; line-height: 1.55; color: var(--ink); max-width: 720px; }
 .exec-lines li::marker { font-family: var(--mono); font-size: 12px; color: var(--faint); }
-.exec-miss { margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: var(--amber-bg); }
-.exec-miss .kicker { color: var(--amber); }
-.miss-row { margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: var(--ink-3); }
-.exec-miss .btn { margin-top: 10px; }
+/* To Complete: dark blue box. White text is about 11:1, the light blue heading and links about 7:1, both passing WCAG AA. */
+.exec-miss { margin-top: 16px; padding: 14px 16px; border-radius: 12px; background: #1E3A66; color: #FFFFFF; }
+.exec-miss .kicker { color: #BFD3F2; }
+.miss-row { margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: #E4ECF8; }
+.miss-row strong { color: #FFFFFF; }
+.exec-miss .lab-link { color: #BFD3F2; }
+.exec-miss .lab-link:focus-visible { outline-color: #FFFFFF; }
+.exec-miss .btn { margin-top: 12px; }
 /* Referral history, folded under the notes */
 .hist { margin-top: 12px; border-top: 1px solid var(--hair); }
 .hist summary { display: flex; align-items: center; gap: 8px; min-height: 38px; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--ink-3); list-style: none; }
@@ -987,6 +1004,7 @@ const S = {
   railW: null, trackW: null, // side column widths the user dragged to, in px (null = default)
   pn: {}, pnOpen: null, pnErr: '',
   labEdit: null, // { k, date, val, why, err }: a lab value being changed inline in the Lab summary
+  labTrend: null, // the lab whose trend is open from a link in the triage note
   // provider notes added in the tree, by node; which node's add form is open
   view: 'queue',          // queue | patient | pip
   home: 'cards',          // cards | dash (the home screen, or the dashboard it opens)
@@ -1630,6 +1648,18 @@ function awaitingCard(p) {
     </section>`;
 }
 
+// Lab names and values in the triage note become links that open that lab's trend.
+const LAB_NAME = { alc: 'Absolute lymphocyte count', wbc: 'White blood cell count', hgb: 'Hemoglobin', plt: 'Platelet count', anc: 'Absolute neutrophil count' };
+const LAB_KEY = { ALC: 'alc', WBC: 'wbc', Hgb: 'hgb', Plt: 'plt', ANC: 'anc' };
+const LAB_RE = /\b(ALC|WBC|Hgb|Plt|ANC)\b(\s+\d+(?:\.\d+)?(?:\s*(?:K\/µL|g\/dL))?)?|\b(low lymphocyte count|lymphocyte count|low lymphocytes|lymphocytes)\b/g;
+function labLinks(html) {
+  // Only the text between tags is touched, never an attribute.
+  return html.split(/(<[^>]+>)/).map((part) => (part.startsWith('<') ? part : part.replace(LAB_RE, (m, abbr) => {
+    const k = abbr ? LAB_KEY[abbr] : 'alc';
+    return `<button type="button" class="lab-link" data-act="labTrend" data-v="${k}" aria-label="${m}: open the ${LAB_NAME[k].toLowerCase()} trend">${m}</button>`;
+  }))).join('');
+}
+
 function noteBody(p) {
   const latest = latestVer();
   const ev = evaluate(latest);
@@ -1644,13 +1674,13 @@ function noteBody(p) {
           <dt>Date/time</dt><dd>${TODAY_LONG} · ${time}</dd>
           <dt>Patient</dt><dd>${p.name} · MRN ${p.mrn} · F</dd>
           <dt>Referring</dt><dd>J. Whitfield, MD · Northgate Primary Care</dd>
-          <dt>Assessment (labs)</dt><dd>Lymphopenia · ALC ${ev.last.alc} K/µL on ${isoLabel(ev.last.date)}</dd>
+          <dt>Assessment (labs)</dt><dd>${labLinks(`Lymphopenia · ALC ${ev.last.alc} K/µL on ${isoLabel(ev.last.date)}`)}</dd>
         </dl>
         <div class="kicker" style="margin-top: 16px">Snapshot</div>
-        <ol class="exec-lines">${summaryLines(ev).map((l) => `<li>${l}</li>`).join('')}</ol>
+        <ol class="exec-lines">${summaryLines(ev).map((l) => `<li>${labLinks(l)}</li>`).join('')}</ol>
         <div class="exec-miss">
           <div class="kicker">To Complete</div>
-          ${miss.map((m) => `<div class="miss-row"><strong>${m.label}</strong> — ${m.why}</div>`).join('')}
+          ${miss.map((m) => `<div class="miss-row"><strong>${m.label}</strong> — ${labLinks(m.why)}</div>`).join('')}
           ${order ? `<div class="miss-row"><strong>Referral order</strong> — ${order.v.toLowerCase()}</div>` : ''}
           ${miss.length || order ? '' : '<div class="miss-row">Nothing. The algorithm has what it needs.</div>'}
           ${miss.length ? `<button type="button" class="btn secondary sm" data-act="toPip">${ICON.pip} Collect in the companion</button>` : ''}
@@ -2479,6 +2509,36 @@ function treeSide(id, ev, viewed) {
   </aside>`;
 }
 
+// One lab over time, opened from a link in the triage note.
+function renderLabTrend() {
+  const k = S.labTrend;
+  if (!k || S.view !== 'patient' || S.current !== WORKED) return '';
+  const ev = evaluate(latestVer());
+  const [lo, hi, label, unit] = CBC_RANGE[k];
+  const sets = ev.sets;
+  const rows = sets.slice().reverse().map((x) => {
+    const flag = x[k] < lo ? 'Low' : x[k] > hi ? 'High' : 'In range';
+    return `<tr><td class="mono">${isoLabel(x.date, true)}</td><td class="mono ${flag === 'In range' ? '' : 'low'}">${x[k]} <span class="u">${unit}</span></td>
+      <td><span class="pill xs ${flag === 'In range' ? 't-met' : 't-awaiting'}">${flag}</span></td><td class="lt-src">${esc(x.src || 'Chart')}</td></tr>`;
+  }).join('');
+  return `<div class="lt-wrap">
+    <button type="button" class="lt-scrim" data-act="labTrendClose" aria-label="Close the trend" tabindex="-1"></button>
+    <div class="lt" role="dialog" aria-modal="true" aria-labelledby="ltTitle">
+      <div class="lt-head">
+        <div class="grow"><div class="kicker">Lab trend</div><h2 id="ltTitle" class="lt-t">${label} · ${LAB_NAME[k]}</h2>
+          <div class="lt-sub">Reference ${lo}–${hi} ${unit} · ${sets.length} result${sets.length === 1 ? '' : 's'} on file${latestVer().n > 1 ? ` · as of V${latestVer().n}` : ''}</div></div>
+        <button type="button" class="icon-btn lg" id="ltClose" data-act="labTrendClose" aria-label="Close the trend">${ICON.close}</button>
+      </div>
+      <div class="trend-box">${trendSvg(sets, k, true)}</div>
+      <div class="lsum-wrap lt-table"><table class="lsum">
+        <thead><tr><th scope="col">Collected</th><th scope="col">${label}</th><th scope="col">Flag</th><th scope="col">Source</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>
+      <div class="lt-foot"><span class="grow">Shaded: the reference range. Amber points are out of range.</span>
+        <button type="button" class="btn secondary sm" data-act="labTrendShow" data-v="${k}">Show in the Lab summary</button></div>
+    </div>
+  </div>`;
+}
+
 function renderTreeModal() {
   if (!S.tree || S.view !== 'patient' || S.current !== WORKED) return '';
   const viewed = viewedVer();
@@ -2556,6 +2616,7 @@ function render() {
       ${renderTrack()}
     </div>
     ${renderTreeModal()}
+    ${renderLabTrend()}
     ${S.toast ? `<div class="toast" role="status"><span class="mk met">✓</span>${esc(S.toast.text)}</div>` : ''}`;
 }
 
@@ -2663,6 +2724,9 @@ const ACT = {
     setTimeout(() => document.getElementById('labEditVal')?.focus(), 0);
   },
   labCancel: () => { S.labEdit = null; },
+  labTrend: (v) => { S.labTrend = v; setTimeout(() => document.getElementById('ltClose')?.focus(), 0); },
+  labTrendClose: () => { const k = S.labTrend; S.labTrend = null; setTimeout(() => document.querySelector(`.lab-link[data-v="${k}"]`)?.focus(), 0); },
+  labTrendShow: () => { S.labTrend = null; S.noteTab = 'labs'; setTimeout(() => document.querySelector('.lsum')?.scrollIntoView({ block: 'nearest' }), 0); },
   labSave: () => {
     const le = S.labEdit;
     const n = parseFloat(le.val);
@@ -2985,6 +3049,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && S.labTrend) { ACT.labTrendClose(); redraw(); return; }
   if (e.key === 'Escape' && S.labEdit && !S.tree) { S.labEdit = null; redraw(); return; }
   if (e.key === 'Escape' && S.tree) { if (S.pnOpen) { S.pnOpen = null; S.pnErr = ''; } else if (S.ov) S.ov = null; else if (S.tree.sel) S.tree.sel = null; else S.tree = null; redraw(); return; }
   if (e.key === 'Escape' && S.drawer) { S.drawer = null; render(); return; }
