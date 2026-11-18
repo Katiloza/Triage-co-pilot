@@ -9,6 +9,9 @@
 <style>
 :root {
   --ground: #F7F6F2;
+  --side: #F1F3F4;      /* the side panels: a neutral grey, so the white main screen stands forward */
+  --tile: #F0F2F5;      /* the home cards: grey tiles on white, no border */
+  --tile-hover: #E7EAEE;
   --surface: #FFFFFF;
   --sunk: #F3F2EE;
   --border: #E7E5DF;
@@ -68,7 +71,7 @@ button { font-family: inherit; color: inherit; }
 .scrim { display: none; }
 
 /* Left rail */
-.rail { width: 320px; flex-shrink: 0; transition: width 0.18s ease; display: flex; flex-direction: column; background: var(--surface); border-right: 1px solid var(--border); }
+.rail { position: relative; width: var(--rail-w, 320px); flex-shrink: 0; transition: width 0.18s ease; display: flex; flex-direction: column; background: var(--side); border-right: 1px solid var(--border); }
 .seg { display: flex; gap: 5px; padding: 3px; background: var(--sunk); border-radius: 9px; }
 .seg button { flex: 1 1 0; min-height: 30px; border: 0; border-radius: 7px; cursor: pointer; font-size: 12px; font-weight: 600; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 6px; }
 .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(20, 20, 15, 0.08); }
@@ -122,7 +125,8 @@ button { font-family: inherit; color: inherit; }
 .cal-pick-grid button:disabled { color: #C9C6BD; cursor: default; }
 .cal-pick-foot { display: flex; justify-content: flex-end; margin-top: 8px; }
 .rail-filters { padding: 2px 12px 10px; }
-.rail-filters .sub { margin-top: 6px; padding-left: 10px; border-left: 2px solid var(--red-bg); }
+.rail-filters .chips { flex-wrap: nowrap; gap: 4px; }
+.rail-filters .chip { flex: 1 1 auto; padding: 0 6px; white-space: nowrap; }
 .rail-top .kicker { padding-left: 2px; }
 .rail-title .btn-ghost { min-height: 24px; padding: 0 8px; align-self: center; }
 .chips { display: flex; flex-wrap: wrap; gap: 5px; }
@@ -135,22 +139,18 @@ button { font-family: inherit; color: inherit; }
 .rail-title { display: flex; align-items: baseline; gap: 8px; padding: 12px 14px 7px; border-top: 1px solid var(--hair); }
 .rail-title .count { font-size: 11px; color: var(--faint); font-family: var(--mono); }
 .rail-row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; margin-bottom: 2px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; text-align: left; }
-.rail-row:hover { background: #F7F6F2; }
+.rail-row:hover { background: rgba(20, 20, 15, 0.05); }
 .rail-row.here { background: var(--blue-bg); }
 .rail-row .who { flex-grow: 1; min-width: 0; }
 .rail-row .name { display: block; font-size: 12.5px; font-weight: 600; line-height: 1.3; letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rail-row .mrn { display: block; font-size: 10.5px; color: var(--faint); margin-top: 2px; font-family: var(--mono); }
-.rail-row .age { flex-shrink: 0; font-size: 10.5px; color: var(--faint); font-family: var(--mono); }
-.rail-row .age.old { color: var(--red); font-weight: 600; }
-.dot { width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; }
 .rail-empty { padding: 14px 10px; font-size: 11.5px; line-height: 1.5; color: var(--faint); }
 .rail-foot { flex-shrink: 0; padding: 10px 12px 12px; border-top: 1px solid var(--hair); }
 .btn-back { display: flex; width: 100%; align-items: center; justify-content: center; gap: 7px; min-height: 36px; border: 1px solid var(--border-strong); border-radius: 9px; background: var(--surface); font-size: 12px; font-weight: 600; cursor: pointer; }
 
 /* Centre */
-.centre { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; container-type: inline-size; }
+.centre { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; container-type: inline-size; background: var(--surface); }
 .centre-scroll { flex-grow: 1; min-height: 0; overflow: auto; }
-.dot.sm { width: 7px; height: 7px; }
 .r { text-align: right; }
 .pill { display: inline-flex; align-items: center; height: 21px; padding: 0 9px; border-radius: 11px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
 .pill.xs { height: 19px; padding: 0 8px; font-size: 10px; }
@@ -176,12 +176,12 @@ button { font-family: inherit; color: inherit; }
 .p-back:hover { background: var(--sunk); color: var(--ink); }
 .p-id { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px 13px; }
 .p-name { flex: 1 1 240px; min-width: 0; }
-.p-av { width: 42px; height: 42px; flex-shrink: 0; border-radius: 11px; background: #F0EFEA; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #5E5B54; }
-.p-id h1 { margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
-.p-id .meta { font-size: 12px; color: var(--muted); margin-top: 3px; font-family: var(--mono); }
-.facts { display: flex; gap: 22px; padding-top: 2px; margin-left: auto; white-space: nowrap; }
-.facts .k { font-size: 10.5px; color: var(--faint); }
-.facts .v { font-size: 12.5px; font-weight: 600; margin-top: 2px; }
+.p-id h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+.p-id .meta { font-size: 14px; color: var(--muted); margin-top: 4px; font-family: var(--mono); } /* --muted: about 5.4:1 on white, passes WCAG AA */
+.facts { display: flex; gap: 28px; padding-top: 2px; margin-left: auto; white-space: nowrap; }
+/* Labels in --muted (about 5.4:1 on white) so they pass WCAG AA at this size; --faint would not */
+.facts .k { font-size: 13px; color: var(--muted); }
+.facts .v { font-size: 16px; font-weight: 600; margin-top: 3px; }
 .facts .v.late { color: var(--red); }
 .pad { padding: 18px 20px 24px; }
 
@@ -249,7 +249,7 @@ textarea.field:focus { border-color: var(--primary); }
 .n-text { font-size: 12.5px; line-height: 1.55; margin-top: 4px; color: var(--ink-2); }
 
 /* Right pane */
-.track { width: 380px; flex-shrink: 0; transition: width 0.18s ease; display: flex; flex-direction: column; background: var(--surface); border-left: 1px solid var(--border); }
+.track { position: relative; width: var(--track-w, 380px); flex-shrink: 0; transition: width 0.18s ease; display: flex; flex-direction: column; background: var(--side); border-left: 1px solid var(--border); }
 .t-head { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 9px 8px 9px 14px; border-bottom: 1px solid var(--border); }
 .rail-top { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 12px 8px 10px 12px; }
 .col-toggle { width: 30px; height: 30px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: transparent; color: var(--faint); cursor: pointer; }
@@ -264,7 +264,7 @@ textarea.field:focus { border-color: var(--primary); }
 .t-head .title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .aw-grid { display: grid; grid-template-columns: minmax(0, 1fr) 56px 70px; gap: 8px; align-items: center; }
 .aw-cols { flex-shrink: 0; padding: 8px 14px; background: var(--ground); border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
-.aw-row { padding: 9px 14px; border-bottom: 1px solid #F4F2ED; }
+.aw-row { padding: 9px 14px; border-bottom: 1px solid var(--border); }
 .aw-row:last-child { border-bottom: 0; }
 .aw-item { display: flex; align-items: center; gap: 9px; min-width: 0; }
 .aw-text { font-size: 12px; line-height: 1.4; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -272,6 +272,7 @@ textarea.field:focus { border-color: var(--primary); }
 .aw-sub { font-size: 11px; color: var(--faint); font-family: var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .due { font-size: 11px; font-family: var(--mono); color: var(--muted); text-align: right; white-space: nowrap; }
 .due.late { color: var(--red); font-weight: 600; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .due.soon { color: var(--amber); font-weight: 600; }
 .aw-row.done .due { color: var(--ghost); font-weight: 400; }
 .tick { width: 16px; height: 16px; padding: 0; flex-shrink: 0; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--surface); border: 1.5px solid #C9C6BD; }
@@ -350,8 +351,8 @@ textarea.field:focus { border-color: var(--primary); }
 /* Home: the dashboard */
 .home { max-width: 1060px; margin: 0 auto; padding: 48px 28px 28px; }
 .hello { margin: 0; font-size: clamp(28px, 4.2cqi, 46px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.12; }
+.hello .sub { display: block; color: #B9BCC2; }
 .hello .hi { display: block; background: linear-gradient(90deg, #2F5FA8, #6F58B8 55%, #B0506A); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.hello .sub { display: block; color: #B3B0A7; }
 .dash { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 34px; }
 .dcard { min-width: 0; padding: 16px 18px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-card); }
 .dcard.wide { grid-column: 1 / -1; }
@@ -387,6 +388,35 @@ textarea.field:focus { border-color: var(--primary); }
   .bars { gap: 3px; } .bar-x { gap: 3px; }
 }
 
+/* Home: four small action cards, each opening the dashboard at its chart */
+.acards { display: grid; grid-template-columns: repeat(4, minmax(0, 184px)); gap: 12px; margin-top: 48px; }
+/* The home column is as wide as the card row and sits in the middle, with the search bar matching it */
+.landing .home { max-width: calc(4 * 184px + 3 * 12px + 56px); }
+.landing .search form { max-width: calc(4 * 184px + 3 * 12px); margin: 0 auto; }
+.acard { min-width: 0; height: 184px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; padding: 14px 14px 12px; text-align: left; background: var(--tile); border: 0; border-radius: 16px; color: var(--ink); font: inherit; cursor: pointer; transition: background-color 0.15s, border-color 0.15s; }
+.acard:hover { background: var(--tile-hover); }
+.acard-t { font-size: 14px; font-weight: 500; line-height: 1.35; letter-spacing: -0.01em; }
+.acard-p { display: block; min-height: 0; }
+.ap-bars { display: flex; align-items: flex-end; gap: 2px; height: 52px; border-bottom: 1px solid var(--border); }
+.ap-bars i { flex: 1 1 0; min-height: 2px; background: var(--primary); border-radius: 3px 3px 0 0; }
+.ap-bars i.partial { background: repeating-linear-gradient(135deg, var(--primary) 0 3px, #9DB3D9 3px 6px); }
+.ap-num { font-size: 26px; font-weight: 600; letter-spacing: -0.035em; line-height: 1; }
+.ap-num small { margin-left: 5px; font-size: 12px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+.ap-spark { display: block; width: 100%; height: 28px; margin-top: 8px; overflow: visible; }
+.ap-line { margin-top: 8px; font-size: 12px; color: var(--muted); }
+.ap-pn { margin-top: 2px; font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+.ap-pb { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.ap-pb span { flex: 1 1 auto; height: 10px; background: #DDE1E6; border-radius: 5px; overflow: hidden; }
+.ap-pb i { display: block; height: 100%; background: var(--primary); border-radius: 5px; }
+.ap-pb b { flex-shrink: 0; font-family: var(--mono); font-size: 11.5px; font-weight: 500; color: var(--ink-3); }
+.dash-page { padding-top: 28px; }
+.dash-title { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.025em; }
+.dash-sub { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+.dash-page .dash { margin-top: 22px; }
+.dcard.focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--blue-bg); }
+@container (max-width: 820px) { .acards { grid-template-columns: repeat(2, minmax(0, 184px)); } }
+@container (max-width: 560px) { .acards { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 28px; } .acard { height: 168px; } }
+
 /* The patient page: the algorithm as a row of steps, then the triage note in two cards */
 .card { min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-card); }
 .card-h { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 16px 18px 0; }
@@ -402,8 +432,9 @@ textarea.field:focus { border-color: var(--primary); }
 .strip-wrap { overflow-x: auto; padding: 20px 18px 20px; }
 .strip-row { display: flex; align-items: center; min-width: min-content; }
 .snode, .tnode { position: relative; display: flex; align-items: center; gap: 10px; padding: 9px 10px; text-align: left; cursor: pointer; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; box-shadow: 0 2px 6px rgba(20, 20, 15, 0.05); transition: opacity 0.15s, box-shadow 0.15s; }
-.snode { flex: 1 1 0; min-width: 150px; }
-.snode.end { flex-grow: 1.3; min-width: 180px; }
+.snode { flex: 1 1 0; min-width: 150px; max-width: 260px; }
+.snode.end { flex-grow: 1.3; min-width: 180px; max-width: 300px; }
+.strip-row .sn-link { flex-grow: 0; width: 28px; }
 .snode .sn-ic { width: 34px; height: 34px; }
 .snode:hover, .tnode:hover { box-shadow: 0 4px 14px rgba(20, 20, 15, 0.1); }
 .snode.met, .tnode.on.met { border-color: #B6DCC8; box-shadow: 0 0 0 3px rgba(14, 122, 82, 0.07); }
@@ -426,6 +457,13 @@ textarea.field:focus { border-color: var(--primary); }
 .mk.gap { background: var(--purple); }
 .mk.pending { background: var(--surface); border: 2px solid var(--amber-dot); border-right-color: transparent; }
 .duo { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; align-items: start; }
+.aw-card .aw-body { margin-top: 12px; padding-bottom: 6px; }
+.aw-card .aw-cols { padding: 8px 18px; }
+.aw-card .aw-row { padding: 10px 18px; }
+.pnote { padding: 16px; }
+.pnote-h { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+.pnote-h .tnote-t { margin: 0; }
+.pnote .kv.tight { grid-template-columns: minmax(0, 104px) minmax(0, 1fr); }
 @container (max-width: 860px) { .duo { grid-template-columns: minmax(0, 1fr); } }
 .ctabs { display: flex; gap: 4px; padding: 12px 14px 0; overflow-x: auto; }
 .ctabs button { flex-shrink: 0; min-height: 34px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted); }
@@ -441,6 +479,16 @@ textarea.field:focus { border-color: var(--primary); }
 .lsum .r { text-align: right; }
 .lsum .u, .u { font-size: 10.5px; font-weight: 500; color: var(--faint); }
 .lsum .recent { font-family: var(--mono); font-size: 11px; line-height: 1.6; color: var(--ink-3); white-space: nowrap; }
+.lab-val { padding: 0 4px; margin: 0 -4px; border: 0; border-radius: 4px; background: transparent; font: inherit; color: inherit; cursor: pointer; text-decoration: underline dotted var(--border-strong); text-underline-offset: 3px; }
+.lab-val:hover, .lab-val.on { background: var(--blue-bg); color: var(--primary); text-decoration-color: var(--primary); }
+.lsum .lab-val.low { color: var(--amber); }
+.lab-edit td { padding: 0 10px 12px; background: var(--surface); }
+.lab-ov { margin-top: 0; }
+.lab-ov-grid { display: grid; grid-template-columns: minmax(0, 180px) minmax(0, 1fr); gap: 10px; margin-top: 10px; }
+.lab-ov-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.lab-ov-grid input { height: 34px; padding: 0 9px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); font: inherit; font-size: 13px; font-weight: 400; }
+.lab-ov-grid input:focus { outline: none; border-color: var(--primary); }
+.card-h .ver-list { justify-content: flex-end; }
 .low { color: var(--amber); font-weight: 600; }
 .spark { display: block; width: 92px; height: 28px; overflow: visible; }
 .trend { display: block; width: 100%; height: auto; overflow: visible; }
@@ -465,7 +513,6 @@ textarea.field:focus { border-color: var(--primary); }
 .kv dd.missing { color: var(--amber); }
 .kv.tight { gap: 6px 12px; grid-template-columns: minmax(0, 118px) minmax(0, 1fr); }
 .tnote-t { margin-bottom: 12px; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
-.note-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .gap-note { padding: 12px 14px; border: 1px dashed var(--amber-dot); border-radius: 10px; background: #FDFAF3; font-size: 13px; line-height: 1.55; color: var(--ink-2); }
 .exec-lines { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; font-size: 13px; line-height: 1.55; color: var(--ink); }
 .exec-lines li::marker { font-family: var(--mono); font-size: 11.5px; color: var(--faint); }
@@ -476,10 +523,16 @@ textarea.field:focus { border-color: var(--primary); }
 @container (max-width: 560px) { .kv, .kv.tight { grid-template-columns: minmax(0, 1fr); gap: 2px; } .kv dd { margin-bottom: 8px; } }
 
 /* Right panel: tabs, with the chat box pinned at the bottom */
-.ptabs { flex-shrink: 0; display: flex; gap: 2px; padding: 0 10px; border-bottom: 1px solid var(--border); overflow-x: auto; }
-.ptabs button { flex-shrink: 0; min-height: 40px; padding: 0 10px; border: 0; background: transparent; cursor: pointer; font-size: 12.5px; font-weight: 500; color: var(--muted); box-shadow: inset 0 -2px 0 transparent; }
-.ptabs button[aria-selected="true"] { color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--primary); }
-.ptabs .n { margin-left: 5px; font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+/* Tabs and the collapse button share one row. Text is 14px; unselected tabs and counts use --muted (about 4.9:1 on the grey panel), passing WCAG AA. */
+.ptabs-row { flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px 0 6px; border-bottom: 1px solid var(--border); }
+.ptabs { flex: 1 1 auto; min-width: 0; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+.ptabs button { flex-shrink: 0; min-height: 48px; padding: 0 9px; border: 0; background: transparent; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--muted); box-shadow: inset 0 -2px 0 transparent; }
+.ptabs button:hover { color: var(--ink); }
+.ptabs button[aria-selected="true"] { color: var(--ink); font-weight: 600; box-shadow: inset 0 -3px 0 var(--primary); }
+.ptabs .n { margin-left: 5px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.ptabs-row .col-toggle { color: var(--muted); }
+.chat-empty { padding: 16px 14px; font-size: 13px; color: var(--muted); }
+@media (max-width: 1279px) { .ptabs button { padding: 0 6px; } .ptabs .n { margin-left: 4px; } .ptabs-row { padding-left: 4px; } }
 .panel-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
 .panel-body .aw-cols { position: sticky; top: 0; z-index: 1; }
 .panel-body .log-list { overflow: visible; }
@@ -492,8 +545,16 @@ textarea.field:focus { border-color: var(--primary); }
 .hist-list { padding: 0 14px; }
 .hist-list .h-row { padding: 12px 0; flex-wrap: wrap; gap: 8px 10px; }
 .hist-list .h-date { width: auto; }
-.panel-ask { flex-shrink: 0; }
-.panel-ask .search { padding: 10px 12px 12px; }
+.panel-ask { flex-shrink: 0; border-top: 1px solid var(--border); }
+/* The two drafting actions, once, above the chat box */
+.draft-acts { display: grid; gap: 8px; padding: 12px 12px 0; }
+.draft-btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; transition: background-color 0.12s; }
+.draft-btn:hover { background: #F7F7F5; }
+.draft-btn.fill { background: #E7E7E4; border-color: #DCDBD7; }
+.draft-btn.fill:hover { background: #DEDDDA; }
+.draft-btn svg { color: var(--ink-3); }
+.centre .search { border-top: 0; padding: 8px 24px 20px; }
+.panel-ask .search { padding: 8px 12px 12px; background: transparent; border-top: 0; }
 .panel-ask .suggest { flex-wrap: wrap; }
 .panel-ask .kbd { display: none; }
 
@@ -545,6 +606,21 @@ textarea.field:focus { border-color: var(--primary); }
 .tm-side .s-aside { margin-top: 12px; }
 .read-from { display: flex; align-items: flex-start; gap: 7px; margin-top: 10px; font-size: 12px; line-height: 1.45; color: var(--muted); }
 .read-from svg { margin-top: 2px; flex-shrink: 0; }
+/* Provider notes in the tree sidebar */
+.pv-list { display: grid; gap: 8px; }
+.pv-row { padding: 11px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+.pv-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.pv-who { font-size: 13px; font-weight: 600; color: var(--ink); }
+.pv-role { font-size: 12px; color: var(--muted); }
+.pv-d { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.side-sec p.pv-t { margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+.pv-row .read-from { margin-top: 8px; }
+.pv-none { font-size: 12.5px; }
+.pv-add { margin-top: 10px; }
+.pv-form { margin-top: 10px; }
+.pv-lab { display: block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+.pv-err { margin-top: 6px; font-size: 12px; color: var(--red); }
+.pv-acts { display: flex; gap: 8px; margin-top: 8px; }
 .req { width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 12px 9px 9px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); cursor: pointer; text-align: left; font-size: 13px; font-weight: 500; }
 .req:hover { border-color: var(--border-strong); }
 .meter { height: 10px; margin-top: 12px; border-radius: 5px; background: var(--sunk); overflow: hidden; }
@@ -636,9 +712,9 @@ textarea.field:focus { border-color: var(--primary); }
 .mic.on { background: #A33A2B; border-color: #A33A2B; color: #FFFFFF; }
 .mic:disabled { opacity: 0.45; cursor: default; }
 @media (max-width: 1279px) {
-  .rail { width: 272px; }
-  .track { width: 328px; }
-  .facts { gap: 16px; }
+  .rail { width: var(--rail-w, 272px); }
+  .track { width: var(--track-w, 328px); }
+  .facts { gap: 20px; }
 }
 
 @media (max-width: 1023px) {
@@ -651,7 +727,8 @@ textarea.field:focus { border-color: var(--primary); }
   }
   .rail.open { transform: none; box-shadow: 12px 0 32px rgba(20, 20, 15, 0.16); }
   .scrim.on { display: block; position: absolute; inset: 0; z-index: 15; background: rgba(27, 27, 25, 0.28); border: 0; padding: 0; cursor: pointer; }
-  .track { width: 312px; }
+  .track { width: var(--track-w, 312px); }
+  .rail .rs-handle { display: none; }
   .aw-text { white-space: normal; }
   .aw-grid { align-items: start; }
   .today { display: none; }
@@ -670,6 +747,7 @@ textarea.field:focus { border-color: var(--primary); }
     transform: translateX(102%); transition: transform 0.22s ease;
   }
   .track.open { transform: none; box-shadow: -12px 0 32px rgba(20, 20, 15, 0.16); }
+  .track .rs-handle { display: none; }
   .pip { right: 16px; bottom: 16px; width: min(340px, calc(100% - 32px)); max-height: calc(100% - 32px); }
   .pill-win { right: 16px; bottom: 16px; max-width: calc(100% - 32px); }
   .pill-win > span:nth-child(2) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
@@ -681,6 +759,16 @@ textarea.field:focus { border-color: var(--primary); }
   .tick { width: 22px; height: 22px; border-radius: 5px; }
   .cal .cell { min-height: 42px; }
 }
+
+/* Drag the inner edge of either side column to resize it */
+.rs-handle { position: absolute; top: 0; bottom: 0; z-index: 6; width: 10px; cursor: col-resize; touch-action: none; outline: none; }
+.rail .rs-handle { right: -5px; }
+.track .rs-handle { left: -5px; }
+.rs-handle::after { content: ''; position: absolute; top: 0; bottom: 0; left: 4px; width: 2px; background: transparent; transition: background-color 0.12s; }
+.rs-handle:hover::after, .rs-handle:focus-visible::after, .rs-handle.on::after { background: var(--primary); }
+.collapsed > .rs-handle { display: none; }
+body.resizing { cursor: col-resize; user-select: none; }
+body.resizing .rail, body.resizing .track { transition: none; }
 
 /* Collapsing applies where the column sits beside the work, not as a drawer */
 @media (min-width: 1024px) {
@@ -708,9 +796,8 @@ textarea.field:focus { border-color: var(--primary); }
 }
 
 @container (max-width: 560px) {
-  .p-id h1 { font-size: 18px; }
-  .p-id .meta { font-size: 11px; }
-  .p-av { width: 36px; height: 36px; font-size: 12.5px; }
+  .p-id h1 { font-size: 20px; }
+  .p-id .meta { font-size: 12.5px; line-height: 1.5; }
   .h-row { flex-wrap: wrap; row-gap: 4px; }
   .h-date { width: auto; }
   .h-row > div:last-child { flex-basis: 100%; padding-left: 23px; }
@@ -740,6 +827,7 @@ const daysSince = (y, m, d) => Math.round((Date.UTC(TODAY.y, TODAY.m - 1, TODAY.
 const key = (m, d) => m * 100 + d;
 
 const ICON = {
+  msg: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg>',
   logo: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-7 4 14 2.5-7H22"/></svg>',
   logoSm: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-7 4 14 2.5-7H22"/></svg>',
   down: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
@@ -795,18 +883,12 @@ const STATUS = {
   declined: { label: 'Declined', dot: '#8A3324' }
 };
 
-// Declined referrals say what happened next; each is its own filter under Declined.
-const DECLINE = {
-  malig: 'Referred to malignant hematology',
-  invest: 'Further investigations requested'
-};
 const FILTERS = {
   all: 'All referrals',
   awaiting: 'Awaiting',
   accepted: 'Accepted',
   declined: 'Declined',
-  'declined-malig': 'Declined · ' + DECLINE.malig,
-  'declined-invest': 'Declined · ' + DECLINE.invest
+  external: 'External referrals'
 };
 
 // One flat list. Every view reads the same items, so a tick lands everywhere.
@@ -877,10 +959,38 @@ const NOTES = [
 ];
 const WORKED = '40-118-772';
 
+// Provider notes that bear on each node of the tree. Sample text for the prototype, not from Epic.
+const PROVIDER_NOTES = {
+  root: [
+    { who: 'J. Whitfield, MD', role: 'Referring · Northgate Primary Care', date: 'Oct 27', src: 'Referral letter',
+      text: 'Incidental low lymphocytes on routine labs. Asymptomatic, no recurrent infections. Please advise whether hematology needs to see her.' }
+  ],
+  g1: [
+    { who: 'J. Whitfield, MD', role: 'Referring', date: 'Oct 20', src: 'Result comment, CBC Oct 20',
+      text: 'Rest of the CBC is unremarkable. No anemia, platelets normal.' }
+  ],
+  g2: [
+    { who: 'Dr. Shah', role: 'Hematology', date: 'Nov 2', src: 'Triage review',
+      text: 'Agree with holding. One low value is not enough; I want a repeat CBC at least 4 weeks after Oct 20 before we book.' },
+    { who: 'J. Whitfield, MD', role: 'Referring', date: 'Jun 3', src: 'Progress note, Jun 3',
+      text: 'CBC today is normal. Follow up at the annual visit.' }
+  ],
+  g4: [
+    { who: 'A. Patel, MD', role: 'Allergy & Immunology', date: 'Sep 14', src: 'Outside records packet',
+      text: 'Immunoglobulins within range. No primary immunodeficiency suspected. No further immunology follow-up needed.' }
+  ]
+};
+
 /* ---------- State ---------- */
 
 const S = {
+  railW: null, trackW: null, // side column widths the user dragged to, in px (null = default)
+  pn: {}, pnOpen: null, pnErr: '',
+  labEdit: null, // { k, date, val, why, err }: a lab value being changed inline in the Lab summary
+  // provider notes added in the tree, by node; which node's add form is open
   view: 'queue',          // queue | patient | pip
+  home: 'cards',          // cards | dash (the home screen, or the dashboard it opens)
+  dashFocus: null, dashScroll: false,
   day: null,             // 'y-m-d' picked in the calendar
   rangeMode: false,      // the calendar picks a start and end day instead of one day
   range: { from: null, to: null }, // 'y-m-d' each; 'to' is null until the end day is picked
@@ -908,7 +1018,7 @@ const S = {
   ov: null,              // the override being written in the tree sidebar
   srcOpen: {},           // sources and notes opened from the evidence
   noteTab: 'labs',       // evidence tab on the patient page
-  panelTab: 'awaiting',  // right panel tab: awaiting | notes | history | chat
+  panelTab: 'note',      // right panel tab: note | notes | history | chat
   dash: 'month',         // referral volume by month or quarter
   toast: null,
   scrollChat: false,
@@ -922,7 +1032,6 @@ const S = {
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const surname = (p) => p.name.split(',')[0];
-const initials = (p) => p.name.split(',').map((s) => s.trim()[0]).reverse().join('');
 const dueLabel = (a) => MONTHS[a.dm - 1] + ' ' + a.dd;
 const dueTone = (a) => {
   const left = -daysSince(2026, a.dm, a.dd);
@@ -934,7 +1043,7 @@ const itemsFor = (mrn) => AWAITING.filter((a) => a.mrn === mrn);
 const matchesFilter = (p) => {
   const f = S.filter;
   if (f === 'all') return true;
-  if (f.startsWith('declined-')) return p.status === 'declined' && p.decline === f.slice('declined-'.length);
+  if (f === 'external') return p.source === 'External';
   return p.status === f;
 };
 const dayKey = (y, m, d) => `${y}-${m}-${d}`;
@@ -1014,16 +1123,11 @@ function renderRail() {
     </div>`;
 
   const chip = (id, label, size) => `<button type="button" class="chip ${size || ''}" data-act="filter" data-v="${id}" aria-pressed="${S.filter === id}">${label}</button>`;
-  const declined = S.filter.startsWith('declined');
   const filters = `
     <div class="rail-filters">
       <div class="chips" role="group" aria-label="Filter by decision">
-        ${chip('all', 'All')}${chip('awaiting', 'Awaiting')}${chip('accepted', 'Accepted')}
-        <button type="button" class="chip ${declined && S.filter !== 'declined' ? 'active' : ''}" data-act="filter" data-v="declined" aria-pressed="${S.filter === 'declined'}">Declined</button>
+        ${chip('all', 'All')}${chip('awaiting', 'Awaiting')}${chip('accepted', 'Accepted')}${chip('declined', 'Declined')}${chip('external', 'External')}
       </div>
-      ${declined ? `<div class="chips sub" role="group" aria-label="Declined, and then">
-        ${chip('declined-malig', DECLINE.malig, 'sm')}${chip('declined-invest', DECLINE.invest, 'sm')}
-      </div>` : ''}
     </div>`;
 
   const rows = PEOPLE.filter((p) => onDay(p) && matchesFilter(p));
@@ -1047,15 +1151,14 @@ function renderRail() {
     ? rows.map((p) => {
       const here = S.view === 'patient' && S.current === p.mrn;
       return `<button type="button" class="rail-row ${here ? 'here' : ''}" data-act="open" data-v="${p.mrn}" ${here ? 'aria-current="true"' : ''}>
-        <span class="dot" style="background: ${STATUS[p.status].dot}" title="${STATUS[p.status].label}"></span>
         <span class="who"><span class="name">${p.name}</span><span class="mrn">${p.mrn}</span></span>
-        <span class="age ${p.days > 14 ? 'old' : ''}">${p.days}d</span>
       </button>`;
     }).join('')
     : '<div class="rail-empty">No referrals match. Pick All, or clear the day.</div>';
 
   return `
     <aside class="rail ${S.drawer === 'rail' ? 'open' : ''} ${S.railCollapsed ? 'collapsed' : ''}" id="rail" aria-label="Find a patient">
+      <div class="rs-handle" data-resize="rail" role="separator" aria-orientation="vertical" aria-label="Resize the patient list" title="Drag to resize. Double-click to reset." tabindex="0"></div>
       <div class="strip">
         <button type="button" data-act="expand" data-v="rail" aria-label="Show the patient list" title="Show the patient list">${ICON.panelR}<span class="vert">Patients</span></button>
         ${S.view === 'patient' ? `<button type="button" data-act="toQueue" aria-label="Back to the day" title="Back to the day">${ICON.left}</button>` : ''}
@@ -1083,7 +1186,7 @@ function renderRail() {
 const VOLUME = [118, 124, 131, 127, 139, 142, 136, 151, 158, 149, 163, 141, 148, 161, 172, 158, 183, 176, 169, 190, 201, 187, 96];
 const VOL_START = { y: 2025, m: 1 };
 const DAYS_TO_APPT = [31, 29, 30, 27, 28, 26, 27, 25, 24, 25, 23, 22]; // average, the last 12 months
-const BY_PROVIDER = [['Dr. R. Okafor', 64], ['Dr. L. Nguyen', 51], ['Dr. M. Castillo', 47], ['Dr. J. Brennan', 38], ['Dr. E. Lindgren', 22]];
+const BY_PROVIDER = [['Dr. Shah', 64], ['Dr. L. Nguyen', 51], ['Dr. M. Castillo', 47], ['Dr. J. Brennan', 38], ['Dr. E. Lindgren', 22]];
 
 const volMonth = (i) => { const t = VOL_START.y * 12 + VOL_START.m - 1 + i; return { y: Math.floor(t / 12), m: (t % 12) + 1 }; };
 const isNowMonth = (i) => { const v = volMonth(i); return v.y === TODAY.y && v.m === TODAY.m; };
@@ -1166,17 +1269,74 @@ function providerCard() {
 function renderQueue() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  const newToday = PEOPLE.filter((p) => p.status === 'new').length;
-  const awaiting = PEOPLE.filter((p) => p.status === 'awaiting').length;
+  if (S.home === 'dash') return renderDashboard();
   return `
-    <main class="centre" aria-label="Home">
+    <main class="centre landing" aria-label="Home">
       <div class="centre-scroll"><div class="home">
-        <h2 class="hello"><span class="hi">${greeting}, Melissa</span><span class="sub">${newToday} new referrals to look at, ${awaiting} awaiting something.</span></h2>
-        <div class="dash">${volumeCard()}${totalCard()}${daysCard()}${providerCard()}</div>
+        <h2 class="hello"><span class="hi">${greeting}, Melissa</span><span class="sub">How can I help you today?</span></h2>
+        <div class="acards">${actionCards()}</div>
+        <p class="dash-note">Sample numbers for the prototype, not connected to Epic.</p>
+      </div></div>
+      ${renderSearch('Search an MRN or ask a question about the queue')}
+    </main>`;
+}
+
+// The four small cards on the home screen. Each opens the dashboard at its chart.
+function actionCards() {
+  const last12 = VOLUME.slice(-12);
+  const vmax = Math.max(...last12);
+  const volPrev = `<div class="ap-bars">${last12.map((n, j) => `<i class="${isNowMonth(VOLUME.length - 12 + j) ? 'partial' : ''}" style="height: ${Math.round((n / vmax) * 100)}%"></i>`).join('')}</div>`;
+
+  const d = DAYS_TO_APPT;
+  const W = 120; const H = 34; const lo = Math.min(...d) - 1; const hi = Math.max(...d) + 1;
+  const pts = d.map((v, i) => [Math.round((i / (d.length - 1)) * (W - 6)) + 3, Math.round(H - 3 - ((v - lo) / (hi - lo)) * (H - 6))]);
+  const daysPrev = `<div class="ap-num">${d[d.length - 1]}<small>days</small></div>
+    <svg class="ap-spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts.map((x) => x.join(',')).join(' ')}" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+
+  const ytd = VOLUME.filter((n, i) => volMonth(i).y === TODAY.y).reduce((a, b) => a + b, 0);
+  const totalPrev = `<div class="ap-num">${ytd.toLocaleString()}<small>this year</small></div><div class="ap-line">${VOLUME[VOLUME.length - 1]} so far in ${MONTH_NAMES[TODAY.m - 1]}</div>`;
+
+  // One provider as the example: the one with the most referrals, as a share of all of them.
+  const [topName, topN] = BY_PROVIDER.reduce((a, b) => (b[1] > a[1] ? b : a));
+  const allN = BY_PROVIDER.reduce((a, b) => a + b[1], 0);
+  const provPrev = `<div class="ap-line">Most referrals, 90 days</div>
+    <div class="ap-pn">${topName}</div>
+    <div class="ap-pb"><span><i style="width: ${Math.round((topN / allN) * 100)}%"></i></span><b>${topN} of ${allN}</b></div>`;
+
+  const cards = [
+    ['volume', 'See referral volume by month and quarter', volPrev],
+    ['days', 'Check days from referral to appointment', daysPrev],
+    ['total', 'Review total incoming volume', totalPrev],
+    ['provider', 'Compare referrals by provider', provPrev]
+  ];
+  return cards.map(([k, t, prev]) => `
+    <button type="button" class="acard" data-act="dashOpen" data-v="${k}">
+      <span class="acard-t">${t}</span>
+      <span class="acard-p" aria-hidden="true">${prev}</span>
+    </button>`).join('');
+}
+
+// The dashboard page: the full charts, with the one that was clicked brought into view.
+function renderDashboard() {
+  const f = (k, html) => html.replace('<section class="dcard', `<section id="dc-${k}" class="dcard${S.dashFocus === k ? ' focus' : ''}`);
+  return `
+    <main class="centre" aria-label="Dashboard">
+      <div class="centre-scroll"><div class="home dash-page">
+        <button type="button" class="p-back" data-act="dashHome">${ICON.left} Home</button>
+        <h2 class="dash-title">Referral dashboard</h2>
+        <p class="dash-sub">Hematology referrals: volume, time to appointment and who they go to.</p>
+        <div class="dash">${f('volume', volumeCard())}${f('total', totalCard())}${f('days', daysCard())}${f('provider', providerCard())}</div>
         <p class="dash-note">The numbers on this page are made up for the prototype. They are not connected to Epic.</p>
       </div></div>
       ${renderSearch('Search an MRN or ask a question about the queue')}
     </main>`;
+}
+
+function focusDash() {
+  if (!S.dashScroll) return;
+  S.dashScroll = false;
+  const el = document.getElementById('dc-' + S.dashFocus);
+  if (el) el.scrollIntoView({ block: 'nearest' });
 }
 
 function renderSearch(placeholder, suggestions) {
@@ -1200,17 +1360,17 @@ function renderPatient() {
   const p = byMrn(S.current);
   const worked = p.mrn === WORKED;
   const body = worked
-    ? `${algoCard()}<div class="duo">${evidenceCard()}${noteCard(p)}</div>`
-    : `<section class="card"><div class="card-h"><span class="card-t">Decision algorithm</span></div>
+    ? `${algoCard()}<div class="duo">${evidenceCard()}${awaitingCard(p)}</div>`
+    : `<section class="card"><div class="card-h"><span class="card-t">AI Decision Tree</span></div>
         <div class="cbody"><div class="gap-note"><strong>Not run.</strong> The algorithm has not been run on this referral in the prototype, so there is no decision, evidence or triage note yet.
-          ${p.waiting ? `It is awaiting <strong>${p.waiting.toLowerCase()}</strong>; tick it off on the right when it lands.` : ''}</div>
-          <button type="button" class="btn secondary sm" data-act="open" data-v="${WORKED}" style="margin-top: 12px">Open the worked example</button></div></section>`;
+          ${p.waiting ? `It is awaiting <strong>${p.waiting.toLowerCase()}</strong>; tick it off below when it lands.` : ''}</div>
+          <button type="button" class="btn secondary sm" data-act="open" data-v="${WORKED}" style="margin-top: 12px">Open the worked example</button></div></section>
+      <div style="margin-top: 14px">${awaitingCard(p)}</div>`;
   return `
     <main class="centre" aria-label="The patient">
       <div class="p-head">
         <button type="button" class="p-back" data-act="toQueue">${ICON.left} Home</button>
         <div class="p-id">
-          <div class="p-av">${initials(p)}</div>
           <div class="p-name">
             <h1>${p.name}</h1>
             <div class="meta">MRN ${p.mrn}${p.meta ? ' · ' + p.meta : ''}</div>
@@ -1276,14 +1436,15 @@ function restoreRow() {
 }
 
 // The decision always comes from the latest version, whichever one is being looked at.
-function decisionLine() {
+// short: just the outcome ("Awaiting"), for the card where the path's last box spells it out.
+function decisionLine(short) {
   const latest = latestVer();
   const ev = evaluate(latest);
   const ai = evaluate(S.alg.versions[0]);
   return `<div class="decision">
-    <span class="d-k">Decision</span>
-    <span class="d-v">${OUTCOME[ev.end]}</span>
-    <span class="pill xs ${latest.n > 1 ? 't-new' : 't-cold'}">V${latest.n}${latest.n > 1 ? ` · after ${latest.n - 1} ${latest.n === 2 ? 'change' : 'changes'}` : ' · AI'}</span>
+    ${short ? '' : '<span class="d-k">Decision</span>'}
+    <span class="d-v">${short ? 'Status: ' + OUTCOME[ev.end].split(' — ')[0] : OUTCOME[ev.end]}</span>
+    ${short ? '' : `<span class="pill xs ${latest.n > 1 ? 't-new' : 't-cold'}">V${latest.n}${latest.n > 1 ? ` · after ${latest.n - 1} ${latest.n === 2 ? 'change' : 'changes'}` : ' · AI'}</span>`}
     ${ev.end !== ai.end ? `<span class="d-was">The AI decided <s>${OUTCOME[ai.end]}</s> in V1.</span>` : ''}
   </div>`;
 }
@@ -1294,12 +1455,15 @@ function algoCard() {
   const ev = evaluate(viewed);
   const path = new Set(chainOf(ev.end));
   const ov = overridesIn(viewed);
-  const ids = ['g1', 'g2', 'g3', 'g4', 'g5'];
-  const nodes = ids.map((id, i) => {
+  // The strip shows only the path the referral took; steps it never reached live in the full tree.
+  const all = ['g1', 'g2', 'g3', 'g4', 'g5'];
+  const ids = all.filter((id) => path.has(id));
+  const nodes = ids.map((id, j) => {
+    const i = all.indexOf(id);
     const st = ev.steps[id];
-    const on = path.has(id);
+    const on = true;
     const badge = st.pending ? 'Pending' : ov[id] ? 'Changed in V' + ov[id].n : '';
-    return `${i ? `<span class="sn-link ${on ? 'on' : ''}" aria-hidden="true"></span>` : ''}
+    return `${j ? '<span class="sn-link on" aria-hidden="true"></span>' : ''}
       <button type="button" class="snode ${st.status} ${on ? '' : 'off'}" data-act="treeOpen" data-v="${id}" aria-label="Step ${i + 1}: ${STEPS[i].q} ${stepSub(st)}${on ? '' : ', not reached'}">
         ${badge ? `<span class="sn-badge ${st.pending ? '' : 'blue'}">${badge}</span>` : ''}
         <span class="sn-ic">${nodeIcon(id)}</span>
@@ -1313,15 +1477,16 @@ function algoCard() {
       <span class="sn-txt"><span class="sn-t">${OUTCOME[ev.end]}</span><span class="sn-s">Where the path ends · V${viewed.n}</span></span>
     </button>`;
   return `
-    <section class="card" aria-label="Decision algorithm">
+    <section class="card" aria-label="AI decision tree">
       <div class="card-h">
-        <div class="grow" style="min-width: 0"><span class="card-t">Decision algorithm</span><div class="card-sub">Isolated lymphopenia · external · rev. 4</div></div>
-        ${versionChips()}
+        <div class="grow" style="min-width: 0"><span class="card-t">AI Decision Tree</span></div>
+        ${S.alg.versions.length > 1 ? versionChips() : ''}
         <button type="button" class="btn secondary sm" data-act="treeOpen" data-v="">${ICON.out} View full tree</button>
       </div>
-      ${decisionLine()}
+      ${decisionLine(true)}
       ${restoreRow()}
-      <div class="strip-wrap"><div class="strip-row">${nodes}${end}</div></div>
+      <div class="strip-wrap"><div class="strip-row">${nodes}${end}</div>
+      </div>
     </section>`;
 }
 
@@ -1394,10 +1559,34 @@ function testingRows(ev) {
 
 // The left card: the triage note's evidence, in tabs like the example note.
 function evidenceCard() {
-  const ev = evaluate(viewedVer());
+  const viewed = viewedVer();
+  const ev = evaluate(viewed);
+  const editable = viewed === latestVer();
   const tab = S.noteTab;
   let body;
   if (tab === 'labs') {
+    const le = S.labEdit;
+    const val = (k, x) => {
+      const [lo, hi, label] = CBC_RANGE[k];
+      const cls = x[k] < lo || x[k] > hi ? 'low' : '';
+      return editable
+        ? `<button type="button" class="lab-val ${cls} ${le && le.k === k && le.date === x.date ? 'on' : ''}" data-act="labEdit" data-v="${k}|${x.date}" aria-label="Change ${label} on ${isoLabel(x.date)}, now ${x[k]}">${isoLabel(x.date)}: ${x[k]}</button>`
+        : `<span class="${cls}">${isoLabel(x.date)}: ${x[k]}</span>`;
+    };
+    const editRow = (k) => {
+      if (!le || le.k !== k) return '';
+      const [, , label, unit] = CBC_RANGE[k];
+      const was = (ev.sets.find((x) => x.date === le.date) || {})[k];
+      return `<tr class="lab-edit"><td colspan="5"><div class="ov lab-ov">
+        <div class="ov-h">Change ${label} on ${isoLabel(le.date)}<span>Saved as V${latestVer().n + 1}, with your reason</span></div>
+        <div class="lab-ov-grid">
+          <label>${label} (${unit}), was ${was}<input type="number" step="0.01" data-le="val" value="${esc(String(le.val))}" id="labEditVal"></label>
+          <label>Why<input type="text" data-le="why" value="${esc(le.why)}" placeholder="e.g. Lab corrected the result"></label>
+        </div>
+        ${le.err ? `<div class="err" role="alert" style="margin-top: 8px">${le.err}</div>` : ''}
+        <div class="row"><button type="button" class="btn primary sm" data-act="labSave">Save as V${latestVer().n + 1}</button><button type="button" class="btn secondary sm" data-act="labCancel">Cancel</button><span class="ov-hint">The decision updates as soon as it saves.</span></div>
+      </div></td></tr>`;
+    };
     const rows = ['alc', 'wbc', 'hgb', 'plt', 'anc'].map((k) => {
       const [lo, hi, label, unit] = CBC_RANGE[k];
       const out = ev.sets.filter((x) => x[k] < lo || x[k] > hi);
@@ -1406,14 +1595,14 @@ function evidenceCard() {
         <td class="r mono">${ev.sets.length}</td>
         <td class="r mono ${out.length ? 'low' : ''}">${out.length}</td>
         <td>${trendSvg(ev.sets, k, false)}</td>
-        <td class="recent">${ev.sets.slice().reverse().map((x) => `<span class="${x[k] < lo || x[k] > hi ? 'low' : ''}">${isoLabel(x.date)}: ${x[k]}</span>`).join('<br>')}</td>
-      </tr>`;
+        <td class="recent">${ev.sets.slice().reverse().map((x) => val(k, x)).join('<br>')}</td>
+      </tr>${editRow(k)}`;
     }).join('');
     body = `<div class="thr"><strong>Thresholds used:</strong> ALC below 1.0 K/µL is low. WBC 4.0–11.0, Hgb 12.0–15.5, Plt 150–400, ANC 1.8–7.7.</div>
       <div class="lsum-wrap"><table class="lsum">
         <thead><tr><th scope="col">Test</th><th scope="col" class="r">n</th><th scope="col" class="r">Out of range</th><th scope="col">Trend</th><th scope="col">Recent</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
-      <div class="thr" style="margin: 10px 0 0">Shaded: the reference range. Amber points are out of range.</div>`;
+      <div class="thr" style="margin: 10px 0 0">Shaded: the reference range. Amber points are out of range. ${editable ? 'Click a result to change it; the change is saved as a new version.' : `You're looking at V${viewed.n}; go back to the latest to change a result.`}</div>`;
   } else if (tab === 'testing') {
     body = testingRows(ev);
   } else {
@@ -1428,7 +1617,20 @@ function evidenceCard() {
 }
 
 // The right card: the triage note itself. Its summary and missing list come from the algorithm.
-function noteCard(p) {
+// What the referral is still waiting on, as a card on the main screen.
+function awaitingCard(p) {
+  const items = itemsFor(p.mrn);
+  const open = openItems(items);
+  return `
+    <section class="card aw-card" aria-label="Awaiting items">
+      <div class="card-h"><span class="card-t grow">Awaiting items</span>${items.length ? `<span class="pill ${open ? 't-awaiting' : 't-met'}" style="height: 20px">${open ? open + ' open' : 'All in'}</span>` : ''}</div>
+      <div class="aw-body">${items.length
+        ? '<div class="aw-cols aw-grid"><span>Item</span><span class="r">Asked</span><span class="r">Due</span></div>' + items.map((a) => awaitingRow(a, 'patient')).join('')
+        : `<div class="aw-none">Nothing awaiting on ${p.name}. ${p.status === 'new' ? 'Untouched — nothing has been asked for yet.' : ''}</div>`}</div>
+    </section>`;
+}
+
+function noteBody(p) {
   const latest = latestVer();
   const ev = evaluate(latest);
   const miss = missingFor(ev);
@@ -1436,10 +1638,8 @@ function noteCard(p) {
   const now = new Date();
   const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
   return `
-    <section class="card" aria-label="Triage note">
-      <div class="card-h"><span class="card-t grow">Triage note</span><span class="ai-tag" title="Drafted from the algorithm. Review before charting.">AI draft · V${latest.n}</span></div>
-      <div class="cbody">
-        <div class="tnote-t">Isolated lymphopenia</div>
+    <div class="pnote">
+        <div class="pnote-h"><span class="tnote-t grow">Isolated lymphopenia</span><span class="ai-tag" title="Drafted from the algorithm. Review before charting.">AI draft · V${latest.n}</span></div>
         <dl class="kv tight">
           <dt>Date/time</dt><dd>${TODAY_LONG} · ${time}</dd>
           <dt>Patient</dt><dd>${p.name} · MRN ${p.mrn} · F</dd>
@@ -1449,18 +1649,13 @@ function noteCard(p) {
         <div class="kicker" style="margin-top: 16px">Snapshot</div>
         <ol class="exec-lines">${summaryLines(ev).map((l) => `<li>${l}</li>`).join('')}</ol>
         <div class="exec-miss">
-          <div class="kicker">Missing</div>
+          <div class="kicker">To Complete</div>
           ${miss.map((m) => `<div class="miss-row"><strong>${m.label}</strong> — ${m.why}</div>`).join('')}
           ${order ? `<div class="miss-row"><strong>Referral order</strong> — ${order.v.toLowerCase()}</div>` : ''}
           ${miss.length || order ? '' : '<div class="miss-row">Nothing. The algorithm has what it needs.</div>'}
           ${miss.length ? `<button type="button" class="btn secondary sm" data-act="toPip">${ICON.pip} Collect in the companion</button>` : ''}
         </div>
-        <div class="note-acts">
-          <button type="button" class="btn primary sm" data-act="ask" data-v="Draft a message">Draft a message to the provider</button>
-          <button type="button" class="btn secondary sm" data-act="ask" data-v="Draft the decision note">Draft the decision note</button>
-        </div>
-      </div>
-    </section>`;
+    </div>`;
 }
 
 /* ---------- Chat: the decision note is drafted here ---------- */
@@ -1561,7 +1756,7 @@ const noteText = (m) => m.frozen || (m.edited ? m.text : draftNote());
 
 function renderChat(p) {
   const thread = S.chat[p.mrn] || [];
-  if (!thread.length) return '';
+  if (!thread.length) return `<div class="aw-none chat-empty"><strong>No chat yet.</strong> Ask about this referral in the box below, or use Draft a note or Draft a provider message. Drafts appear here.</div>`;
   const msgs = thread.map((m, i) => {
     if (m.who === 'you') return `<div class="msg-you"><div class="bubble">${esc(m.text)}</div></div>`;
     if (m.kind === 'message') return renderMessage(p, m, i);
@@ -1605,7 +1800,9 @@ function logNote(tag, text) {
 function awaitingRow(a, scope) {
   const done = !!S.done[a.id];
   const tick = `<button type="button" class="tick" data-act="tick" data-v="${a.id}" aria-pressed="${done}" aria-label="${done ? 'Mark not done' : 'Mark done'}: ${a.item}">${done ? ICON.check : ''}</button>`;
-  const due = `<span class="due ${done ? '' : dueTone(a)}">${dueTone(a) === 'late' && !done ? 'Late · ' : ''}${dueLabel(a)}</span>`;
+  // Late shows as the red date; the word stays for screen readers and on hover, so it is not told by colour alone to them.
+  const late = dueTone(a) === 'late' && !done;
+  const due = `<span class="due ${done ? '' : dueTone(a)}"${late ? ' title="Late"' : ''}>${late ? '<span class="sr-only">Late, </span>' : ''}${dueLabel(a)}</span>`;
   if (scope === 'pip') {
     return `<div class="aw-row ${done ? 'done' : ''}"><div class="aw-item">${tick}<span class="aw-text grow">${a.item}</span>${due}</div></div>`;
   }
@@ -1631,40 +1828,38 @@ function draftNote() {
 }
 
 function renderTrack() {
-  const strip = (open) => `
+  const strip = () => `
       <div class="strip">
-        <button type="button" data-act="expand" data-v="track" aria-label="Show awaiting and notes${open ? ', ' + open + ' open' : ''}" title="Show awaiting and notes">${ICON.panelL}${open ? `<span class="count">${open}</span>` : ''}<span class="vert">Awaiting</span></button>
+        <button type="button" data-act="expand" data-v="track" aria-label="Show the triage note and notes" title="Show the triage note and notes">${ICON.panelL}<span class="vert">Triage note</span></button>
       </div>`;
-  const toggle = '<button type="button" class="col-toggle" data-act="collapse" data-v="track" aria-label="Hide awaiting and notes" title="Hide awaiting and notes">' + ICON.panelR + '</button>';
+  const toggle = '<button type="button" class="col-toggle" data-act="collapse" data-v="track" aria-label="Hide the triage note and notes" title="Hide the triage note and notes">' + ICON.panelR + '</button>';
   const cls = `track ${S.drawer === 'track' ? 'open' : ''} ${S.trackCollapsed ? 'collapsed' : ''}`;
 
-  // The day has no patient open, so there is no awaiting list or notes to show yet.
+  // The day has no patient open, so there is no triage note or notes to show yet.
   if (S.view === 'queue') {
     return `
-    <aside class="${cls}" id="track" aria-label="Awaiting and notes">
-      ${strip(0)}
-      <div class="t-head"><span class="title">Awaiting and notes</span><span class="grow"></span>${toggle}</div>
+    <aside class="${cls}" id="track" aria-label="Triage note and notes">
+      ${strip()}
+      <div class="rs-handle" data-resize="track" role="separator" aria-orientation="vertical" aria-label="Resize the triage note panel" title="Drag to resize. Double-click to reset." tabindex="0"></div>
+      <div class="t-head"><span class="title">Triage note and notes</span><span class="grow"></span>${toggle}</div>
       <div class="t-empty">
         <p><strong>No patient open.</strong></p>
-        <p>Pick a patient from the list and their awaiting items and notes appear here.</p>
+        <p>Pick a patient from the list and their triage note and notes appear here.</p>
       </div>
     </aside>`;
   }
 
   const cur = byMrn(S.current);
-  const items = itemsFor(cur.mrn);
-  const open = openItems(items);
-  const chip = items.length === 0 ? '' : `<span class="pill ${open ? 't-awaiting' : 't-met'}" style="height: 20px">${open ? open + ' open' : 'All in'}</span>`;
   const log = (S.added[cur.mrn] || []).concat(cur.mrn === WORKED ? NOTES : []);
   const hist = (cur.mrn === WORKED ? HISTORY : []).concat(S.history[cur.mrn] || []);
   const thread = S.chat[cur.mrn] || [];
-  const tab = S.panelTab === 'chat' && !thread.length ? 'awaiting' : S.panelTab;
+  const tab = S.panelTab;
 
   let body;
-  if (tab === 'awaiting') {
-    body = items.length
-      ? '<div class="aw-cols aw-grid"><span>Item</span><span class="r">Asked</span><span class="r">Due</span></div>' + items.map((a) => awaitingRow(a, 'patient')).join('')
-      : `<div class="aw-none">Nothing awaiting on ${cur.name}. ${cur.status === 'new' ? 'Untouched — nothing has been asked for yet.' : ''}</div>`;
+  if (tab === 'note') {
+    body = cur.mrn === WORKED
+      ? noteBody(cur)
+      : `<div class="pnote"><div class="gap-note"><strong>No triage note yet.</strong> The algorithm has not been run on this referral in the prototype, so there is nothing to draft the note from.</div></div>`;
   } else if (tab === 'notes') {
     body = `<div class="log-list">${log.length ? log.map((n) => `
       <div class="n-row">
@@ -1689,12 +1884,18 @@ function renderTrack() {
   const t = (id, label, n) => `<button type="button" role="tab" aria-selected="${tab === id}" data-act="panelTab" data-v="${id}">${label}${n != null ? `<span class="n">${n}</span>` : ''}</button>`;
 
   return `
-    <aside class="${cls}" id="track" aria-label="Awaiting, notes and history">
-      ${strip(open)}
-      <div class="t-head"><span class="title">${cur.name}</span><span class="grow"></span>${chip}${toggle}</div>
-      <div class="ptabs" role="tablist">${t('awaiting', 'Awaiting', open)}${t('notes', 'Notes', log.length)}${t('history', 'History', hist.length)}${thread.length ? t('chat', 'Chat') : ''}</div>
+    <aside class="${cls}" id="track" aria-label="Triage note, notes and history">
+      ${strip()}
+      <div class="rs-handle" data-resize="track" role="separator" aria-orientation="vertical" aria-label="Resize the triage note panel" title="Drag to resize. Double-click to reset." tabindex="0"></div>
+      <div class="ptabs-row"><div class="ptabs" role="tablist">${t('note', 'Triage note')}${t('notes', 'Notes', log.length)}${t('history', 'History', hist.length)}${t('chat', 'Chat')}</div>${toggle}</div>
       <div class="panel-body" role="tabpanel">${body}</div>
-      <div class="panel-ask">${renderSearch('Ask about this referral, or search an MRN', ['Draft a message', 'Draft the decision note', 'What is still awaiting?'])}</div>
+      <div class="panel-ask">
+        <div class="draft-acts">
+          <button type="button" class="draft-btn fill" data-act="ask" data-v="Draft a note">Draft a note</button>
+          <button type="button" class="draft-btn" data-act="ask" data-v="Draft a provider message">${ICON.msg} Draft a provider message</button>
+        </div>
+        ${renderSearch('Ask about this referral, or search an MRN')}
+      </div>
     </aside>`;
 }
 
@@ -2202,11 +2403,34 @@ function overrideForm(id) {
   </div>`;
 }
 
+// Provider notes for one node of the tree: what's on file, then a way to add one.
+function providerNotes(id) {
+  const list = (S.pn[id] || []).concat(PROVIDER_NOTES[id] || []);
+  const rows = list.length
+    ? list.map((x) => `<div class="pv-row">
+        <div class="pv-h"><span class="pv-who">${esc(x.who)}</span><span class="pv-role">${esc(x.role)}</span><span class="grow"></span><span class="pv-d">${esc(x.date)}</span></div>
+        <p class="pv-t">${esc(x.text)}</p>
+        <div class="read-from">${ICON.doc} ${esc(x.src)}${x.fresh ? ' · <span class="pill xs t-new">Just added</span>' : ''}</div>
+      </div>`).join('')
+    : '<div class="gap-note pv-none"><strong>No provider notes on this step.</strong> Nothing from the referring clinic or hematology bears on it yet.</div>';
+  const form = S.pnOpen === id
+    ? `<div class="pv-form">
+        <label class="pv-lab" for="pnText">Your note on this step</label>
+        <textarea class="field" id="pnText" rows="3" placeholder="What a provider should know about this step"></textarea>
+        ${S.pnErr ? `<div class="pv-err" role="alert">${esc(S.pnErr)}</div>` : ''}
+        <div class="pv-acts"><button type="button" class="btn primary sm" data-act="pnSave" data-v="${id}">Save note</button><button type="button" class="btn secondary sm" data-act="pnCancel">Cancel</button></div>
+      </div>`
+    : `<button type="button" class="btn secondary sm pv-add" data-act="pnOpen" data-v="${id}">${ICON.plus} Add a provider note</button>`;
+  return `<div class="pv-list">${rows}</div>${form}`;
+}
+
 function treeSide(id, ev, viewed) {
   const n = NODE[id];
   const latest = latestVer();
   const readOnly = viewed !== latest;
   const sec = (label, html) => `<div class="side-sec"><div class="lab">${label}</div>${html}</div>`;
+  const pvCount = (S.pn[id] || []).length + (PROVIDER_NOTES[id] || []).length;
+  const pvSec = sec(`Provider notes${pvCount ? ` · ${pvCount}` : ''}`, providerNotes(id));
   const prev = n.parent ? NODE[n.parent] : null;
   const prevRow = prev ? sec('Required first', `<button type="button" class="req" data-act="treeSel" data-v="${prev.id}">
       <span class="sn-ic sm">${nodeIcon(prev.id)}</span><span class="grow">${prev.kind === 'step' ? `Step ${prev.step + 1} · ${SHORT[prev.id]}` : 'The referral'}</span>
@@ -2225,6 +2449,7 @@ function treeSide(id, ev, viewed) {
         <div class="read-from">${ICON.doc} ${esc(st.field)}</div>
         ${srcLink('src-' + id, 'Show the source')}${S.srcOpen['src-' + id] ? sourceHtml(sourcesFor(id, ev)) : ''}`)}
       ${sec('Evidence', evidenceFor(id, ev))}
+      ${pvSec}
       ${st.status === 'gap' ? `<div class="s-aside purple"><strong>A gap in the tree, not in the chart.</strong> Flagged for the tree owner. Answer it with an override if you can.</div>` : ''}
       ${o ? sec('Change history', `<div class="s-aside blue" style="margin-top: 0"><strong>V${o.n}</strong> · ${o.by}, ${o.date}: ${esc(o.what)}.<br>Why: “${esc(o.why)}”</div>`) : ''}
       ${prevRow}
@@ -2238,13 +2463,15 @@ function treeSide(id, ev, viewed) {
       <span class="pill ${reached ? (id === 'accept' ? 't-met' : 't-awaiting') : 't-cold'}">${reached ? (id === 'accept' ? 'Ends here' : 'Stopped here') : 'Not reached'}</span>
       ${sec('What it means', `<p>${n.reason}</p>`)}
       ${reached ? sec('Next', `<p>${NEXT[id]}</p>`) : ''}
+      ${pvSec}
       ${prevRow}`;
   } else {
     head = '<span class="lane-tag">Referral</span>';
     body = `<div class="side-ic">${nodeIcon('root')}</div>
       <h3 class="side-t">Lymphopenia · external request</h3>
       ${sec('How it was routed', `<p>${n.reason}</p>`)}
-      ${sec('The referral', evidenceFor('root', ev))}`;
+      ${sec('The referral', evidenceFor('root', ev))}
+      ${pvSec}`;
   }
   return `<aside class="tm-side" aria-label="Selected node">
     <div class="side-top">${head}<span class="grow"></span><button type="button" class="icon-btn lg" data-act="treeSel" data-v="" aria-label="Close the sidebar">${ICON.close}</button></div>
@@ -2311,7 +2538,6 @@ function render() {
     app.innerHTML = renderPip();
     return;
   }
-  const openNow = openItems(itemsFor(S.current));
   app.innerHTML = `
     <header class="titlebar">
       <div class="logo">${ICON.logo}</div>
@@ -2319,11 +2545,11 @@ function render() {
       <span class="grow"></span>
       <span class="today">${TODAY_HEAD}</span>
       <button type="button" class="tb-btn for-rail" data-act="drawer" data-v="rail" aria-controls="rail" aria-expanded="${S.drawer === 'rail'}">${ICON.list}<span class="lbl">Patients</span></button>
-      ${S.view === 'queue' ? '' : `<button type="button" class="tb-btn for-track" data-act="drawer" data-v="track" aria-controls="track" aria-expanded="${S.drawer === 'track'}" aria-label="Awaiting, ${openNow} open">${ICON.cal}<span class="lbl">Awaiting</span>${openNow ? `<span class="count">${openNow}</span>` : ''}</button>`}
+      ${S.view === 'queue' ? '' : `<button type="button" class="tb-btn for-track" data-act="drawer" data-v="track" aria-controls="track" aria-expanded="${S.drawer === 'track'}" aria-label="Triage note">${ICON.cal}<span class="lbl">Note</span></button>`}
       <button type="button" class="follow-btn" data-act="toPip" title="Collapse to the companion: a small window that stays over the EHR and collects what the algorithm is missing">${ICON.pip}<span class="lbl">Companion</span></button>
       <span class="avatar" aria-label="Signed in as Melissa">M</span>
     </header>
-    <div class="cols">
+    <div class="cols" style="${S.railW ? `--rail-w: ${S.railW}px;` : ''}${S.trackW ? `--track-w: ${S.trackW}px;` : ''}">
       <button type="button" class="scrim ${S.drawer ? 'on' : ''}" data-act="closeDrawer" aria-label="Close panel" tabindex="-1"></button>
       ${renderRail()}
       ${S.view === 'queue' ? renderQueue() : renderPatient()}
@@ -2369,7 +2595,7 @@ const ACT = {
     if (S.view === 'queue') Object.assign(S, { railCollapsed: true, trackCollapsed: false });
     S.current = v; S.view = 'patient'; S.searchMsg = ''; S.drawer = null;
   },
-  toQueue: () => { S.view = 'queue'; S.railCollapsed = false; S.trackCollapsed = true; S.searchMsg = ''; S.drawer = null; },
+  toQueue: () => { S.home = 'cards'; S.view = 'queue'; S.railCollapsed = false; S.trackCollapsed = true; S.searchMsg = ''; S.drawer = null; },
   drawer: (v) => { S.drawer = S.drawer === v ? null : v; },
   closeDrawer: () => { S.drawer = null; },
   // Where the column is a drawer, its hide button closes the drawer instead.
@@ -2381,6 +2607,8 @@ const ACT = {
   expand: (v) => { S[v + 'Collapsed'] = false; },
   ask: (v) => { ask(v); },
   dash: (v) => { S.dash = v; },
+  dashOpen: (v) => { S.home = 'dash'; S.dashFocus = v; S.dashScroll = true; },
+  dashHome: () => { S.home = 'cards'; S.dashFocus = null; },
   noteTab: (v) => { S.noteTab = v; },
   panelTab: (v) => { S.panelTab = v; },
   srcToggle: (v) => { S.srcOpen[v] = !S.srcOpen[v]; },
@@ -2395,6 +2623,14 @@ const ACT = {
   ovMode: (v) => { S.ov.mode = v; S.ov.choice = ''; S.ov.err = ''; },
   ovPick: (v) => { S.ov.choice = v; S.ov.err = ''; },
   ovCancel: () => { S.ov = null; },
+  pnOpen: (v) => { S.pnOpen = v; S.pnErr = ''; setTimeout(() => document.getElementById('pnText')?.focus(), 0); },
+  pnCancel: () => { S.pnOpen = null; S.pnErr = ''; },
+  pnSave: (v) => {
+    const t = (document.getElementById('pnText')?.value || '').trim();
+    if (!t) { S.pnErr = 'Write the note before saving.'; return; }
+    (S.pn[v] = S.pn[v] || []).unshift({ who: 'Melissa', role: 'Triage nurse (you)', date: TODAY_SHORT, src: 'Added in the decision tree', text: t, fresh: true });
+    S.pnOpen = null; S.pnErr = '';
+  },
   ovSave: () => {
     const o = S.ov;
     const id = o.id;
@@ -2418,8 +2654,30 @@ const ACT = {
     addVersion(Object.assign(change, { step: id, why: reason }));
   },
   tick: (v) => { S.done[v] = !S.done[v]; },
+  // Inline lab change from the Lab summary: one value on one date, saved as the next version with a reason.
+  labEdit: (v) => {
+    const [k, date] = v.split('|');
+    if (S.labEdit && S.labEdit.k === k && S.labEdit.date === date) { S.labEdit = null; return; }
+    const set = latestVer().data.cbc.find((x) => x.date === date);
+    S.labEdit = { k, date, val: set ? set[k] : '', why: '', err: '' };
+    setTimeout(() => document.getElementById('labEditVal')?.focus(), 0);
+  },
+  labCancel: () => { S.labEdit = null; },
+  labSave: () => {
+    const le = S.labEdit;
+    const n = parseFloat(le.val);
+    if (le.val === '' || Number.isNaN(n) || n < 0) { le.err = 'Enter the corrected value as a number.'; return; }
+    if (!le.why.trim()) { le.err = 'Say why. The reason is saved with the version.'; return; }
+    const d = latestVer().data;
+    const old = d.cbc.find((x) => x.date === le.date);
+    if (old[le.k] === n) { le.err = `That is already the value on ${isoLabel(le.date)}.`; return; }
+    const label = CBC_RANGE[le.k][2];
+    const cbc = d.cbc.map((x) => (x.date === le.date ? Object.assign({}, x, { [le.k]: n, src: 'Corrected by Melissa' }) : x));
+    S.labEdit = null;
+    addVersion({ step: null, what: `${label} on ${isoLabel(le.date)} changed from ${old[le.k]} to ${n}`, why: le.why.trim(), data: Object.assign({}, d, { cbc }) });
+  },
   // Versions: look at any of them; the latest drives the decision. Restoring an old one saves it as the next.
-  algView: (v) => { S.alg.view = +v === latestVer().n ? null : +v; S.restoreMsg = ''; },
+  algView: (v) => { S.alg.view = +v === latestVer().n ? null : +v; S.restoreMsg = ''; S.labEdit = null; },
   algRestore: (v) => {
     const why = ((document.querySelector((S.tree ? '.tm' : '.centre') + ' .restore-why') || {}).value || '').trim();
     if (!why) { S.restoreMsg = 'Say why before restoring it.'; return; }
@@ -2509,10 +2767,11 @@ document.addEventListener('click', (e) => {
   if (el.dataset.act === 'copy') return;
   render();
   // Keep scroll positions when the same view redraws, so ticking does not jump the list.
-  if (!['open', 'toQueue', 'tab', 'toFull', 'mode'].includes(el.dataset.act)) {
+  if (!['open', 'toQueue', 'tab', 'toFull', 'mode', 'dashOpen', 'dashHome'].includes(el.dataset.act)) {
     document.querySelectorAll(PANES).forEach((s, i) => { if (scrollers[i] != null) s.scrollTop = scrollers[i]; });
   }
   scrollToChat();
+  focusDash();
 });
 
 // Redraw from outside a click (the tree canvas), keeping every pane where it was scrolled.
@@ -2549,6 +2808,13 @@ document.addEventListener('input', (e) => {
   if (e.target.dataset.f === 'body') m.edited = true;
   const sent = document.getElementById('msgSent' + i);
   if (sent) sent.disabled = !m.to.trim();
+});
+
+// Inline lab change fields keep what's typed between redraws.
+document.addEventListener('input', (e) => {
+  const k = e.target.dataset && e.target.dataset.le;
+  if (!k || !S.labEdit) return;
+  S.labEdit[k] = e.target.value;
 });
 
 // Override fields keep what's typed between redraws.
@@ -2646,8 +2912,81 @@ document.addEventListener('focusout', () => { tip.hidden = true; });
 document.addEventListener('click', () => { tip.hidden = true; }, true);
 document.addEventListener('scroll', () => { tip.hidden = true; }, true);
 
+/* ---------- Resizing the side columns ---------- */
+
+const SIDE_MIN = { rail: 260, track: 300 };
+const SIDE_MAX = { rail: 480, track: 640 };
+const CENTRE_MIN = 480; // the main screen never gets narrower than this
+try { const w = JSON.parse(localStorage.getItem('tc-widths') || '{}'); S.railW = w.rail || null; S.trackW = w.track || null; } catch (err) { /* storage blocked: use the defaults */ }
+const saveWidths = () => { try { localStorage.setItem('tc-widths', JSON.stringify({ rail: S.railW, track: S.trackW })); } catch (err) { /* not saved; fine */ } };
+
+function setSideWidth(side, w) {
+  const cols = document.querySelector('.cols');
+  const os = side === 'rail' ? 'track' : 'rail';
+  const other = document.getElementById(os);
+  // The other column's width as set, not as measured: it may still be animating to it.
+  const otherW = !other ? 0 : other.classList.contains('collapsed') ? 48 : (S[os + 'W'] || other.getBoundingClientRect().width);
+  const room = cols.clientWidth - otherW - CENTRE_MIN;
+  const v = Math.round(Math.max(SIDE_MIN[side], Math.min(SIDE_MAX[side], room, w)));
+  S[side + 'W'] = v;
+  cols.style.setProperty('--' + side + '-w', v + 'px');
+}
+
+let drag = null;
+document.addEventListener('pointerdown', (e) => {
+  const h = e.target.closest('[data-resize]');
+  if (!h || e.button !== 0) return;
+  e.preventDefault();
+  const side = h.dataset.resize;
+  drag = { side, h, x: e.clientX, w: document.getElementById(side).getBoundingClientRect().width };
+  h.setPointerCapture(e.pointerId);
+  h.classList.add('on');
+  document.body.classList.add('resizing');
+});
+document.addEventListener('pointermove', (e) => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x;
+  setSideWidth(drag.side, drag.w + (drag.side === 'rail' ? dx : -dx));
+});
+const endDrag = () => {
+  if (!drag) return;
+  drag.h.classList.remove('on');
+  document.body.classList.remove('resizing');
+  drag = null;
+  saveWidths();
+};
+document.addEventListener('pointerup', endDrag);
+document.addEventListener('pointercancel', endDrag);
+// A narrower window re-checks the widths so the main screen keeps its room.
+window.addEventListener('resize', () => {
+  if (!document.querySelector('.cols')) return;
+  if (S.railW) setSideWidth('rail', S.railW);
+  if (S.trackW) setSideWidth('track', S.trackW);
+});
+// Double-click puts the column back to its default width.
+document.addEventListener('dblclick', (e) => {
+  const h = e.target.closest('[data-resize]');
+  if (!h) return;
+  const side = h.dataset.resize;
+  S[side + 'W'] = null;
+  document.querySelector('.cols').style.removeProperty('--' + side + '-w');
+  saveWidths();
+});
+// Arrow keys on a focused handle resize in 16px steps.
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && S.tree) { if (S.ov) S.ov = null; else if (S.tree.sel) S.tree.sel = null; else S.tree = null; redraw(); return; }
+  const h = e.target.closest && e.target.closest('[data-resize]');
+  if (!h || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
+  e.preventDefault();
+  const side = h.dataset.resize;
+  const grow = (e.key === 'ArrowRight') === (side === 'rail');
+  // Step from the width last set, not the measured one, which lags while the width animates.
+  setSideWidth(side, (S[side + 'W'] || document.getElementById(side).getBoundingClientRect().width) + (grow ? 16 : -16));
+  saveWidths();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && S.labEdit && !S.tree) { S.labEdit = null; redraw(); return; }
+  if (e.key === 'Escape' && S.tree) { if (S.pnOpen) { S.pnOpen = null; S.pnErr = ''; } else if (S.ov) S.ov = null; else if (S.tree.sel) S.tree.sel = null; else S.tree = null; redraw(); return; }
   if (e.key === 'Escape' && S.drawer) { S.drawer = null; render(); return; }
   if (e.key === 'Escape' && S.calPicker !== null) { S.calPicker = null; redraw(); return; }
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
