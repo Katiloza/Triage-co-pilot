@@ -6,7 +6,6 @@
 <title>Triage Copilot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="https://unpkg.com/reactflow@11.11.4/dist/style.css">
 <style>
 :root {
   --ground: #F7F6F2;
@@ -81,8 +80,6 @@ button { font-family: inherit; color: inherit; }
   .rail { overflow-y: auto; }
   .rail-scroll { flex: none; overflow: visible; }
 }
-.cal-head { display: flex; align-items: center; gap: 6px; padding: 0 2px 9px; }
-.cal-head .month { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
 .icon-btn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: transparent; color: var(--faint); cursor: pointer; }
 .icon-btn:disabled { color: #D3D0C8; cursor: default; }
 .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
@@ -154,10 +151,6 @@ button { font-family: inherit; color: inherit; }
 .centre { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; container-type: inline-size; }
 .centre-scroll { flex-grow: 1; min-height: 0; overflow: auto; }
 .dot.sm { width: 7px; height: 7px; }
-.welcome { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 40px 24px 48px; text-align: center; }
-.welcome .logo { width: 44px; height: 44px; border-radius: 13px; margin-bottom: 6px; }
-.welcome h2 { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; }
-.welcome p { margin: 0; max-width: 460px; font-size: 14px; line-height: 1.6; color: var(--muted); }
 .r { text-align: right; }
 .pill { display: inline-flex; align-items: center; height: 21px; padding: 0 9px; border-radius: 11px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
 .pill.xs { height: 19px; padding: 0 8px; font-size: 10px; }
@@ -168,9 +161,6 @@ button { font-family: inherit; color: inherit; }
 .t-missing { background: var(--amber-bg); color: var(--amber); }
 .t-gap { background: var(--purple-bg); color: var(--purple); }
 .t-cold { background: var(--sunk); color: var(--faint); }
-.empty { padding: 40px 20px; text-align: center; }
-.empty h2 { margin: 0; font-size: 14px; font-weight: 600; }
-.empty p { margin: 6px auto 0; max-width: 420px; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
 
 .search { flex-shrink: 0; padding: 12px 20px 16px; border-top: 1px solid var(--border); background: var(--surface); }
 .search form { display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 6px 0 14px; background: var(--surface); border: 1.5px solid #CFCCC3; border-radius: 12px; box-shadow: 0 2px 8px rgba(20, 20, 15, 0.07); }
@@ -193,40 +183,13 @@ button { font-family: inherit; color: inherit; }
 .facts .k { font-size: 10.5px; color: var(--faint); }
 .facts .v { font-size: 12.5px; font-weight: 600; margin-top: 2px; }
 .facts .v.late { color: var(--red); }
-.tabs { display: flex; gap: 2px; margin-top: 14px; }
-.tabs button { min-height: 38px; padding: 0 13px; border: 0; background: transparent; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted); }
-.tabs button[aria-pressed="true"] { font-weight: 600; color: var(--ink); box-shadow: inset 0 -2px 0 var(--primary); }
 .pad { padding: 18px 20px 24px; }
 
 /* Verdict */
-.verdict { padding: 16px 18px; border-radius: 14px; background: var(--amber-bg); }
-.verdict .top { display: flex; align-items: flex-start; gap: 13px; }
-.v-mark { width: 40px; height: 40px; flex-shrink: 0; border-radius: 11px; display: flex; align-items: center; justify-content: center; background: #F4E2C2; color: var(--amber); }
-.v-kicker { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--amber); }
-.v-title { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; margin-top: 4px; }
-.verdict.over { background: var(--blue-bg); }
-.verdict.over .v-mark { background: #D8E3F4; color: var(--primary); }
-.verdict.over .v-kicker { color: var(--primary); }
-.v-was { margin-top: 5px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
-.v-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; padding-top: 13px; border-top: 1px solid rgba(27, 27, 25, 0.08); }
-.v-actions .hint { font-size: 11.5px; color: var(--muted); }
 /* Changing the decision: rationale first, then where the path should end */
-.change { margin-top: 10px; padding: 16px; background: var(--surface); border: 1.5px solid var(--primary); border-radius: 12px; box-shadow: 0 0 0 3px rgba(47, 95, 168, 0.12); }
-.change h3 { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: -0.005em; }
-.change .sub { margin: 4px 0 0; max-width: 640px; font-size: 12px; line-height: 1.5; color: var(--muted); }
-.change .q { display: block; margin-top: 14px; font-size: 12px; font-weight: 600; color: var(--ink-3); }
-.change .q .req { font-weight: 500; color: var(--faint); }
-.change .opts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
 .opt { min-height: 34px; padding: 0 12px; border-radius: 9px; cursor: pointer; font-size: 12.5px; font-weight: 600; background: var(--surface); color: var(--ink-3); border: 1px solid #E2DFD8; }
 .opt[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #FFFFFF; }
-.change .check { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 12.5px; color: var(--ink-2); cursor: pointer; }
-.change .check input { width: 16px; height: 16px; margin: 0; accent-color: var(--primary); }
-.change .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
-.change .row .hint { font-size: 11.5px; color: var(--muted); }
-.v-tree { flex-shrink: 0; text-align: right; }
-.v-tree .k { font-size: 10.5px; color: var(--faint); }
-.v-tree .v { font-size: 12px; font-weight: 600; margin-top: 2px; }
-.v-tree .s { font-size: 11px; color: var(--faint); margin-top: 1px; font-family: var(--mono); }
 .btn { white-space: nowrap; min-height: 40px; padding: 0 15px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
 .btn.primary { border: 0; background: var(--primary); color: #FFFFFF; }
 .btn.primary.done { background: var(--green); }
@@ -239,73 +202,14 @@ textarea.field { display: block; width: 100%; resize: none; padding: 10px 11px; 
 textarea.field:focus { border-color: var(--primary); }
 
 /* Steps */
-.sec-head { display: flex; align-items: baseline; gap: 10px; margin-top: 24px; padding: 0 2px 10px; }
-.sec-head .aside { font-size: 11px; color: var(--faint); }
-/* Decision tree — React Flow canvas and the detail card for the selected node */
-.tree-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-.tree-canvas { position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card); overflow: hidden; }
-.tree-bar { flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 8px 8px 12px; border-bottom: 1px solid var(--hair); }
-.tree-hint { flex-grow: 1; min-width: 0; font-size: 11px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tree-canvas.narrow .tree-hint { visibility: hidden; }
-.tree-zoom { display: flex; margin-left: 4px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.tree-zoom button { width: 30px; height: 28px; border: 0; border-left: 1px solid var(--hair); background: var(--surface); color: var(--ink-3); cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
-.tree-zoom button:first-child { border-left: 0; }
-.tree-zoom button:hover { background: var(--sunk); }
-.tree-flow { height: 595px; }
-.tree-canvas.narrow .tree-flow { height: 535px; }
 .seg-sm { flex-shrink: 0; padding: 2px; gap: 2px; }
 .seg-sm button { flex: 0 0 auto; min-height: 26px; padding: 0 11px; font-size: 11.5px; }
-/* Inside the card, the selected node reads as a band above the diagram rather than a card of its own */
-.tree-canvas .tree-detail { align-self: stretch; min-width: 0; border: 0; border-bottom: 1px solid var(--hair); border-radius: 0; box-shadow: none; }
-/* Plain-language view: the path read top to bottom, then the steps it did not take */
-.plain .p-sec { padding: 14px 16px 8px; border-top: 1px solid var(--hair); }
-.plain .p-sec:first-child { border-top: 0; }
-.plain .steps { border: 0; border-radius: 0; box-shadow: none; }
-.step.dim { opacity: 0.6; }
-.s-num.node { background: var(--sunk); color: var(--muted); }
-.s-num.you { background: var(--primary); }
-.s-num.tree { background: var(--amber-dot); }
-.react-flow__node-tree { cursor: pointer; }
-.tn { box-sizing: border-box; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px 10px; box-shadow: var(--shadow-card); transition: border-color 0.15s, box-shadow 0.15s, opacity 0.15s; font-family: 'Figtree', system-ui, sans-serif; }
-.tn .react-flow__handle { opacity: 0; width: 6px; height: 6px; min-width: 0; min-height: 0; border: 0; pointer-events: none; }
-.tn-head { display: flex; align-items: center; gap: 8px; }
-.tn-kick { flex-grow: 1; font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
-.tn-title { margin-top: 4px; font-size: 12.5px; font-weight: 600; line-height: 1.3; letter-spacing: -0.005em; color: var(--ink); }
-.tn.missing { border-color: #E4C48E; background: #FDFAF3; }
-.tn.gap { border: 1.5px dashed var(--purple); background: #FAF8FE; }
-.tn.stop { border-color: #E4D3AE; background: #FDFBF6; }
-.tn.stop .tn-title { color: var(--amber); }
-.tn.cold { opacity: 0.62; }
-.tn.cold .tn-title { color: var(--faint); }
 /* Anything off the path the tree took is greyed, whatever its own status */
-.tn.off { opacity: 0.55; background: var(--surface); border-color: var(--border); box-shadow: none; }
-.tn.off.gap { border-color: #CFCCC3; }
-.tn.off .tn-title { color: var(--faint); }
-.tn.off.sel { opacity: 0.9; }
 /* After a change: the tree's own route stays visible, dashed */
-.tn.ai { opacity: 0.85; border: 1.5px dashed #8FA7CF; background: var(--surface); box-shadow: none; }
-.tn.ai .tn-title { color: var(--ink-3); }
-.tn.pick { cursor: pointer; }
-.tn.pick:hover, .tn.pick.target { outline: 2px solid var(--primary); outline-offset: 2px; opacity: 1; }
-.tn-sub { margin-top: 5px; font-size: 10.5px; font-weight: 600; color: var(--primary); }
-.tn.note { background: #F2F6FC; border: 1.5px solid #9DB3D9; }
-.tn.note .tn-kick { color: var(--primary); }
-.tn.note .tn-title { font-size: 12px; font-weight: 500; line-height: 1.45; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.tn.note .tn-by { margin-top: 5px; font-family: var(--mono); font-size: 10px; color: var(--faint); }
-.tree-bar.rerouting { background: var(--blue-bg); }
-.tree-bar.rerouting .tree-hint { color: var(--primary); font-weight: 600; visibility: visible; }
 .key { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--muted); white-space: nowrap; }
 .key::before { content: ''; width: 16px; border-top: 2px solid var(--primary); }
 .key.ai::before { border-top-style: dashed; border-top-color: #8FA7CF; }
-.tn.on { border-color: var(--primary); opacity: 1; box-shadow: 0 2px 8px rgba(47, 95, 168, 0.14); }
-.tn.on .tn-kick { color: var(--primary); }
-.tn.sel { box-shadow: 0 0 0 3px rgba(47, 95, 168, 0.28); }
-.tree-detail { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card); padding: 14px 16px 15px; align-self: start; }
-.tree-detail .d-head { display: flex; align-items: center; gap: 8px; }
-.tree-detail .d-title { margin-top: 4px; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
 /* Source data behind a node: closed until asked for */
-.src-toggle { margin-left: 8px; padding: 2px 6px; border: 0; border-radius: 6px; background: transparent; color: var(--primary); font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-.src-toggle:hover { background: var(--blue-bg); }
 .source { margin-top: 10px; border: 1px solid var(--border); border-radius: 10px; background: #FDFCF8; overflow: hidden; }
 .src-item { padding: 12px 14px; border-top: 1px solid var(--hair); }
 .src-item:first-child { border-top: 0; }
@@ -325,42 +229,12 @@ textarea.field:focus { border-color: var(--primary); }
 .src-lines { margin: 8px 0 0; padding-left: 18px; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
 .src-quote { margin: 8px 0 0; padding: 8px 12px; border-left: 3px solid var(--border-strong); background: var(--surface); font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
 .src-foot { margin-top: 8px; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
-.tree-detail .s-row { grid-template-columns: 76px minmax(0, 1fr); }
-.d-nav { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--hair); }
-.d-nav .pos { flex-grow: 1; text-align: center; font-size: 11px; color: var(--faint); font-family: var(--mono); }
-.steps { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card); overflow: hidden; }
-.step { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; column-gap: 13px; padding: 14px 16px 15px; border-bottom: 1px solid var(--hair); position: relative; }
-.step:last-child { border-bottom: 0; }
-.step.missing { background: #FDFAF3; box-shadow: inset 3px 0 0 var(--amber-dot); }
-.step.gap { background: #FAF8FE; box-shadow: inset 3px 0 0 var(--purple); }
-.s-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #FFFFFF; font-family: var(--mono); }
-.s-num.met { background: var(--green); }
-.s-num.missing { background: var(--amber-dot); }
-.s-num.gap { background: transparent; color: var(--purple); border: 1.5px dashed var(--purple); }
-.s-kick { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); font-family: var(--mono); }
-.s-q { font-size: 14px; font-weight: 600; letter-spacing: -0.005em; margin-top: 2px; }
-.s-row { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 10px; margin-top: 8px; font-size: 12.5px; line-height: 1.6; }
-.s-row .k { font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ghost); padding-top: 2px; }
-.s-row .v { color: var(--ink-2); max-width: 600px; }
-.s-row .src svg { vertical-align: -1px; margin-right: 6px; }
-.s-row .src { display: inline; line-height: 2; -webkit-box-decoration-break: clone; box-decoration-break: clone; font-family: var(--mono); font-size: 11px; color: var(--muted); background: var(--ground); border: 1px solid var(--hair); border-radius: 6px; padding: 2px 7px; }
 .s-aside { margin-top: 10px; padding: 9px 11px; border-radius: 9px; font-size: 12px; line-height: 1.5; }
 .s-aside.purple { background: var(--purple-bg); color: #3F3480; }
 .s-aside.blue { background: var(--blue-bg); color: #24497F; }
 
 /* Referral and history tabs */
 .box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-card); }
-.rec-row { display: flex; gap: 14px; align-items: flex-start; padding: 13px 14px; border-bottom: 1px solid var(--hair); }
-.rec-row:last-child { border-bottom: 0; }
-.rec-row.missing { background: #FDFBF6; }
-.rec-row .k { width: 150px; flex-shrink: 0; font-size: 12px; color: var(--faint); }
-.rec-row .v { flex-grow: 1; min-width: 0; font-size: 13px; font-weight: 500; line-height: 1.5; }
-.rec-row.missing .v { color: var(--amber); }
-.lab-grid { display: grid; grid-template-columns: 110px repeat(5, 1fr) 140px; gap: 10px; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--hair); font-size: 12px; font-family: var(--mono); }
-.lab-grid:last-child { border-bottom: 0; }
-.lab-grid.head { padding: 9px 14px; background: var(--ground); border-bottom: 1px solid var(--border); font-family: inherit; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
-.lab-grid .low { color: var(--amber); font-weight: 600; }
-.lab-grid .src { font-family: inherit; color: var(--muted); }
 .h-row { display: flex; gap: 12px; padding: 13px 14px; border-bottom: 1px solid var(--hair); }
 .h-row:last-child { border-bottom: 0; }
 .h-dot { width: 11px; height: 11px; flex-shrink: 0; margin-top: 4px; border-radius: 50%; border: 2px solid; }
@@ -390,7 +264,6 @@ textarea.field:focus { border-color: var(--primary); }
 .t-head .title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .aw-grid { display: grid; grid-template-columns: minmax(0, 1fr) 56px 70px; gap: 8px; align-items: center; }
 .aw-cols { flex-shrink: 0; padding: 8px 14px; background: var(--ground); border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
-.aw-list { flex: 0 1 auto; min-height: 0; max-height: 40%; overflow: auto; border-bottom: 1px solid var(--border); }
 .aw-row { padding: 9px 14px; border-bottom: 1px solid #F4F2ED; }
 .aw-row:last-child { border-bottom: 0; }
 .aw-item { display: flex; align-items: center; gap: 9px; min-width: 0; }
@@ -413,10 +286,6 @@ textarea.field:focus { border-color: var(--primary); }
 .aw-none { padding: 18px 14px; font-size: 12px; line-height: 1.5; color: var(--faint); }
 
 /* Running notes — the notes column from the spreadsheet */
-.log-sec { flex: 1 1 0; min-height: 200px; display: flex; flex-direction: column; }
-.log-head { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 14px 14px 6px; }
-.log-head .title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
-.log-head .count { font-size: 10.5px; color: var(--faint); font-family: var(--mono); }
 .log-list { flex-grow: 1; min-height: 0; overflow: auto; padding: 0 14px; }
 .log-list .n-row { padding: 11px 0; border-bottom: 1px solid #F4F2ED; }
 .log-list .n-row:last-child { border-bottom: 0; }
@@ -474,10 +343,229 @@ textarea.field:focus { border-color: var(--primary); }
 .pip-bar .icon-btn:hover { background: var(--sunk); color: var(--ink); }
 .pip-body { padding: 12px; }
 .pip .aw-row { padding: 9px 0; }
-.pip-note { display: flex; align-items: center; gap: 7px; margin-top: 11px; padding: 9px 10px; background: var(--ground); border-radius: 9px; font-size: 11px; line-height: 1.4; color: var(--muted); }
 .btn-full { display: flex; width: 100%; align-items: center; justify-content: center; gap: 7px; min-height: 38px; margin-top: 10px; border: 0; border-radius: 9px; color: #FFFFFF; font-size: 12.5px; font-weight: 600; cursor: pointer; background: var(--primary); }
 .pill-win { position: absolute; right: 24px; bottom: 24px; display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 8px 0 12px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 23px; box-shadow: 0 14px 32px rgba(20, 20, 15, 0.2), 0 2px 5px rgba(20, 20, 15, 0.08); cursor: pointer; font-size: 12.5px; font-weight: 600; }
 .pill-win .chev { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--faint); }
+
+/* Home: the dashboard */
+.home { max-width: 1060px; margin: 0 auto; padding: 48px 28px 28px; }
+.hello { margin: 0; font-size: clamp(28px, 4.2cqi, 46px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.12; }
+.hello .hi { display: block; background: linear-gradient(90deg, #2F5FA8, #6F58B8 55%, #B0506A); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hello .sub { display: block; color: #B3B0A7; }
+.dash { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 34px; }
+.dcard { min-width: 0; padding: 16px 18px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-card); }
+.dcard.wide { grid-column: 1 / -1; }
+.dcard-h { display: flex; align-items: flex-start; gap: 10px; }
+.dcard-t { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+.dcard-s { margin-top: 2px; font-size: 11.5px; color: var(--faint); }
+.dcard-foot { min-height: 14px; margin-top: 8px; font-size: 11px; color: var(--faint); }
+.sample { flex-shrink: 0; height: 20px; padding: 0 8px; display: inline-flex; align-items: center; border: 1px dashed var(--border-strong); border-radius: 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); }
+.hero-n { margin-top: 16px; font-size: 40px; font-weight: 600; letter-spacing: -0.035em; line-height: 1; }
+.hero-n small { margin-left: 6px; font-size: 14px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+.hero-d { margin-top: 8px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.bars { display: flex; align-items: flex-end; gap: 6px; height: 170px; margin-top: 30px; border-bottom: 1px solid var(--border); }
+.bar { flex: 1 1 0; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
+.bar i { position: relative; display: block; min-height: 2px; background: var(--primary); border-radius: 4px 4px 0 0; }
+.bar.partial i { background: repeating-linear-gradient(135deg, var(--primary) 0 3px, #9DB3D9 3px 6px); }
+.bar:hover i { filter: brightness(1.15); }
+.bar .v { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 4px; text-align: center; font-style: normal; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
+.bar-x { display: flex; gap: 6px; margin-top: 6px; }
+.bar-x span { flex: 1 1 0; min-width: 0; overflow: hidden; white-space: nowrap; text-align: center; font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+.spark-big { display: block; width: 100%; height: 56px; margin-top: 14px; overflow: visible; }
+.hbars { margin-top: 14px; }
+.hb { display: grid; grid-template-columns: minmax(0, 104px) minmax(0, 1fr) 26px; align-items: center; gap: 10px; padding: 5px 0; font-size: 12px; }
+.hb .nm { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--ink-2); }
+.hb .t { height: 10px; }
+.hb .t i { display: block; height: 100%; background: var(--primary); border-radius: 0 4px 4px 0; }
+.hb .n { text-align: right; font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); }
+.dash-note { margin: 14px 2px 0; font-size: 11.5px; color: var(--faint); }
+@container (max-width: 820px) { .dash { grid-template-columns: 1fr 1fr; } }
+@container (max-width: 560px) {
+  .home { padding: 28px 16px 20px; }
+  .dash { grid-template-columns: 1fr; }
+  .bar-x span:nth-child(even) { visibility: hidden; }
+  .bars { gap: 3px; } .bar-x { gap: 3px; }
+}
+
+/* The patient page: the algorithm as a row of steps, then the triage note in two cards */
+.card { min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-card); }
+.card-h { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 16px 18px 0; }
+.card-t { font-size: 16px; font-weight: 600; letter-spacing: -0.015em; }
+.card-sub { margin-top: 2px; font-size: 12px; color: var(--faint); }
+.cbody { padding: 12px 18px 18px; }
+.decision { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding: 12px 18px 0; }
+.decision .d-k { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); }
+.decision .d-v { font-size: 17px; font-weight: 600; letter-spacing: -0.015em; }
+.decision .pill { align-self: center; }
+.decision .d-was { flex-basis: 100%; font-size: 12.5px; color: var(--muted); }
+.card .ver-restore { margin: 10px 18px 0; }
+.strip-wrap { overflow-x: auto; padding: 20px 18px 20px; }
+.strip-row { display: flex; align-items: center; min-width: min-content; }
+.snode, .tnode { position: relative; display: flex; align-items: center; gap: 10px; padding: 9px 10px; text-align: left; cursor: pointer; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; box-shadow: 0 2px 6px rgba(20, 20, 15, 0.05); transition: opacity 0.15s, box-shadow 0.15s; }
+.snode { flex: 1 1 0; min-width: 150px; }
+.snode.end { flex-grow: 1.3; min-width: 180px; }
+.snode .sn-ic { width: 34px; height: 34px; }
+.snode:hover, .tnode:hover { box-shadow: 0 4px 14px rgba(20, 20, 15, 0.1); }
+.snode.met, .tnode.on.met { border-color: #B6DCC8; box-shadow: 0 0 0 3px rgba(14, 122, 82, 0.07); }
+.snode.missing, .tnode.on.missing, .tnode.on.end { border-color: #E6C78E; box-shadow: 0 0 0 3px rgba(201, 138, 43, 0.12); }
+.snode.gap, .tnode.gap { border-style: dashed; border-color: #B7ABE6; }
+.snode.off, .tnode.off { opacity: 0.45; box-shadow: none; }
+.snode.off:hover, .tnode.off:hover { opacity: 0.8; }
+.sn-ic { width: 38px; height: 38px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 9px; background: var(--ground); color: var(--ink-3); }
+.sn-ic.sm { width: 28px; height: 28px; border-radius: 7px; }
+.sn-txt { flex-grow: 1; min-width: 0; }
+.sn-t { display: block; font-size: 12.5px; font-weight: 600; line-height: 1.25; letter-spacing: -0.005em; }
+.sn-s { display: block; margin-top: 2px; font-size: 11px; color: var(--muted); }
+.sn-link { width: 18px; flex-shrink: 0; border-top: 2px dashed #D9D6CE; }
+.sn-link.on { border-top-style: solid; border-color: var(--amber-dot); }
+.sn-badge { position: absolute; top: -9px; right: 10px; padding: 1px 7px; border: 1px solid #EBD3A5; border-radius: 6px; background: var(--amber-bg); color: var(--amber); font-size: 9.5px; font-weight: 600; white-space: nowrap; }
+.sn-badge.blue { border-color: #C5D4EC; background: var(--blue-bg); color: var(--primary); }
+.mk { width: 17px; height: 17px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 10px; font-weight: 700; color: #FFFFFF; }
+.mk.met { background: #2EA36B; }
+.mk.missing { background: var(--amber-dot); }
+.mk.gap { background: var(--purple); }
+.mk.pending { background: var(--surface); border: 2px solid var(--amber-dot); border-right-color: transparent; }
+.duo { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; align-items: start; }
+@container (max-width: 860px) { .duo { grid-template-columns: minmax(0, 1fr); } }
+.ctabs { display: flex; gap: 4px; padding: 12px 14px 0; overflow-x: auto; }
+.ctabs button { flex-shrink: 0; min-height: 34px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted); }
+.ctabs button[aria-selected="true"] { background: var(--sunk); color: var(--ink); font-weight: 600; }
+.thr { margin-bottom: 10px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.thr strong { color: var(--ink-2); }
+.lsum-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+.lsum { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.lsum thead th { padding: 8px 10px; background: var(--ground); border-bottom: 1px solid var(--border); text-align: left; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+.lsum td, .lsum tbody th { padding: 9px 10px; border-bottom: 1px solid var(--hair); text-align: left; vertical-align: middle; font-weight: 500; }
+.lsum tbody th { font-weight: 600; white-space: nowrap; }
+.lsum tr:last-child td, .lsum tr:last-child th { border-bottom: 0; }
+.lsum .r { text-align: right; }
+.lsum .u, .u { font-size: 10.5px; font-weight: 500; color: var(--faint); }
+.lsum .recent { font-family: var(--mono); font-size: 11px; line-height: 1.6; color: var(--ink-3); white-space: nowrap; }
+.low { color: var(--amber); font-weight: 600; }
+.spark { display: block; width: 92px; height: 28px; overflow: visible; }
+.trend { display: block; width: 100%; height: auto; overflow: visible; }
+.trend .ax { font-family: var(--mono); font-size: 9.5px; fill: var(--faint); }
+.trend .val { font-family: var(--mono); font-size: 10.5px; font-weight: 600; fill: var(--ink-2); }
+.trend-box { margin-top: 10px; padding: 10px 8px 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+.ev-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--hair); }
+.ev-row:last-child { border-bottom: 0; }
+.ev-row .t { font-size: 13px; font-weight: 600; }
+.ev-row .d { margin-top: 3px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.pa { flex-shrink: 0; display: inline-flex; align-items: center; height: 21px; padding: 0 9px; border-radius: 11px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+.pa.present { background: var(--green-bg); color: var(--green); }
+.pa.absent { background: var(--red-bg); color: var(--red); }
+.pa.pending { background: var(--amber-bg); color: var(--amber); }
+.pa.missing { background: var(--surface); border: 1px dashed var(--amber-dot); color: var(--amber); }
+.linkbtn { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 0; border: 0; background: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--primary); }
+.linkbtn:hover { text-decoration: underline; }
+.quote { margin: 8px 0 0; padding: 9px 12px; border-left: 3px solid var(--border-strong); border-radius: 0 8px 8px 0; background: var(--ground); font-size: 12px; line-height: 1.55; color: var(--ink-3); }
+.kv { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 9px 14px; margin: 0; font-size: 12.5px; }
+.kv dt { color: var(--faint); }
+.kv dd { margin: 0; line-height: 1.5; color: var(--ink-2); }
+.kv dd.missing { color: var(--amber); }
+.kv.tight { gap: 6px 12px; grid-template-columns: minmax(0, 118px) minmax(0, 1fr); }
+.tnote-t { margin-bottom: 12px; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+.note-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.gap-note { padding: 12px 14px; border: 1px dashed var(--amber-dot); border-radius: 10px; background: #FDFAF3; font-size: 13px; line-height: 1.55; color: var(--ink-2); }
+.exec-lines { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; font-size: 13px; line-height: 1.55; color: var(--ink); }
+.exec-lines li::marker { font-family: var(--mono); font-size: 11.5px; color: var(--faint); }
+.exec-miss { margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: var(--amber-bg); }
+.exec-miss .kicker { color: var(--amber); }
+.miss-row { margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: var(--ink-3); }
+.exec-miss .btn { margin-top: 10px; }
+@container (max-width: 560px) { .kv, .kv.tight { grid-template-columns: minmax(0, 1fr); gap: 2px; } .kv dd { margin-bottom: 8px; } }
+
+/* Right panel: tabs, with the chat box pinned at the bottom */
+.ptabs { flex-shrink: 0; display: flex; gap: 2px; padding: 0 10px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+.ptabs button { flex-shrink: 0; min-height: 40px; padding: 0 10px; border: 0; background: transparent; cursor: pointer; font-size: 12.5px; font-weight: 500; color: var(--muted); box-shadow: inset 0 -2px 0 transparent; }
+.ptabs button[aria-selected="true"] { color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--primary); }
+.ptabs .n { margin-left: 5px; font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+.panel-body { flex: 1 1 auto; min-height: 0; overflow: auto; }
+.panel-body .aw-cols { position: sticky; top: 0; z-index: 1; }
+.panel-body .log-list { overflow: visible; }
+.panel-body .chat { margin: 0; padding: 4px 12px 14px; border: 0; }
+.panel-body .msg-you .bubble { max-width: 85%; }
+.panel-body .msg-bot .logo.sm { display: none; }
+.panel-body .msg-bot { gap: 0; }
+.panel-body .note-foot { flex-wrap: wrap; }
+.panel-body .note-foot .why { flex-basis: 100%; }
+.hist-list { padding: 0 14px; }
+.hist-list .h-row { padding: 12px 0; flex-wrap: wrap; gap: 8px 10px; }
+.hist-list .h-date { width: auto; }
+.panel-ask { flex-shrink: 0; }
+.panel-ask .search { padding: 10px 12px 12px; }
+.panel-ask .suggest { flex-wrap: wrap; }
+.panel-ask .kbd { display: none; }
+
+/* The full-screen tree: one lane per step, the path in amber, the picked node in a sidebar */
+.tm-scrim { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(27, 27, 25, 0.55); }
+.tm { width: 100%; max-width: 1500px; height: 100%; max-height: 920px; display: flex; flex-direction: column; overflow: hidden; background: #F8F7F3; border-radius: 18px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35); }
+.tm-head { flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 14px 14px 12px 20px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.tm-ic { width: 44px; height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 11px; background: var(--blue-bg); color: var(--primary); }
+.tm-t { font-size: 17px; font-weight: 600; letter-spacing: -0.015em; }
+.tm-s { margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+.icon-btn.lg { width: 34px; height: 34px; border-radius: 9px; }
+.icon-btn.lg:hover { background: var(--sunk); color: var(--ink); }
+.tm-sub { flex-shrink: 0; padding: 0 20px 12px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.tm-sub .decision { padding: 10px 0 0; }
+.tm-sub .ver-restore { margin-top: 10px; }
+.tm-main { flex: 1 1 auto; min-height: 0; display: flex; position: relative; }
+.tree-body { flex: 1 1 auto; min-width: 0; overflow: auto; padding: 16px; }
+.lanes { display: grid; grid-template-columns: repeat(7, minmax(190px, 1fr)); min-width: max-content; min-height: calc(100% - 32px); background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.lane { min-width: 0; display: flex; flex-direction: column; border-left: 1px dashed #E3E0D8; }
+.lane:first-child { border-left: 0; }
+.lane:nth-child(even) { background: #FCFBF8; }
+.lane-h { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 12px 12px 0; min-height: 36px; }
+.lane-tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border: 1px solid var(--border-strong); border-radius: 7px; background: var(--surface); font-family: var(--mono); font-size: 9.5px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.lane-n { flex-shrink: 0; font-family: var(--mono); font-size: 10px; color: var(--faint); }
+.lcell { position: relative; height: 170px; display: flex; align-items: center; justify-content: center; padding: 0 12px; }
+.lcell.a { margin-top: 36px; }
+.lcell.b { margin-bottom: 30px; }
+.ln { position: absolute; border: 0 dashed #D9D6CE; }
+.ln.l { left: 0; right: 50%; top: 50%; border-top-width: 2px; }
+.ln.r { left: 50%; right: 0; top: 50%; border-top-width: 2px; }
+.ln.d { left: calc(50% - 1px); top: 50%; bottom: 0; border-left-width: 2px; }
+.ln.u { left: calc(50% - 1px); top: 0; height: 50%; border-left-width: 2px; }
+.ln.on { border-style: solid; border-color: var(--amber-dot); }
+.tnode { z-index: 1; width: 100%; max-width: 230px; }
+.tnode.sel { outline: 2px solid var(--primary); outline-offset: 3px; opacity: 1; }
+.tree-key { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 10px; font-size: 11.5px; color: var(--faint); }
+.tree-key span { display: inline-flex; align-items: center; gap: 7px; }
+.ln-k { display: inline-block; width: 22px; border-top: 2px dashed #D9D6CE; }
+.ln-k.on { border-top: 2px solid var(--amber-dot); }
+.tm-side { width: 410px; flex-shrink: 0; overflow: auto; padding: 16px 20px 28px; background: #F1F0EB; border-left: 1px solid var(--border); }
+.side-top { display: flex; align-items: center; }
+.side-ic { width: 56px; height: 56px; margin-top: 16px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-strong); border-radius: 12px; background: #E9E7E1; color: var(--ink-3); }
+.side-ic svg { width: 24px; height: 24px; }
+.side-t { margin: 14px 0 10px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.22; }
+.side-sec { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+.side-sec > .lab { margin-bottom: 10px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.side-sec p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-2); }
+.side-sec p.muted { font-size: 12.5px; color: var(--faint); }
+.tm-side .s-aside { margin-top: 12px; }
+.read-from { display: flex; align-items: flex-start; gap: 7px; margin-top: 10px; font-size: 12px; line-height: 1.45; color: var(--muted); }
+.read-from svg { margin-top: 2px; flex-shrink: 0; }
+.req { width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 12px 9px 9px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); cursor: pointer; text-align: left; font-size: 13px; font-weight: 500; }
+.req:hover { border-color: var(--border-strong); }
+.meter { height: 10px; margin-top: 12px; border-radius: 5px; background: var(--sunk); overflow: hidden; }
+.meter i { display: block; height: 100%; border-radius: 5px; background: #2EA36B; }
+.meter i.near { background: var(--amber-dot); }
+.meter i.over { background: var(--red); }
+.meter-x { display: flex; justify-content: space-between; margin-top: 5px; font-family: var(--mono); font-size: 10px; color: var(--faint); }
+.tm-side .ov { background: var(--surface); }
+.tm-side .lsum-wrap { background: var(--surface); }
+.toast { position: fixed; left: 24px; bottom: 24px; z-index: 70; max-width: calc(100% - 48px); display: flex; align-items: center; gap: 10px; padding: 13px 18px; background: var(--surface); border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04); font-size: 13.5px; font-weight: 500; }
+@media (max-width: 1023px) {
+  .tm-side { position: absolute; top: 0; right: 0; bottom: 0; z-index: 3; width: min(410px, 100%); box-shadow: -12px 0 32px rgba(20, 20, 15, 0.16); }
+}
+@media (max-width: 767px) {
+  .tm-scrim { padding: 0; }
+  .tm { max-height: none; border-radius: 0; }
+  .tm-head .ver-list { order: 3; flex-basis: 100%; }
+  .tm-sub { padding: 0 14px 10px; }
+  .tree-body { padding: 10px; }
+  .toast { left: 12px; right: 12px; bottom: 12px; max-width: none; }
+}
 
 /* ---------- Responsive ----------
    ≥1280  three panes side by side
@@ -486,6 +574,67 @@ textarea.field:focus { border-color: var(--primary); }
    <768   the awaiting pane becomes a drawer from the right; one column of work
    The centre adapts to its own width with container queries. */
 
+/* Versions: V1 is the AI's read; each override adds one. The latest drives the decision. */
+.versions { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.ver-list { display: flex; gap: 5px; flex-wrap: wrap; }
+.ver { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); cursor: pointer; font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--ink-3); }
+.ver span { font-family: inherit; font-size: 11px; font-weight: 500; color: var(--faint); }
+.ver.on { background: var(--ink); border-color: var(--ink); color: #FFFFFF; }
+.ver.on span { color: #D6D3CB; }
+.ver-restore { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: var(--amber-bg); color: var(--amber); font-size: 12px; }
+.ver-restore .mc-in { width: auto; flex: 1 1 200px; height: 32px; }
+.ver-restore .mc-in::placeholder { color: var(--faint); }
+.err { color: #A33A2B; font-size: 12px; font-weight: 600; }
+.s-aside.amber { background: var(--amber-bg); color: var(--amber); }
+/* Override a step inline: the answer, or the lab value / evidence behind it, plus a required reason */
+.ov { margin-top: 12px; padding: 12px; border: 1.5px solid var(--primary); border-radius: 11px; background: var(--surface); box-shadow: 0 0 0 3px rgba(47, 95, 168, 0.1); }
+.ov-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 13px; font-weight: 600; }
+.ov-h span { font-size: 11.5px; font-weight: 500; color: var(--faint); }
+.ov-mode { display: inline-flex; margin-top: 10px; }
+.ov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-top: 10px; }
+.ov-grid label, .cp-grid label, .cp-src { display: flex; flex-direction: column; gap: 4px; font-size: 11px; font-weight: 600; color: var(--muted); }
+.ov-grid input, .cp-grid input, .cp-in input, .cp-sel { width: 100%; min-width: 0; height: 32px; padding: 0 8px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); font-family: var(--mono); font-size: 12px; color: var(--ink); outline: none; }
+.ov-grid input:focus, .cp-grid input:focus, .cp-in input:focus, .cp-sel:focus { border-color: var(--primary); }
+.ov-hint { display: block; margin-top: 6px; font-size: 11.5px; line-height: 1.45; color: var(--faint); }
+.ov textarea.field { margin-top: 10px; min-height: 64px; }
+.ov .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.ov .row .ov-hint { margin-top: 0; }
+/* Executive summary: five directive lines, then what is missing, named */
+.exec-lines { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 7px; font-size: 13.5px; line-height: 1.55; color: var(--ink); max-width: 720px; }
+.exec-lines li::marker { font-family: var(--mono); font-size: 12px; color: var(--faint); }
+.exec-miss { margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: var(--amber-bg); }
+.exec-miss .kicker { color: var(--amber); }
+.miss-row { margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: var(--ink-3); }
+.exec-miss .btn { margin-top: 10px; }
+/* Referral history, folded under the notes */
+.hist { margin-top: 12px; border-top: 1px solid var(--hair); }
+.hist summary { display: flex; align-items: center; gap: 8px; min-height: 38px; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--ink-3); list-style: none; }
+.hist summary::-webkit-details-marker { display: none; }
+.hist summary .count { font-family: var(--mono); font-size: 10.5px; padding: 0 6px; border-radius: 8px; background: var(--sunk); color: var(--muted); }
+.hist .h-row { padding: 10px 0; flex-wrap: wrap; gap: 8px; }
+.hist .h-date { width: auto; }
+/* Companion: collects what the algorithm is missing while the EHR is in front */
+.pip { width: 340px; max-height: calc(100% - 48px); display: flex; flex-direction: column; }
+.pip-body { overflow-y: auto; min-height: 0; }
+.cp-sel { margin-top: 4px; font-family: inherit; font-size: 12.5px; }
+.cp-sec { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--hair); }
+.cp-sec-h { display: flex; align-items: center; margin-bottom: 4px; }
+.cp-item { margin-top: 8px; padding: 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--ground); }
+.cp-item .btn { margin-top: 10px; width: 100%; justify-content: center; }
+.cp-item .opts { margin-top: 8px; }
+.cp-h { font-size: 12.5px; font-weight: 600; }
+.cp-h span { display: block; margin-top: 2px; font-size: 11px; font-weight: 500; line-height: 1.4; color: var(--muted); }
+.cp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.cp-in { display: flex; gap: 5px; align-items: center; }
+.cp-more { margin-top: 8px; font-size: 11.5px; color: var(--muted); }
+.cp-more summary { cursor: pointer; font-weight: 600; }
+.cp-src { margin-top: 10px; }
+.cp-msg { margin-top: 8px; padding: 8px 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; }
+.cp-msg.err { background: #FBE9E6; }
+.cp-msg.ok { background: var(--green-bg, #E7F3EA); color: var(--green, #2E6B3F); font-weight: 600; }
+.mic { flex-shrink: 0; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); color: var(--muted); cursor: pointer; }
+.mic.on { background: #A33A2B; border-color: #A33A2B; color: #FFFFFF; }
+.mic:disabled { opacity: 0.45; cursor: default; }
 @media (max-width: 1279px) {
   .rail { width: 272px; }
   .track { width: 328px; }
@@ -521,8 +670,7 @@ textarea.field:focus { border-color: var(--primary); }
     transform: translateX(102%); transition: transform 0.22s ease;
   }
   .track.open { transform: none; box-shadow: -12px 0 32px rgba(20, 20, 15, 0.16); }
-  .aw-list { max-height: 45%; }
-  .pip { right: 16px; bottom: 16px; width: min(304px, calc(100% - 32px)); }
+  .pip { right: 16px; bottom: 16px; width: min(340px, calc(100% - 32px)); max-height: calc(100% - 32px); }
   .pill-win { right: 16px; bottom: 16px; max-width: calc(100% - 32px); }
   .pill-win > span:nth-child(2) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   .ghost-nav { display: none; }
@@ -551,36 +699,18 @@ textarea.field:focus { border-color: var(--primary); }
 @container (max-width: 760px) {
   .p-head { padding: 14px 16px 0; }
   .facts { margin-left: 0; width: 100%; gap: 14px 20px; flex-wrap: wrap; }
-  .tabs { overflow-x: auto; scrollbar-width: none; }
-  .tabs button { flex-shrink: 0; white-space: nowrap; }
   .pad { padding: 16px 16px 22px; }
   .search { padding: 10px 12px 12px; }
   .search .kbd { display: none; }
 }
 
 @container (max-width: 640px) {
-  .welcome h2 { font-size: 23px; }
-  .welcome p { font-size: 13.5px; }
 }
 
 @container (max-width: 560px) {
   .p-id h1 { font-size: 18px; }
   .p-id .meta { font-size: 11px; }
   .p-av { width: 36px; height: 36px; font-size: 12.5px; }
-  .verdict { padding: 14px; }
-  .verdict .top { flex-wrap: wrap; }
-  .v-mark { width: 34px; height: 34px; }
-  .v-title { font-size: 17px; }
-  .v-tree { width: 100%; text-align: left; display: flex; align-items: baseline; gap: 8px; padding-left: 47px; }
-  .v-tree .k { display: none; }
-  .step { grid-template-columns: 26px minmax(0, 1fr); column-gap: 10px; padding: 13px 13px 14px; }
-  .step > .pill { grid-column: 2; grid-row: 1; justify-self: end; }
-  .step > div { grid-column: 1 / -1; grid-row: 2; }
-  .s-num { grid-row: 1; }
-  .s-row { grid-template-columns: 1fr; gap: 2px; }
-  .sec-head { flex-wrap: wrap; row-gap: 2px; }
-  .rec-row { flex-wrap: wrap; gap: 4px 14px; }
-  .rec-row .k { width: 100%; }
   .h-row { flex-wrap: wrap; row-gap: 4px; }
   .h-date { width: auto; }
   .h-row > div:last-child { flex-basis: 100%; padding-left: 23px; }
@@ -589,8 +719,6 @@ textarea.field:focus { border-color: var(--primary); }
   .note-foot .why { flex-basis: 100%; }
 }
 
-.scroll-x { overflow-x: auto; }
-.scroll-x .lab-table { min-width: 600px; }
 </style>
 </head>
 <body>
@@ -598,9 +726,6 @@ textarea.field:focus { border-color: var(--primary); }
   <div class="frame" id="app"></div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/reactflow@11.11.4/dist/umd/index.js"></script>
 <script>
 // Today is the viewer's real date; the sample referrals stay where they are on the calendar.
 const NOW = new Date();
@@ -626,6 +751,7 @@ const ICON = {
   check: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>',
   doc: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#A5A29A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h4"/></svg>',
   person: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+  mic: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
   clock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v5l3 2M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18z"/></svg>',
   pip: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><rect x="12" y="12" width="7" height="6" rx="1" fill="currentColor" stroke="none"/></svg>',
   minus: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>',
@@ -696,32 +822,13 @@ const AWAITING = [
   { id: 'subset', item: 'Lymphocyte subset panel', mrn: '40-118-772', asked: '—', dm: 11, dd: 20 }
 ].sort((a, b) => key(a.dm, a.dd) - key(b.dm, b.dd));
 
+// The tree's questions. What each one found is worked out from a version of the inputs (see evaluate).
 const STEPS = [
-  {
-    n: 1, status: 'met', q: 'Is the finding isolated?',
-    found: 'Yes. ALC 0.78 K/µL is low, and Hgb 13.2, Plt 239 and ANC 3.21 are all inside the reference range, so no other cell line is involved. That keeps the referral on this branch rather than the cytopenia path.',
-    field: 'Results · CBC collected Oct 20, 2026'
-  },
-  {
-    n: 2, status: 'missing', q: 'Is the lymphopenia persistent?',
-    found: 'Not established. The branch needs two confirmed result sets at least two weeks apart, both inside 12 weeks. Only Oct 20 is on file. A repeat was requested from the practice on Oct 28 and no order has come back against it — this is what holds the referral.',
-    field: 'Results · one set found  ·  Orders · no matching order returned'
-  },
-  {
-    n: 3, status: 'met', q: 'Is the newest result recent enough?',
-    found: 'It is. The Oct 20 draw was 8 days old when the decision was written on Oct 28, inside the 30-day limit. It passes 30 days on Nov 19, so the repeat is needed by then on recency as well as persistence.',
-    field: 'Results · CBC collected Oct 20, 2026'
-  },
-  {
-    n: 4, status: 'met', q: 'Has Allergy and Immunology seen the patient?',
-    found: 'Yes. Evaluation completed Oct 22 at Desert Allergy Associates and included in the outside records that came with the referral on Oct 27. No immunodeficiency identified and the lymphopenia persists, which clears the required-department step.',
-    field: 'Outside records · received Oct 27, 2026'
-  },
-  {
-    n: 5, status: 'gap', q: 'Does an exception apply?',
-    found: 'Cannot be answered. This branch defines no exception threshold for external referrals, so there is nothing to test the referral against. Nothing was assumed in its place.',
-    field: 'Tree · isolated lymphopenia, external, rev. 4'
-  }
+  { n: 1, q: 'Is the finding isolated?' },
+  { n: 2, q: 'Is the lymphopenia persistent?' },
+  { n: 3, q: 'Is the newest result recent enough?' },
+  { n: 4, q: 'Has Allergy and Immunology seen the patient?' },
+  { n: 5, q: 'Does an exception apply?' }
 ];
 const TONE = {
   met: { label: 'Met', mark: '✓' },
@@ -743,10 +850,19 @@ const RECORD = [
   { k: 'Outside records', v: '9 pages received Oct 27 · includes the Allergy and Immunology evaluation of Oct 22' },
   { k: 'Prior hematology contact', v: 'No record on file for this MRN in the last 3 years' }
 ];
-const RESULTS = [
-  { date: 'Oct 20, 2026', wbc: '4.4', alc: '0.78 L', hgb: '13.2', plt: '239', anc: '3.21', source: 'Outside records', low: true },
-  { date: 'Jun 3, 2026', wbc: '5.1', alc: '1.34', hgb: '13.0', plt: '248', anc: '3.52', source: 'Outside records', low: false }
-];
+// What the tree reads. V1 is what the AI found in the chart; overrides and the companion add versions.
+const CBC_RANGE = {
+  wbc: [4.0, 11.0, 'WBC', 'K/µL'], alc: [1.0, 4.8, 'ALC', 'K/µL'], hgb: [12.0, 15.5, 'Hgb', 'g/dL'],
+  plt: [150, 400, 'Plt', 'K/µL'], anc: [1.8, 7.7, 'ANC', 'K/µL']
+};
+const CHART = {
+  cbc: [
+    { date: '2026-06-03', wbc: 5.1, alc: 1.34, hgb: 13.0, plt: 248, anc: 3.52, src: 'Outside records' },
+    { date: '2026-10-20', wbc: 4.4, alc: 0.78, hgb: 13.2, plt: 239, anc: 3.21, src: 'Outside records' }
+  ],
+  ai: { seen: true, date: '2026-10-22', where: 'Desert Allergy Associates' },
+  exception: null // the tree defines none for external referrals
+};
 const HISTORY = [
   { date: 'OCT 27, 2026', fill: '#FFFFFF', ring: '#C9C6BD', t: 'Referral received', b: 'Whitfield, MD · Northgate Primary Care · external, face-to-face requested. Outside records include the Oct 20 CBC and the Oct 22 Allergy and Immunology evaluation.' },
   { date: 'OCT 28, 2026', fill: '#C98A2B', ring: '#C98A2B', t: 'Set to awaiting', b: 'One required step unmet: only one confirmed result set. The Allergy and Immunology evaluation was already in the outside records. Charted by K. Lozano.' },
@@ -772,7 +888,6 @@ const S = {
   calPicker: null,       // year being browsed in the month picker, when open
   filter: 'all',
   current: WORKED,        // the patient open now, or last opened
-  tab: 'decision',
   pipCollapsed: false,
   drawer: null,          // 'rail' | 'track' on narrow screens
   railCollapsed: false,
@@ -780,10 +895,22 @@ const S = {
   added: {},             // notes added this session, by MRN
   chat: {},              // chat thread per MRN
   history: {},           // History-tab events recorded this session, by MRN
-  change: null,          // { target, why, addNode, at } once the triager changes the tree's decision
-  reroute: null,         // { target, why, addNode } while the change panel is open
-  treeFocus: null,       // { id, key } asks the tree to select a node
-  focusWhy: false,
+  // Versions of the algorithm's inputs. V1 is the AI's read of the chart; every override or
+  // companion entry adds the next one. The latest drives the decision; view picks one to look at.
+  alg: {
+    versions: [{ n: 1, by: 'AI', date: 'Oct 28', what: 'Read from the chart and run through the tree', why: '', via: 'ai', step: null, data: CHART, answers: {} }],
+    view: null
+  },
+  restoreMsg: '',
+  comp: null,            // companion entries in progress (see blankComp)
+  listening: null,       // companion field being dictated
+  tree: null,            // { sel } while the full-screen tree is open; sel is the node in the sidebar
+  ov: null,              // the override being written in the tree sidebar
+  srcOpen: {},           // sources and notes opened from the evidence
+  noteTab: 'labs',       // evidence tab on the patient page
+  panelTab: 'awaiting',  // right panel tab: awaiting | notes | history | chat
+  dash: 'month',         // referral volume by month or quarter
+  toast: null,
   scrollChat: false,
   copied: null,          // index of the chat note just copied
   searchMsg: '',
@@ -952,21 +1079,102 @@ function renderRail() {
 
 /* ---------- Centre: the day ---------- */
 
+// Sample numbers for the prototype, not read from Epic: referrals received each month from Jan 2025.
+const VOLUME = [118, 124, 131, 127, 139, 142, 136, 151, 158, 149, 163, 141, 148, 161, 172, 158, 183, 176, 169, 190, 201, 187, 96];
+const VOL_START = { y: 2025, m: 1 };
+const DAYS_TO_APPT = [31, 29, 30, 27, 28, 26, 27, 25, 24, 25, 23, 22]; // average, the last 12 months
+const BY_PROVIDER = [['Dr. R. Okafor', 64], ['Dr. L. Nguyen', 51], ['Dr. M. Castillo', 47], ['Dr. J. Brennan', 38], ['Dr. E. Lindgren', 22]];
+
+const volMonth = (i) => { const t = VOL_START.y * 12 + VOL_START.m - 1 + i; return { y: Math.floor(t / 12), m: (t % 12) + 1 }; };
+const isNowMonth = (i) => { const v = volMonth(i); return v.y === TODAY.y && v.m === TODAY.m; };
+const sampleTag = '<span class="sample" title="Made-up numbers for the prototype. Not connected to Epic.">Sample</span>';
+
+function volumeCard() {
+  let bars;
+  if (S.dash === 'quarter') {
+    const q = {};
+    VOLUME.forEach((n, i) => { const v = volMonth(i); const k = v.y + ' Q' + Math.ceil(v.m / 3); q[k] = q[k] || { n: 0, now: false }; q[k].n += n; q[k].now = q[k].now || isNowMonth(i); });
+    bars = Object.keys(q).map((k) => ({ label: k.slice(5) + " '" + k.slice(2, 4), n: q[k].n, partial: q[k].now, tip: `${k}: ${q[k].n} referrals${q[k].now ? ' (to date)' : ''}` }));
+  } else {
+    bars = VOLUME.slice(-12).map((n, j) => { const i = VOLUME.length - 12 + j; const v = volMonth(i); return { label: MONTHS[v.m - 1], n, partial: isNowMonth(i), tip: `${MONTH_NAMES[v.m - 1]} ${v.y}: ${n} referrals${isNowMonth(i) ? ' (to date)' : ''}` }; });
+  }
+  const max = Math.max(...bars.map((b) => b.n));
+  const peak = bars.findIndex((b) => b.n === max);
+  return `
+    <section class="dcard wide" aria-label="Referral volume">
+      <div class="dcard-h">
+        <div class="grow"><div class="dcard-t">Referral volume</div><div class="dcard-s">Referrals received ${S.dash === 'quarter' ? 'each quarter' : 'each month, last 12 months'}</div></div>
+        ${sampleTag}
+        <div class="seg seg-sm" role="group" aria-label="Group by">
+          <button type="button" data-act="dash" data-v="month" aria-pressed="${S.dash === 'month'}">Month</button>
+          <button type="button" data-act="dash" data-v="quarter" aria-pressed="${S.dash === 'quarter'}">Quarter</button>
+        </div>
+      </div>
+      <div class="bars" role="img" aria-label="${bars.map((b) => b.tip).join('; ')}">
+        ${bars.map((b, i) => `<div class="bar ${b.partial ? 'partial' : ''}" data-tip="${b.tip}">
+          <i style="height: ${Math.max(2, Math.round((b.n / max) * 100))}%">${i === peak || i === bars.length - 1 ? `<span class="v">${b.n}</span>` : ''}</i></div>`).join('')}
+      </div>
+      <div class="bar-x" aria-hidden="true">${bars.map((b) => `<span>${b.label}</span>`).join('')}</div>
+      <div class="dcard-foot">${bars[bars.length - 1].partial ? 'The striped bar is the current ' + (S.dash === 'quarter' ? 'quarter' : 'month') + ', to date.' : ''}</div>
+    </section>`;
+}
+
+function totalCard() {
+  const thisYear = VOLUME.filter((n, i) => volMonth(i).y === TODAY.y);
+  const months = thisYear.length;
+  const lastYear = VOLUME.filter((n, i) => volMonth(i).y === TODAY.y - 1).slice(0, months);
+  const a = thisYear.reduce((x, y) => x + y, 0);
+  const b = lastYear.reduce((x, y) => x + y, 0);
+  const pct = b ? Math.round(((a - b) / b) * 100) : 0;
+  return `
+    <section class="dcard" aria-label="Total incoming">
+      <div class="dcard-h"><div class="grow"><div class="dcard-t">Total incoming</div><div class="dcard-s">Jan–${MONTHS[TODAY.m - 1]} ${TODAY.y}, to date</div></div>${sampleTag}</div>
+      <div class="hero-n">${a.toLocaleString()}<small>referrals</small></div>
+      <div class="hero-d">${pct >= 0 ? '+' : ''}${pct}% on the same months of ${TODAY.y - 1} (${b.toLocaleString()}). This month so far: ${VOLUME[VOLUME.length - 1]}.</div>
+    </section>`;
+}
+
+function daysCard() {
+  const d = DAYS_TO_APPT;
+  const W = 240; const H = 56; const lo = Math.min(...d) - 2; const hi = Math.max(...d) + 2;
+  const pts = d.map((v, i) => [Math.round((i / (d.length - 1)) * (W - 8)) + 4, Math.round(H - 4 - ((v - lo) / (hi - lo)) * (H - 8))]);
+  const last = pts[pts.length - 1];
+  return `
+    <section class="dcard" aria-label="Average days to appointment">
+      <div class="dcard-h"><div class="grow"><div class="dcard-t">Referral to appointment</div><div class="dcard-s">Average days, received to first hematology visit</div></div>${sampleTag}</div>
+      <div class="hero-n">${d[d.length - 1]}<small>days</small></div>
+      <div class="hero-d">Down from ${d[0]} a year ago. Last month's average.</div>
+      <svg class="spark-big" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Average days to appointment, last 12 months: ${d.join(', ')}">
+        <polyline points="${pts.map((x) => x.join(',')).join(' ')}" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        ${pts.map((x, i) => `<circle cx="${x[0]}" cy="${x[1]}" r="9" fill="transparent" data-tip="${MONTHS[volMonth(VOLUME.length - 12 + i).m - 1]}: ${d[i]} days"/>`).join('')}
+        <circle cx="${last[0]}" cy="${last[1]}" r="4" fill="var(--primary)" stroke="var(--surface)" stroke-width="2"/>
+      </svg>
+    </section>`;
+}
+
+function providerCard() {
+  const max = Math.max(...BY_PROVIDER.map((x) => x[1]));
+  return `
+    <section class="dcard" aria-label="Referrals by hematology provider">
+      <div class="dcard-h"><div class="grow"><div class="dcard-t">By hematology provider</div><div class="dcard-s">Accepted referrals booked, last 90 days</div></div>${sampleTag}</div>
+      <div class="hbars">${BY_PROVIDER.map(([name, n]) => `
+        <div class="hb" data-tip="${name}: ${n} referrals"><span class="nm">${name}</span><span class="t"><i style="width: ${Math.round((n / max) * 100)}%"></i></span><span class="n">${n}</span></div>`).join('')}
+      </div>
+    </section>`;
+}
+
 function renderQueue() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const newToday = PEOPLE.filter((p) => p.status === 'new').length;
   const awaiting = PEOPLE.filter((p) => p.status === 'awaiting').length;
-  const welcome = `
-    <section class="welcome" aria-label="Welcome">
-      <div class="logo">${ICON.logo.replace(/width="14" height="14"/, 'width="22" height="22"')}</div>
-      <h2>${greeting}, Melissa</h2>
-      <p>${newToday} new ${newToday === 1 ? 'referral is' : 'referrals are'} waiting for a first look and ${awaiting} are awaiting something. Pick a patient from the list to start, or search by MRN below.</p>
-    </section>`;
-
   return `
-    <main class="centre" aria-label="The day">
-      <div class="centre-scroll">${welcome}</div>
+    <main class="centre" aria-label="Home">
+      <div class="centre-scroll"><div class="home">
+        <h2 class="hello"><span class="hi">${greeting}, Melissa</span><span class="sub">${newToday} new referrals to look at, ${awaiting} awaiting something.</span></h2>
+        <div class="dash">${volumeCard()}${totalCard()}${daysCard()}${providerCard()}</div>
+        <p class="dash-note">The numbers on this page are made up for the prototype. They are not connected to Epic.</p>
+      </div></div>
       ${renderSearch('Search an MRN or ask a question about the queue')}
     </main>`;
 }
@@ -991,28 +1199,16 @@ function renderSearch(placeholder, suggestions) {
 function renderPatient() {
   const p = byMrn(S.current);
   const worked = p.mrn === WORKED;
-  const tabs = [['decision', 'AI Decision'], ['referral', 'Referral and results'], ['history', 'History']]
-    .map(([id, label]) => `<button type="button" data-act="tab" data-v="${id}" aria-pressed="${S.tab === id}">${label}</button>`).join('');
-
-  let content;
-  if (!worked) {
-    content = `<div class="empty" style="padding-top: 60px">
-      <h2>The tree has not been run on this referral in the prototype</h2>
-      <p>The worked example is Alvarez, Rosa M. — isolated lymphopenia, external branch. ${p.waiting ? `This referral is awaiting <strong>${p.waiting.toLowerCase()}</strong>; tick it off on the right when it lands.` : ''}</p>
-      <div style="margin-top: 14px"><button type="button" class="btn secondary sm" data-act="open" data-v="${WORKED}">Open the worked example</button></div>
-    </div>`;
-  } else if (S.tab === 'decision') {
-    content = renderDecision();
-  } else if (S.tab === 'referral') {
-    content = renderReferral();
-  } else {
-    content = renderHistory();
-  }
-
+  const body = worked
+    ? `${algoCard()}<div class="duo">${evidenceCard()}${noteCard(p)}</div>`
+    : `<section class="card"><div class="card-h"><span class="card-t">Decision algorithm</span></div>
+        <div class="cbody"><div class="gap-note"><strong>Not run.</strong> The algorithm has not been run on this referral in the prototype, so there is no decision, evidence or triage note yet.
+          ${p.waiting ? `It is awaiting <strong>${p.waiting.toLowerCase()}</strong>; tick it off on the right when it lands.` : ''}</div>
+          <button type="button" class="btn secondary sm" data-act="open" data-v="${WORKED}" style="margin-top: 12px">Open the worked example</button></div></section>`;
   return `
     <main class="centre" aria-label="The patient">
       <div class="p-head">
-        <button type="button" class="p-back" data-act="toQueue">${ICON.left} Back to the day</button>
+        <button type="button" class="p-back" data-act="toQueue">${ICON.left} Home</button>
         <div class="p-id">
           <div class="p-av">${initials(p)}</div>
           <div class="p-name">
@@ -1026,127 +1222,245 @@ function renderPatient() {
             <div><div class="k">In triage</div><div class="v mono ${p.days > 14 ? 'late' : ''}">${p.days} ${p.days === 1 ? 'day' : 'days'}</div></div>
           </div>
         </div>
-        ${worked ? `<div class="tabs" role="group" aria-label="Sections">${tabs}</div>` : '<div style="height: 14px"></div>'}
+        <div style="height: 14px"></div>
       </div>
-      <div class="centre-scroll"><div class="pad">${content}${renderChat(p)}</div></div>
-      ${renderSearch('Ask about this referral, or search another MRN', ['Draft the decision note', 'Draft a message', 'What is still awaiting?'])}
+      <div class="centre-scroll"><div class="pad">${body}</div></div>
     </main>`;
 }
 
-function renderDecision() {
-  const c = S.change;
-  const r = S.reroute;
-  const verdict = c
-    ? `<div class="verdict over">
-        <div class="top">
-          <span class="v-mark">${ICON.person}</span>
-          <div class="grow" style="min-width: 0">
-            <div class="v-kicker">Your decision · changed from the tree</div>
-            <div class="v-title">${OUTCOME[c.target]}</div>
-            <div class="v-was">The tree decided <s>${OUTCOME[TREE_END]}</s>. You rerouted at ${stepLabel(c.at)}.</div>
-          </div>
-          ${treeTag()}
-        </div>
-        ${r ? '' : `<div class="v-actions">
-          <button type="button" class="btn secondary sm" data-act="changeStart">Change it again</button>
-          <button type="button" class="btn secondary sm" data-act="changeRevert">Go back to the tree's decision</button>
-          <span class="hint">Your reasoning is on the path below and in the patient's notes.</span>
-        </div>`}
-      </div>`
-    : `<div class="verdict">
-        <div class="top">
-          <span class="v-mark">${ICON.clock}</span>
-          <div class="grow" style="min-width: 0">
-            <div class="v-kicker">What the tree decided</div>
-            <div class="v-title">${OUTCOME[TREE_END]}</div>
-          </div>
-          ${treeTag()}
-        </div>
-        ${r ? '' : '<div class="v-actions"><button type="button" class="btn secondary sm" data-act="changeStart">Change the decision</button></div>'}
-      </div>`;
+// Node pictures, a short name for each step, and the rule each step applies.
+const NI = (d) => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const NODE_ICON = {
+  root: NI('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>'),
+  g1: NI('<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><circle cx="12" cy="16" r="3"/>'),
+  g2: NI('<path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/>'),
+  g3: NI('<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'),
+  g4: NI('<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/>'),
+  g5: NI('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/>'),
+  end: NI('<path d="M5 21V4h11l-2 4 2 4H5"/>')
+};
+const nodeIcon = (id) => NODE_ICON[id] || NODE_ICON.end;
+const SHORT = { g1: 'Isolated?', g2: 'Persistent?', g3: 'Recent enough?', g4: 'Seen by Allergy & Immunology?', g5: 'Exception applies?' };
+const LANE = { root: 'Referral', g1: 'Step 1 · Isolated', g2: 'Step 2 · Persistent', g3: 'Step 3 · Recent', g4: 'Step 4 · Allergy & Immunology', g5: 'Step 5 · Exception', accept: 'Outcome' };
+const RULE = {
+  g1: 'The newest CBC has a low ALC (below 1.0 K/µL) while WBC, Hgb, Plt and ANC are all inside their reference ranges.',
+  g2: 'Two low ALC results at least 14 days apart, both within 12 weeks.',
+  g3: 'The newest CBC was collected in the last 30 days.',
+  g4: 'An Allergy and Immunology evaluation is on file before hematology sees the patient.',
+  g5: 'Rev. 4 lists exception criteria for internal referrals only. External referrals have none.'
+};
+const stepSub = (st) => (st.pending ? 'Pending' : st.status === 'gap' ? 'Undefined · your call' : TONE[st.status].label);
+const markFor = (st) => (st.pending ? '<span class="mk pending" aria-hidden="true"></span>'
+  : `<span class="mk ${st.status}" aria-hidden="true">${st.status === 'met' ? '✓' : st.status === 'gap' ? '?' : '!'}</span>`);
 
-  const panel = r ? `
-    <section class="change" aria-label="Change the decision">
-      <h3>Change the decision</h3>
-      <p class="sub">Say why, then pick where the path should end — here or by clicking an outcome in the tree below. Your reasoning is saved on the decision path and in the patient's notes.</p>
-      <label class="q" for="changeWhy">Why are you changing it? <span class="req">Required</span></label>
-      <textarea class="field" id="changeWhy" placeholder="Your rationale for overriding the tree" style="height: 72px; margin-top: 8px">${esc(r.why)}</textarea>
-      <span class="q">Where should it end?</span>
-      <div class="opts" role="group" aria-label="Outcome">
-        ${Object.keys(OUTCOME).filter((id) => id !== TREE_END).map((id) =>
-          `<button type="button" class="opt" data-act="pickTarget" data-v="${id}" aria-pressed="${r.target === id}">${OUTCOME[id]}</button>`).join('')}
-      </div>
-      <label class="check"><input type="checkbox" id="changeNode" ${r.addNode ? 'checked' : ''}> Add my reasoning to the tree as a node</label>
-      <div class="row">
-        <button type="button" class="btn primary sm" id="changeSave" data-act="changeSave" ${r.target && r.why.trim() ? '' : 'disabled'}>Save the change</button>
-        <button type="button" class="btn secondary sm" data-act="changeCancel">Cancel</button>
-        <span class="hint">${r.target ? 'Reroutes at ' + stepLabel(divergeAt(r.target)) + ' to ' + OUTCOME[r.target] + '.' : 'Pick an outcome to reroute the path.'}</span>
-      </div>
-    </section>` : '';
-
-  const cbcIn = !!S.done.cbc;
-  const steps = STEPS.map((s) => `
-    <div class="step ${s.status}">
-      <span class="s-num ${s.status}" aria-hidden="true">${s.n}</span>
-      <div style="min-width: 0">
-        <div class="s-kick">Step ${s.n}</div>
-        <div class="s-q">${s.q}</div>
-        <div class="s-row"><span class="k">Found</span><span class="v">${s.found}</span></div>
-        <div class="s-row"><span class="k">Read from</span><span class="v"><span class="src">${ICON.doc}${s.field}</span></span></div>
-        ${s.status === 'gap' ? '<div class="s-aside purple"><strong>A gap in the tree, not in the chart.</strong> Flagged for the tree owner. The decision above stands without it.</div>' : ''}
-        ${s.n === 2 && cbcIn ? '<div class="s-aside blue">You ticked the repeat CBC as in. The tree still reads one set until the result is filed in the chart — re-run on receipt, no new referral order needed.</div>' : ''}
-      </div>
-      <span class="pill t-${s.status}" style="align-self: start">${TONE[s.status].label}</span>
-    </div>`).join('');
-
-  return `
-    ${verdict}
-    ${panel}
-    <div class="sec-head"><span class="kicker">The path through the tree</span><span class="aside">As a diagram, or read in plain language</span></div>
-    ${TREE ? '<div id="tree-slot"></div>' : `<div class="steps">${steps}</div>`}`;
+// Version chips, shared by the patient page and the full-screen tree.
+function versionChips() {
+  const viewed = viewedVer();
+  const latest = latestVer();
+  return `<div class="ver-list" role="group" aria-label="Versions">${S.alg.versions.map((v) => `
+    <button type="button" class="ver ${v === viewed ? 'on' : ''}" data-act="algView" data-v="${v.n}" aria-pressed="${v === viewed}" data-tip="V${v.n} · ${esc(v.by)} · ${v.date} · ${esc(v.what)}${v.why ? ' — ' + esc(v.why) : ''}">
+      V${v.n}<span>${esc(v.by)}${v === latest ? ' · latest' : ''}</span></button>`).join('')}</div>`;
 }
 
-const treeTag = () => `
-  <div class="v-tree">
-    <div class="k">Decision tree</div>
-    <div class="v">Isolated lymphopenia</div>
-    <div class="s">External · rev. 4</div>
+function restoreRow() {
+  const viewed = viewedVer();
+  const latest = latestVer();
+  if (viewed === latest) return '';
+  return `<div class="ver-restore">
+    <span class="grow">You're looking at V${viewed.n} (${esc(viewed.what)}). The decision comes from the latest version, V${latest.n}.</span>
+    <button type="button" class="btn-ghost" data-act="algView" data-v="${latest.n}">Back to V${latest.n}</button>
+    <input class="mc-in restore-why" placeholder="Why restore V${viewed.n}?" aria-label="Why restore V${viewed.n}">
+    <button type="button" class="btn secondary sm" data-act="algRestore" data-v="${viewed.n}">Restore as V${latest.n + 1}</button>
+    ${S.restoreMsg ? `<span class="err" role="alert">${S.restoreMsg}</span>` : ''}
   </div>`;
-
-function renderReferral() {
-  const rec = RECORD.map((f) => `
-    <div class="rec-row ${f.missing ? 'missing' : ''}">
-      <div class="k">${f.k}</div><div class="v">${f.v}</div>
-      ${f.missing ? '<button type="button" class="btn secondary sm" style="align-self: center" title="Opens a draft message to the referring practice">Ask the practice</button>' : ''}
-    </div>`).join('');
-  const labs = RESULTS.map((r) => `
-    <div class="lab-grid">
-      <span>${r.date}</span><span>${r.wbc}</span><span class="${r.low ? 'low' : ''}">${r.alc}</span><span>${r.hgb}</span><span>${r.plt}</span><span>${r.anc}</span><span class="src">${r.source}</span>
-    </div>`).join('');
-  return `
-    <div class="kicker" style="padding: 0 2px 10px">The referral as it arrived</div>
-    <div class="box">${rec}</div>
-    <div class="kicker" style="padding: 22px 2px 10px">Results read by the tree</div>
-    <div class="box scroll-x"><div class="lab-table">
-      <div class="lab-grid head"><span>Collected</span><span>WBC</span><span>ALC</span><span>Hgb</span><span>Plt</span><span>ANC</span><span>Source</span></div>
-      ${labs}
-    </div></div>`;
 }
 
-function renderHistory() {
-  // The referral's fixed history, then anything recorded this session (decision changes), oldest first.
-  const hist = HISTORY.concat(S.history[S.current] || []).map((h) => `
-    <div class="h-row">
-      <span class="h-dot" style="background: ${h.fill}; border-color: ${h.ring}"></span>
-      <div class="h-date">${h.date}</div>
-      <div style="min-width: 0">
-        <div class="h-t">${esc(h.t)}${h.fresh ? ' <span class="pill xs t-new" style="margin-left: 6px; vertical-align: 1px">Just added</span>' : ''}</div>
-        <div class="h-b">${esc(h.b)}</div>
-      </div>
-    </div>`).join('');
+// The decision always comes from the latest version, whichever one is being looked at.
+function decisionLine() {
+  const latest = latestVer();
+  const ev = evaluate(latest);
+  const ai = evaluate(S.alg.versions[0]);
+  return `<div class="decision">
+    <span class="d-k">Decision</span>
+    <span class="d-v">${OUTCOME[ev.end]}</span>
+    <span class="pill xs ${latest.n > 1 ? 't-new' : 't-cold'}">V${latest.n}${latest.n > 1 ? ` · after ${latest.n - 1} ${latest.n === 2 ? 'change' : 'changes'}` : ' · AI'}</span>
+    ${ev.end !== ai.end ? `<span class="d-was">The AI decided <s>${OUTCOME[ai.end]}</s> in V1.</span>` : ''}
+  </div>`;
+}
+
+// The roadmap card: the five steps in a row, the outcome at the end. A click opens the full tree there.
+function algoCard() {
+  const viewed = viewedVer();
+  const ev = evaluate(viewed);
+  const path = new Set(chainOf(ev.end));
+  const ov = overridesIn(viewed);
+  const ids = ['g1', 'g2', 'g3', 'g4', 'g5'];
+  const nodes = ids.map((id, i) => {
+    const st = ev.steps[id];
+    const on = path.has(id);
+    const badge = st.pending ? 'Pending' : ov[id] ? 'Changed in V' + ov[id].n : '';
+    return `${i ? `<span class="sn-link ${on ? 'on' : ''}" aria-hidden="true"></span>` : ''}
+      <button type="button" class="snode ${st.status} ${on ? '' : 'off'}" data-act="treeOpen" data-v="${id}" aria-label="Step ${i + 1}: ${STEPS[i].q} ${stepSub(st)}${on ? '' : ', not reached'}">
+        ${badge ? `<span class="sn-badge ${st.pending ? '' : 'blue'}">${badge}</span>` : ''}
+        <span class="sn-ic">${nodeIcon(id)}</span>
+        <span class="sn-txt"><span class="sn-t">${SHORT[id]}</span><span class="sn-s">${on ? stepSub(st) : 'Not reached · ' + stepSub(st)}</span></span>
+        ${markFor(st)}
+      </button>`;
+  }).join('');
+  const end = `<span class="sn-link on" aria-hidden="true"></span>
+    <button type="button" class="snode end ${ev.end === 'accept' ? 'met' : 'missing'}" data-act="treeOpen" data-v="${ev.end}">
+      <span class="sn-ic">${nodeIcon('end')}</span>
+      <span class="sn-txt"><span class="sn-t">${OUTCOME[ev.end]}</span><span class="sn-s">Where the path ends · V${viewed.n}</span></span>
+    </button>`;
   return `
-    <div class="kicker" style="padding: 0 2px 10px">Everything that has happened to this referral</div>
-    <div class="box">${hist}</div>`;
+    <section class="card" aria-label="Decision algorithm">
+      <div class="card-h">
+        <div class="grow" style="min-width: 0"><span class="card-t">Decision algorithm</span><div class="card-sub">Isolated lymphopenia · external · rev. 4</div></div>
+        ${versionChips()}
+        <button type="button" class="btn secondary sm" data-act="treeOpen" data-v="">${ICON.out} View full tree</button>
+      </div>
+      ${decisionLine()}
+      ${restoreRow()}
+      <div class="strip-wrap"><div class="strip-row">${nodes}${end}</div></div>
+    </section>`;
+}
+
+/* ---------- Evidence: lab trends, present/absent results, and the referral's own data ---------- */
+
+// A lab over time against its reference range. Small in tables, large in the tree sidebar.
+function trendSvg(sets, k, big) {
+  const [lo, hi, label, unit] = CBC_RANGE[k];
+  const vals = sets.map((x) => x[k]);
+  const W = big ? 340 : 92; const H = big ? 150 : 28;
+  const P = big ? { l: 36, r: 16, t: 16, b: 26 } : { l: 4, r: 4, t: 5, b: 5 };
+  let dMin = Math.min(lo, ...vals); let dMax = Math.max(lo, ...vals);
+  const pad = (dMax - dMin || 1) * 0.25; dMin = Math.max(0, dMin - pad); dMax += pad;
+  const t0 = Date.parse(sets[0].date); const t1 = Date.parse(sets[sets.length - 1].date);
+  const x = (d) => (t1 === t0 ? (P.l + W - P.r) / 2 : P.l + ((Date.parse(d) - t0) / (t1 - t0)) * (W - P.l - P.r));
+  const y = (v) => P.t + (1 - (v - dMin) / (dMax - dMin)) * (H - P.t - P.b);
+  const bandTop = y(Math.min(hi, dMax)); const bandBot = y(Math.max(lo, dMin));
+  const flag = (v) => (v < lo ? 'low' : v > hi ? 'high' : '');
+  const pts = sets.map((s) => [x(s.date), y(s[k]), s]);
+  const r = big ? 4.5 : 2.5;
+  // End labels sit inside the plot so they are never cut off.
+  // Label the newest point, then any older one with room; the rest show on hover.
+  const show = new Set(); let lastX = Infinity;
+  for (let i = pts.length - 1; i >= 0; i -= 1) { if (lastX - pts[i][0] >= 58) { show.add(i); lastX = pts[i][0]; } }
+  const anchor = (i) => (pts.length < 2 ? 'middle' : i === 0 ? 'start' : i === pts.length - 1 ? 'end' : 'middle');
+  return `<svg class="${big ? 'trend' : 'spark'}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${label} over time: ${sets.map((s) => isoLabel(s.date) + ' ' + s[k]).join(', ')}. Reference ${lo}–${hi} ${unit}.">
+    ${bandBot > bandTop ? `<rect x="${P.l}" y="${bandTop}" width="${W - P.l - P.r}" height="${bandBot - bandTop}" fill="#E7F4EE"/>` : ''}
+    <line x1="${P.l}" x2="${W - P.r}" y1="${y(lo)}" y2="${y(lo)}" stroke="#9CCDB5" stroke-dasharray="3 3" stroke-width="1"/>
+    ${big ? `<text x="${P.l - 6}" y="${y(lo) + 3.5}" text-anchor="end" class="ax">${lo}</text>
+      <text x="${W - P.r}" y="${bandTop + 11}" text-anchor="end" class="ax">Reference ${lo}–${hi}</text>
+      ${pts.map((q, i) => (!show.has(i) ? '' : `<text x="${q[0]}" y="${H - 8}" text-anchor="${anchor(i)}" class="ax">${isoLabel(q[2].date)}</text>`)).join('')}` : ''}
+    <polyline points="${pts.map((q) => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ')}" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round"/>
+    ${pts.map((q, i) => `<circle cx="${q[0]}" cy="${q[1]}" r="${r}" fill="${flag(q[2][k]) ? 'var(--amber-dot)' : 'var(--primary)'}" stroke="var(--surface)" stroke-width="2"/>
+      ${big && show.has(i) ? `<text x="${q[0]}" y="${q[1] - 9}" text-anchor="${anchor(i)}" class="val">${q[2][k]}${flag(q[2][k]) ? ' · ' + flag(q[2][k]) : ''}</text>` : ''}
+      <circle cx="${q[0]}" cy="${q[1]}" r="${big ? 12 : 8}" fill="transparent" data-tip="${isoLabel(q[2].date, true)}: ${label} ${q[2][k]} ${unit}${flag(q[2][k]) ? ' (' + flag(q[2][k]) + ')' : ''}"/>`).join('')}
+  </svg>`;
+}
+
+const SUPP = [
+  ['Location', 'Phoenix, AZ'],
+  ['Referring provider', 'J. Whitfield, MD · Northgate Primary Care'],
+  ['Reason for referral', 'Lymphopenia, unspecified · D72.810'],
+  ['Clinical question', 'Persistent low lymphocyte count over six months. Patient asymptomatic, no recurrent infections.'],
+  ['Spleen', null, 'Not documented in the referral or outside records'],
+  ['Active medications', null, 'Not in the referral packet'],
+  ['Outside records', '9 pages received Oct 27 · includes the Allergy and Immunology evaluation of Oct 22'],
+  ['Prior hematology contact', 'No record on file for this MRN in the last 3 years']
+];
+
+const presence = (st, label) => `<span class="pa ${st}">${label}</span>`;
+const srcLink = (key, label) => `<button type="button" class="linkbtn" data-act="srcToggle" data-v="${key}" aria-expanded="${!!S.srcOpen[key]}">${ICON.doc} ${S.srcOpen[key] ? 'Hide ' : ''}${label}</button>`;
+const AI_QUOTE = 'Evaluated for recurrent infection and immunodeficiency. Immunoglobulin levels within normal limits. No primary immunodeficiency identified. Lymphopenia persists; defer to hematology as referred.';
+
+function testingRows(ev) {
+  const d = ev.data;
+  const cbc = AWAITING.find((a) => a.id === 'cbc');
+  const subset = AWAITING.find((a) => a.id === 'subset');
+  const rows = [
+    { t: 'Allergy and Immunology evaluation', pa: d.ai.seen ? presence('present', 'Present') : presence('absent', 'Absent'),
+      d: d.ai.seen ? `Completed ${isoLabel(d.ai.date, true)} at ${d.ai.where}. No immunodeficiency identified.` : 'Not found in the outside records or the chart.',
+      src: d.ai.seen ? srcLink('ai', 'Open the evaluation note') + (S.srcOpen.ai ? `<blockquote class="quote">${AI_QUOTE}</blockquote>` : '') : '' },
+    { t: 'Repeat CBC with differential', pa: S.done.cbc ? presence('present', 'Received') : presence('pending', 'Pending'),
+      d: S.done.cbc ? 'Ticked as received. Add its result with an override or the companion so the algorithm can read it.' : `Requested ${cbc.asked}, due ${dueLabel(cbc)}${dueTone(cbc) === 'late' ? ' — late' : ''}. Step 2 needs it.` },
+    { t: 'Lymphocyte subset panel', pa: S.done.subset ? presence('present', 'Received') : presence('pending', 'Pending'),
+      d: S.done.subset ? 'Ticked as received.' : `Not requested yet. Due ${dueLabel(subset)}.` },
+    { t: 'Order on the referral', pa: presence('missing', 'Not in the chart'), d: 'No order data returned. That does not confirm none was placed.' }
+  ];
+  return rows.map((r) => `<div class="ev-row"><div class="grow" style="min-width: 0"><div class="t">${r.t}</div><div class="d">${r.d}</div>${r.src || ''}</div>${r.pa}</div>`).join('');
+}
+
+// The left card: the triage note's evidence, in tabs like the example note.
+function evidenceCard() {
+  const ev = evaluate(viewedVer());
+  const tab = S.noteTab;
+  let body;
+  if (tab === 'labs') {
+    const rows = ['alc', 'wbc', 'hgb', 'plt', 'anc'].map((k) => {
+      const [lo, hi, label, unit] = CBC_RANGE[k];
+      const out = ev.sets.filter((x) => x[k] < lo || x[k] > hi);
+      return `<tr>
+        <th scope="row">${label} <span class="u">${unit}</span></th>
+        <td class="r mono">${ev.sets.length}</td>
+        <td class="r mono ${out.length ? 'low' : ''}">${out.length}</td>
+        <td>${trendSvg(ev.sets, k, false)}</td>
+        <td class="recent">${ev.sets.slice().reverse().map((x) => `<span class="${x[k] < lo || x[k] > hi ? 'low' : ''}">${isoLabel(x.date)}: ${x[k]}</span>`).join('<br>')}</td>
+      </tr>`;
+    }).join('');
+    body = `<div class="thr"><strong>Thresholds used:</strong> ALC below 1.0 K/µL is low. WBC 4.0–11.0, Hgb 12.0–15.5, Plt 150–400, ANC 1.8–7.7.</div>
+      <div class="lsum-wrap"><table class="lsum">
+        <thead><tr><th scope="col">Test</th><th scope="col" class="r">n</th><th scope="col" class="r">Out of range</th><th scope="col">Trend</th><th scope="col">Recent</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>
+      <div class="thr" style="margin: 10px 0 0">Shaded: the reference range. Amber points are out of range.</div>`;
+  } else if (tab === 'testing') {
+    body = testingRows(ev);
+  } else {
+    body = `<dl class="kv">${SUPP.map(([k, v, miss]) => `<dt>${k}</dt><dd class="${v ? '' : 'missing'}">${v ? esc(v) : '<span class="pa missing">Missing</span> ' + miss}</dd>`).join('')}</dl>`;
+  }
+  const t = (id, label) => `<button type="button" role="tab" aria-selected="${tab === id}" data-act="noteTab" data-v="${id}">${label}</button>`;
+  return `
+    <section class="card" aria-label="Triage note evidence">
+      <div class="ctabs" role="tablist" aria-label="Evidence">${t('labs', 'Lab summary')}${t('testing', 'Testing')}${t('supp', 'Supplementary')}</div>
+      <div class="cbody" role="tabpanel">${body}</div>
+    </section>`;
+}
+
+// The right card: the triage note itself. Its summary and missing list come from the algorithm.
+function noteCard(p) {
+  const latest = latestVer();
+  const ev = evaluate(latest);
+  const miss = missingFor(ev);
+  const order = RECORD.find((f) => f.missing);
+  const now = new Date();
+  const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  return `
+    <section class="card" aria-label="Triage note">
+      <div class="card-h"><span class="card-t grow">Triage note</span><span class="ai-tag" title="Drafted from the algorithm. Review before charting.">AI draft · V${latest.n}</span></div>
+      <div class="cbody">
+        <div class="tnote-t">Isolated lymphopenia</div>
+        <dl class="kv tight">
+          <dt>Date/time</dt><dd>${TODAY_LONG} · ${time}</dd>
+          <dt>Patient</dt><dd>${p.name} · MRN ${p.mrn} · F</dd>
+          <dt>Referring</dt><dd>J. Whitfield, MD · Northgate Primary Care</dd>
+          <dt>Assessment (labs)</dt><dd>Lymphopenia · ALC ${ev.last.alc} K/µL on ${isoLabel(ev.last.date)}</dd>
+        </dl>
+        <div class="kicker" style="margin-top: 16px">Snapshot</div>
+        <ol class="exec-lines">${summaryLines(ev).map((l) => `<li>${l}</li>`).join('')}</ol>
+        <div class="exec-miss">
+          <div class="kicker">Missing</div>
+          ${miss.map((m) => `<div class="miss-row"><strong>${m.label}</strong> — ${m.why}</div>`).join('')}
+          ${order ? `<div class="miss-row"><strong>Referral order</strong> — ${order.v.toLowerCase()}</div>` : ''}
+          ${miss.length || order ? '' : '<div class="miss-row">Nothing. The algorithm has what it needs.</div>'}
+          ${miss.length ? `<button type="button" class="btn secondary sm" data-act="toPip">${ICON.pip} Collect in the companion</button>` : ''}
+        </div>
+        <div class="note-acts">
+          <button type="button" class="btn primary sm" data-act="ask" data-v="Draft a message">Draft a message to the provider</button>
+          <button type="button" class="btn secondary sm" data-act="ask" data-v="Draft the decision note">Draft the decision note</button>
+        </div>
+      </div>
+    </section>`;
 }
 
 /* ---------- Chat: the decision note is drafted here ---------- */
@@ -1171,14 +1485,27 @@ function ask(q) {
     thread.push({ who: 'copilot', text: 'In this prototype I can draft the decision note, draft a message to the referring provider, or list what is still awaiting. Try one of the suggestions above the box.' });
   }
   S.scrollChat = true;
+  S.panelTab = 'chat';
+  S.trackCollapsed = false;
+  if (matchMedia('(max-width: 767px)').matches) S.drawer = 'track';
 }
 
 // One message covers one patient. It asks for whatever is still open on their awaiting list;
 // the copilot never sends it — the triager copies it into the EHR or a fax, then marks it sent.
+// Things only the referring practice can supply, that the algorithm is missing and the awaiting list doesn't cover.
+function algorithmAsks(p) {
+  if (p.mrn !== WORKED) return [];
+  const asked = itemsFor(p.mrn).filter((a) => !S.done[a.id]).map((a) => a.id);
+  return missingFor(evaluate(latestVer()))
+    .filter((m) => (m.kind === 'cbc' && !asked.includes('cbc')) || m.kind === 'ai')
+    .map((m) => ({ id: 'alg-' + m.id, item: m.kind === 'cbc' ? 'A recent CBC with differential' : 'Allergy and Immunology evaluation', why: m.why }));
+}
+
 function newMessage(p) {
   const prov = PROVIDERS[p.mrn];
   const include = {};
   itemsFor(p.mrn).filter((a) => !S.done[a.id]).forEach((a) => { include[a.id] = true; });
+  algorithmAsks(p).forEach((a) => { include[a.id] = true; });
   const m = {
     who: 'copilot', kind: 'message', include, sent: false,
     to: prov ? prov.name + ' · ' + prov.practice : '',
@@ -1191,8 +1518,10 @@ function newMessage(p) {
 function messageBody(p, m) {
   const prov = PROVIDERS[p.mrn];
   const asks = itemsFor(p.mrn).filter((a) => !S.done[a.id] && m.include[a.id]);
-  const lines = asks.map((a) => `• ${a.item} — ${a.asked !== '—' ? 'first requested ' + a.asked + ', ' : ''}needed by ${dueLabel(a)}`).join('\n');
-  const need = asks.length
+  const extra = algorithmAsks(p).filter((a) => m.include[a.id]);
+  const lines = asks.map((a) => `• ${a.item} — ${a.asked !== '—' ? 'first requested ' + a.asked + ', ' : ''}needed by ${dueLabel(a)}`)
+    .concat(extra.map((a) => `• ${a.item} — ${a.why}`)).join('\n');
+  const need = asks.length || extra.length
     ? `Thank you for this referral to hematology. To finish triaging it, we still need:\n${lines}\n\nOnce these are in, we will re-triage it — no new referral order is needed.${p.mrn === WORKED ? ' The window for this referral closes Jan 12, 2027.' : ''}`
     : 'Thank you for this referral to hematology. We have what we need for now and will be in touch once triage is complete.';
   return `Dear ${prov ? prov.salutation : 'colleague'},\n\nRe: ${p.name} · MRN ${p.mrn} · referral ${p.ref}, received ${p.received}, 2026\n\n${need}\n\nThank you,\nMelissa\nHematology referral triage`;
@@ -1203,16 +1532,18 @@ const messageText = (m) => `To: ${m.to}\nSubject: ${m.subject}\n\n${m.body}`;
 function renderMessage(p, m, i) {
   const open = itemsFor(p.mrn).filter((a) => !S.done[a.id] || m.include[a.id]);
   const off = m.sent ? 'disabled' : '';
-  const asks = open.length
+  const extra = algorithmAsks(p);
+  const asks = open.length || extra.length
     ? open.map((a) => `<label><input type="checkbox" data-act="msgItem" data-v="${i}:${a.id}" ${m.include[a.id] ? 'checked' : ''} ${off}> ${a.item}<span class="d">due ${dueLabel(a)}</span></label>`).join('')
-    : '<div class="none">Nothing open on the awaiting list, so there is nothing to ask for.</div>';
+      + extra.map((a) => `<label><input type="checkbox" data-act="msgItem" data-v="${i}:${a.id}" ${m.include[a.id] ? 'checked' : ''} ${off}> ${a.item}<span class="d">from the algorithm</span></label>`).join('')
+    : '<div class="none">Nothing open on the awaiting list or missing from the algorithm, so there is nothing to ask for.</div>';
   return `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card">
     <div class="note-head"><span class="kicker">Message to the referring provider · ${m.sent ? 'sent' : 'draft'}</span><span class="grow"></span>
       ${m.sent ? '<span class="pill xs t-accepted">Logged as sent</span>' : '<span class="ai-tag" title="Drafted by the copilot. Review and edit before sending.">AI draft</span>'}</div>
     <div class="mc">
       <label class="mc-row"><span class="k">To</span><input class="mc-in" data-msg="${i}" data-f="to" value="${esc(m.to)}" placeholder="Referring provider not on file — enter who it goes to" ${off}></label>
       <label class="mc-row"><span class="k">Subject</span><input class="mc-in" data-msg="${i}" data-f="subject" value="${esc(m.subject)}" ${off}></label>
-      <fieldset class="mc-ask"><legend>Ask for</legend>${asks}</fieldset>
+      <fieldset class="mc-ask"><legend>What to include</legend>${asks}</fieldset>
       <textarea class="field mc-body" data-msg="${i}" data-f="body" aria-label="Message" ${off}>${esc(m.body)}</textarea>
     </div>
     <div class="note-foot">
@@ -1238,7 +1569,7 @@ function renderChat(p) {
     const text = noteText(m);
     const meta = m.frozen ? 'Added to the notes on the right. Undo to edit it again'
       : m.edited ? 'Edited by you; it no longer redrafts on its own'
-        : (S.change ? 'Redrafted with your change' : 'Drafted from the tree');
+        : (latestVer().n > 1 ? 'Drafted from V' + latestVer().n : 'Drafted from the tree');
     return `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card">
       <div class="note-head"><span class="kicker">Decision note · ${m.frozen ? 'added' : 'draft'}</span><span class="grow"></span>
         <span class="ai-tag" title="Drafted by the copilot. Review before charting.">${m.edited ? 'AI draft · edited' : 'AI draft'}</span></div>
@@ -1254,12 +1585,13 @@ function renderChat(p) {
       </div>
     </div></div>`;
   }).join('');
-  return `<div class="chat" aria-label="Chat about this referral"><div class="kicker">Asked in chat</div>${msgs}</div>`;
+  return `<div class="chat" aria-label="Chat about this referral">${msgs}</div>`;
 }
 
 /* ---------- Right pane: awaiting, running notes ---------- */
 
-const TAG_TONE = { 'Decision note': 't-gap', 'Decision changed': 't-new', 'Decision restored': 't-cold', 'Message sent': 't-accepted' };
+const TAG_TONE = { 'Decision note': 't-gap', 'Message sent': 't-accepted' };
+const tagTone = (tag) => TAG_TONE[tag] || (/^V\d/.test(tag) ? 't-new' : 't-gap');
 
 function logEvent(t, b, color) {
   const list = S.history[S.current] || (S.history[S.current] = []);
@@ -1284,12 +1616,18 @@ function awaitingRow(a, scope) {
 }
 
 function draftNote() {
-  const facts = 'Isolated lymphopenia confirmed — ALC 0.78 K/µL (Oct 20, 2026), with Hgb 13.2, Plt 239 and ANC 3.21 inside range.\n\nAllergy and Immunology evaluation (Oct 22, 2026) came with the referral, which clears the required-department step.';
-  const c = S.change;
-  if (c) {
-    return `Triage decision: ${OUTCOME[c.target].toUpperCase()} — changed by the triager from the tree's decision.\n\nTree applied: isolated lymphopenia, external referral, rev. 4. The tree reached ${OUTCOME[TREE_END].toUpperCase()}, stopping at step 2 (persistence not established).\n\nRerouted at ${stepLabel(c.at)}. Reason: ${c.why}\n\n${facts}\n\nThe disagreement is recorded on the decision path and in the patient's notes.`;
-  }
-  return `Triage decision: AWAITING — holding for the repeat CBC with differential.\n\nTree applied: isolated lymphopenia, external referral, rev. 4.\n\n${facts}\n\nOutstanding: a second confirmed result set inside the 12-week window. Requested Oct 28; no order has come back against it. Window closes Jan 12, 2027.\n\nStep 5 (exception check) is undefined for external referrals on this branch and was not inferred.\n\nRe-triage on receipt. No new referral order required.`;
+  const latest = latestVer();
+  const ev = evaluate(latest);
+  const changes = S.alg.versions.slice(1).map((v) => `V${v.n} (${v.by}, ${v.date}): ${v.what}. Why: ${v.why}`);
+  const missing = missingFor(ev).map((m) => m.label + ' — ' + m.why);
+  return [
+    `Triage decision: ${OUTCOME[ev.end].toUpperCase()}.`,
+    `Tree applied: isolated lymphopenia, external referral, rev. 4 · V${latest.n}${latest.n > 1 ? ', with changes' : ', as read from the chart'}.`,
+    STEPS.map((q, i) => { const st = ev.steps['g' + (i + 1)]; return `${q.n}. ${q.q} ${TONE[st.status].label}${st.overridden ? ' (overridden)' : ''}. ${st.found}`; }).join('\n'),
+    changes.length ? 'Changes:\n' + changes.join('\n') : '',
+    missing.length ? 'Still missing:\n' + missing.join('\n') : '',
+    NEXT[ev.end]
+  ].filter(Boolean).join('\n\n');
 }
 
 function renderTrack() {
@@ -1317,38 +1655,101 @@ function renderTrack() {
   const items = itemsFor(cur.mrn);
   const open = openItems(items);
   const chip = items.length === 0 ? '' : `<span class="pill ${open ? 't-awaiting' : 't-met'}" style="height: 20px">${open ? open + ' open' : 'All in'}</span>`;
-  const list = items.length
-    ? items.map((a) => awaitingRow(a, 'patient')).join('')
-    : `<div class="aw-none">Nothing awaiting on ${cur.name}. ${cur.status === 'new' ? 'Untouched — nothing has been asked for yet.' : ''}</div>`;
-
   const log = (S.added[cur.mrn] || []).concat(cur.mrn === WORKED ? NOTES : []);
-  const notes = log.length
-    ? log.map((n) => `
+  const hist = (cur.mrn === WORKED ? HISTORY : []).concat(S.history[cur.mrn] || []);
+  const thread = S.chat[cur.mrn] || [];
+  const tab = S.panelTab === 'chat' && !thread.length ? 'awaiting' : S.panelTab;
+
+  let body;
+  if (tab === 'awaiting') {
+    body = items.length
+      ? '<div class="aw-cols aw-grid"><span>Item</span><span class="r">Asked</span><span class="r">Due</span></div>' + items.map((a) => awaitingRow(a, 'patient')).join('')
+      : `<div class="aw-none">Nothing awaiting on ${cur.name}. ${cur.status === 'new' ? 'Untouched — nothing has been asked for yet.' : ''}</div>`;
+  } else if (tab === 'notes') {
+    body = `<div class="log-list">${log.length ? log.map((n) => `
       <div class="n-row">
         <div class="n-meta"><span class="d">${n.date}</span><span class="w">${n.who}</span><span class="grow"></span>
-          ${n.tag ? `<span class="pill xs ${TAG_TONE[n.tag] || 't-gap'}">${n.tag}</span>` : ''}
+          ${n.tag ? `<span class="pill xs ${tagTone(n.tag)}">${n.tag}</span>` : ''}
           ${n.fresh ? '<span class="pill xs t-new">Just added</span>' : ''}</div>
         <div class="n-text">${esc(n.text)}</div>
-      </div>`).join('')
-    : `<div class="aw-none" style="padding: 6px 0">No notes on ${cur.name} yet.</div>`;
+      </div>`).join('') : `<div class="aw-none" style="padding: 14px 0">No notes on ${cur.name} yet.</div>`}</div>`;
+  } else if (tab === 'history') {
+    body = hist.length ? `<div class="hist-list">${hist.map((e) => `
+      <div class="h-row">
+        <span class="h-dot" style="background: ${e.fill}; border-color: ${e.ring}"></span>
+        <div style="min-width: 0">
+          <div class="h-date">${e.date}</div>
+          <div class="h-t">${esc(e.t)}</div>
+          <div class="h-b">${esc(e.b)}</div>
+        </div>
+      </div>`).join('')}</div>` : `<div class="aw-none">No history on ${cur.name} yet.</div>`;
+  } else {
+    body = renderChat(cur);
+  }
+  const t = (id, label, n) => `<button type="button" role="tab" aria-selected="${tab === id}" data-act="panelTab" data-v="${id}">${label}${n != null ? `<span class="n">${n}</span>` : ''}</button>`;
 
   return `
-    <aside class="${cls}" id="track" aria-label="Awaiting and notes">
+    <aside class="${cls}" id="track" aria-label="Awaiting, notes and history">
       ${strip(open)}
-      <div class="t-head"><span class="title">Awaiting on ${surname(cur)}</span><span class="grow"></span>${chip}${toggle}</div>
-      ${items.length ? '<div class="aw-cols aw-grid"><span>Item</span><span class="r">Asked</span><span class="r">Due</span></div>' : ''}
-      <div class="aw-list">${list}</div>
-      <div class="log-sec">
-        <div class="log-head">
-          <span class="title">Notes on this patient</span><span class="grow"></span>
-          <span class="count">${log.length} ${log.length === 1 ? 'entry' : 'entries'}</span>
-        </div>
-        <div class="log-list">${notes}</div>
-      </div>
+      <div class="t-head"><span class="title">${cur.name}</span><span class="grow"></span>${chip}${toggle}</div>
+      <div class="ptabs" role="tablist">${t('awaiting', 'Awaiting', open)}${t('notes', 'Notes', log.length)}${t('history', 'History', hist.length)}${thread.length ? t('chat', 'Chat') : ''}</div>
+      <div class="panel-body" role="tabpanel">${body}</div>
+      <div class="panel-ask">${renderSearch('Ask about this referral, or search an MRN', ['Draft a message', 'Draft the decision note', 'What is still awaiting?'])}</div>
     </aside>`;
 }
 
-/* ---------- Board C: follow-me window ---------- */
+/* ---------- The companion: stays over the EHR and fills in what the algorithm is missing ---------- */
+
+const blankComp = () => ({ date: '', alc: '', wbc: '', hgb: '', plt: '', anc: '', exception: '', ai: '', src: '', err: '', sent: '' });
+const comp = () => S.comp || (S.comp = blankComp());
+const speechRec = () => window.SpeechRecognition || window.webkitSpeechRecognition || null;
+
+// Dictation fills one field: a number for a lab value, yes or no for a question, or free text for the source.
+function dictate(field) {
+  const Rec = speechRec();
+  if (!Rec || S.listening) return;
+  const r = new Rec();
+  r.lang = 'en-US';
+  r.interimResults = false;
+  S.listening = field;
+  r.onresult = (e) => {
+    const said = e.results[0][0].transcript;
+    const c = comp();
+    if (field === 'src') c.src = said;
+    else if (field === 'exception') c.exception = /\b(no|doesn'?t|does not)\b/i.test(said) ? 'false' : /\b(yes|applies)\b/i.test(said) ? 'true' : c.exception;
+    else { const num = said.match(/\d+(?:\.\d+)?/); if (num) c[field] = num[0]; }
+  };
+  r.onerror = () => { S.listening = null; redraw(); };
+  r.onend = () => { S.listening = null; redraw(); };
+  r.start();
+}
+
+// Sending saves what was found in the chart as the next version, with where it was found as the reason.
+function sendFromCompanion(v) {
+  const [kind, step] = v.split(':');
+  const c = comp();
+  if (!c.src.trim()) { c.err = 'Say where in the chart you found it. That is saved as the reason.'; return; }
+  const latest = latestVer();
+  const data = latest.data;
+  let change;
+  if (kind === 'cbc') {
+    const alc = parseFloat(c.alc);
+    if (!(alc > 0)) { c.err = 'Enter the ALC value from the result.'; return; }
+    const date = c.date || isoToday();
+    const l = evaluate(latest).last;
+    const set = { date, alc, src: 'Entered from the chart through the companion' };
+    ['wbc', 'hgb', 'plt', 'anc'].forEach((k) => { set[k] = c[k] !== '' ? parseFloat(c[k]) : l[k]; });
+    change = { step, data: Object.assign({}, data, { cbc: data.cbc.filter((x) => x.date !== date).concat(set) }), what: `CBC ${isoLabel(date)} added from the chart (ALC ${alc})` };
+  } else if (kind === 'yesno') {
+    if (!c.exception) { c.err = 'Pick whether an exception applies.'; return; }
+    change = { step, data: Object.assign({}, data, { exception: c.exception === 'true' }), what: c.exception === 'true' ? 'Step 5 answered: an exception applies' : 'Step 5 answered: no exception applies' };
+  } else {
+    if (!c.ai) { c.err = 'Pick whether the evaluation is on file.'; return; }
+    change = { step, data: Object.assign({}, data, { ai: Object.assign({}, data.ai, { seen: c.ai === 'true' }) }), what: c.ai === 'true' ? 'Allergy and Immunology evaluation found in the chart' : 'Allergy and Immunology evaluation not in the chart' };
+  }
+  const v2 = addVersion(Object.assign(change, { why: 'Found in the chart: ' + c.src.trim(), via: 'companion' }));
+  S.comp = Object.assign(blankComp(), { sent: `Saved as V${v2.n}. The decision is now: ${OUTCOME[evaluate(latestVer()).end]}.` });
+}
 
 function renderPip() {
   const p = byMrn(S.current);
@@ -1367,33 +1768,76 @@ function renderPip() {
   }
   const status = `<span class="pill xs t-${p.status}">${STATUS[p.status].label}${p.status === 'awaiting' ? ' · day ' + p.days : ''}</span>`;
 
+  const worked = p.mrn === WORKED;
+  const ev = worked ? evaluate(latestVer()) : null;
+  const miss = worked ? missingFor(ev) : [];
+  const c = comp();
+  const can = !!speechRec();
+  const mic = (field) => `<button type="button" class="mic ${S.listening === field ? 'on' : ''}" data-act="dictate" data-v="${field}" ${can ? '' : 'disabled'}
+    aria-label="Dictate" title="${can ? (S.listening === field ? 'Listening…' : 'Dictate') : 'Dictation is not available in this browser'}">${ICON.mic}</button>`;
+  const pick = (k, val, label) => `<button type="button" class="opt" data-act="compPick" data-v="${k}:${val}" aria-pressed="${c[k] === val}">${label}</button>`;
+  const item = (m) => {
+    let body = '';
+    if (m.kind === 'cbc') {
+      const l = ev.last;
+      body = `
+        <div class="cp-grid">
+          <label>Collected<input type="date" data-comp="date" value="${c.date || isoToday()}" max="${isoToday()}"></label>
+          <label>ALC (K/µL)<span class="cp-in"><input type="number" step="0.01" data-comp="alc" value="${c.alc}" placeholder="e.g. 0.81">${mic('alc')}</span></label>
+        </div>
+        <details class="cp-more"><summary>Other cell lines · start from ${isoLabel(l.date)}</summary>
+          <div class="cp-grid">${['wbc', 'hgb', 'plt', 'anc'].map((k) => `<label>${CBC_RANGE[k][2]}<input type="number" step="0.01" data-comp="${k}" value="${c[k] !== '' ? c[k] : l[k]}"></label>`).join('')}</div>
+        </details>`;
+    } else if (m.kind === 'yesno') {
+      body = `<div class="opts">${pick('exception', 'true', 'Applies')}${pick('exception', 'false', "Doesn't apply")}${mic('exception')}</div>`;
+    } else {
+      body = `<div class="opts">${pick('ai', 'true', 'On file')}${pick('ai', 'false', 'Not on file')}</div>`;
+    }
+    return `<div class="cp-item">
+      <div class="cp-h">${m.label}<span>Needed ${m.why}</span></div>
+      ${body}
+      <button type="button" class="btn primary sm" data-act="compSend" data-v="${m.kind}:${m.step}">Send to the copilot</button>
+    </div>`;
+  };
+
+  const collect = !worked
+    ? '<div class="aw-none" style="padding: 10px 0">The algorithm has not been run on this referral in the prototype.</div>'
+    : (miss.length
+      ? `${miss.map(item).join('')}
+        <label class="cp-src">Where in the chart?<span class="cp-in"><input data-comp="src" value="${esc(c.src)}" placeholder="e.g. Results tab, Nov 5 CBC">${mic('src')}</span></label>`
+      : '<div class="aw-none" style="padding: 10px 0">Nothing missing. The algorithm has what it needs.</div>');
+
   const panel = S.pipCollapsed
-    ? `<button type="button" class="pill-win" data-act="pipExpand" aria-label="Expand the Triage Copilot window">
+    ? `<button type="button" class="pill-win" data-act="pipExpand" aria-label="Expand the companion">
         <span class="logo sm">${ICON.logoSm}</span>
         <span>${p.name}</span>
-        <span class="pill xs ${open ? 't-awaiting' : 't-met'}">${openLabel}</span>
+        <span class="pill xs ${miss.length ? 't-awaiting' : 't-met'}">${miss.length ? miss.length + ' missing' : openLabel}</span>
         <span class="chev">${ICON.up}</span>
       </button>`
-    : `<section class="pip" aria-label="Triage Copilot follow-me window">
+    : `<section class="pip" aria-label="Triage Copilot companion">
         <div class="pip-bar">
           <span class="logo sm">${ICON.logoSm}</span>
-          <span style="font-size: 12px; font-weight: 600">Triage Copilot</span>
+          <span style="font-size: 12px; font-weight: 600">Companion</span>
           <span class="grow"></span>
           <button type="button" class="icon-btn" data-act="pipCollapse" aria-label="Collapse to a pill" title="Collapse to a pill">${ICON.minus}</button>
-          <button type="button" class="icon-btn" data-act="toFull" aria-label="Close the follow-me window" title="Close">${ICON.close}</button>
+          <button type="button" class="icon-btn" data-act="toFull" aria-label="Close the companion" title="Close">${ICON.close}</button>
         </div>
         <div class="pip-body">
-          <div class="kicker" style="font-size: 10px">Open in the app</div>
-          <div style="font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; margin-top: 4px">${p.name}</div>
-          <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px">
-            <span class="mono" style="font-size: 11px; color: var(--faint)">${p.mrn}</span>${status}
+          <label class="kicker" style="font-size: 10px" for="compPatient">Patient</label>
+          <select id="compPatient" class="cp-sel">${PEOPLE.map((x) => `<option value="${x.mrn}" ${x.mrn === p.mrn ? 'selected' : ''}>${x.name} · ${x.mrn}</option>`).join('')}</select>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 7px">${status}${worked ? `<span class="pill xs ${S.alg.versions.length > 1 ? 't-new' : 't-cold'}">${OUTCOME[ev.end]} · V${latestVer().n}</span>` : ''}</div>
+
+          <div class="cp-sec">
+            <div class="cp-sec-h"><span class="kicker" style="font-size: 10px">To finish the algorithm</span><span class="grow"></span><span class="mono" style="font-size: 10.5px; color: var(--faint)">${worked ? miss.length + ' missing' : ''}</span></div>
+            ${collect}
+            ${c.err ? `<div class="cp-msg err" role="alert">${esc(c.err)}</div>` : ''}
+            ${c.sent ? `<div class="cp-msg ok" role="status">${esc(c.sent)}</div>` : ''}
           </div>
-          <div style="display: flex; align-items: center; gap: 8px; margin-top: 13px; padding-bottom: 7px; border-bottom: 1px solid var(--hair)">
-            <span class="kicker" style="font-size: 10px">Awaiting</span><span class="grow"></span>
-            <span class="mono" style="font-size: 10.5px; color: var(--faint)">${openLabel}</span>
+
+          <div class="cp-sec">
+            <div class="cp-sec-h"><span class="kicker" style="font-size: 10px">Awaiting</span><span class="grow"></span><span class="mono" style="font-size: 10.5px; color: var(--faint)">${openLabel}</span></div>
+            ${items.length ? items.map((a) => awaitingRow(a, 'pip')).join('') : '<div class="aw-none" style="padding: 12px 0">Nothing awaiting on this referral.</div>'}
           </div>
-          ${items.length ? items.map((a) => awaitingRow(a, 'pip')).join('') : '<div class="aw-none" style="padding: 12px 0">Nothing awaiting on this referral.</div>'}
-          <div class="pip-note">${ICON.plus}<span>Tick one here and it lands on the referral.</span></div>
           <button type="button" class="btn-full" data-act="toFull">${ICON.out} Back to the full window</button>
         </div>
       </section>`;
@@ -1401,7 +1845,7 @@ function renderPip() {
   return `
     <div class="desk">
       <div class="ghost-win" aria-hidden="true">
-        <div class="ghost-bar"><div class="lights"><span></span><span></span><span></span></div><span style="margin-left: 6px">Another window — the chart, a lab portal, email</span></div>
+        <div class="ghost-bar"><div class="lights"><span></span><span></span><span></span></div><span style="margin-left: 6px">The EHR — move between its tabs; the companion stays on top</span></div>
         <div class="ghost-body">
           <div class="ghost-nav">${nav}</div>
           <div class="ghost-main">
@@ -1420,32 +1864,143 @@ function renderPip() {
     </div>`;
 }
 
-/* ---------- Decision tree: a React Flow graph that survives redraws ---------- */
+/* ---------- Algorithm: evaluate a version of the inputs ---------- */
 
-// The rest of the page redraws from strings; the tree keeps one React root on a
-// host element that is moved into each new #tree-slot, so selection and zoom persist.
-const TREE = (() => {
-  if (!window.React || !window.ReactDOM || !window.ReactFlow) return null;
-  const host = document.createElement('div');
-  return { host, root: ReactDOM.createRoot(host) };
-})();
+const isoParts = (iso) => iso.split('-').map(Number);
+const isoLabel = (iso, withYear) => { const [y, m, d] = isoParts(iso); return MONTHS[m - 1] + ' ' + d + (withYear || y !== TODAY.y ? ', ' + y : ''); };
+const isoAge = (iso) => { const [y, m, d] = isoParts(iso); return daysSince(y, m, d); };
+const isoAdd = (iso, n) => { const [y, m, d] = isoParts(iso); return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10); };
+const isoGap = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
+const isoToday = () => toIso(dayKey(TODAY.y, TODAY.m, TODAY.d));
+const latestVer = () => S.alg.versions[S.alg.versions.length - 1];
+const viewedVer = () => (S.alg.view === null ? latestVer() : S.alg.versions[S.alg.view - 1]);
 
-function mountTree() {
-  if (!TREE) return;
-  const slot = document.getElementById('tree-slot');
-  if (slot) slot.replaceWith(TREE.host);
-  if (!TREE.host.isConnected) return;
-  TREE.root.render(React.createElement(DecisionTree, {
-    cbcIn: !!S.done.cbc, change: S.change, reroute: S.reroute, focus: S.treeFocus, onPickEnd: pickFromTree
+// Runs the isolated-lymphopenia tree on one version: each step's answer and what it found,
+// and the outcome the path reaches. The first step that isn't met ends the path.
+function evaluate(ver) {
+  const d = ver.data;
+  const sets = d.cbc.slice().sort((a, b) => a.date.localeCompare(b.date));
+  const last = sets[sets.length - 1];
+  const steps = {};
+
+  const outside = ['wbc', 'hgb', 'plt', 'anc'].filter((k) => last[k] < CBC_RANGE[k][0] || last[k] > CBC_RANGE[k][1]);
+  const lowNow = last.alc < CBC_RANGE.alc[0];
+  steps.g1 = lowNow && !outside.length
+    ? { status: 'met', found: `Yes. ALC ${last.alc} K/µL on ${isoLabel(last.date)} is low, and WBC ${last.wbc}, Hgb ${last.hgb}, Plt ${last.plt} and ANC ${last.anc} are all inside the reference range, so no other cell line is involved.` }
+    : { status: 'missing', found: !lowNow
+      ? `No. The newest ALC, ${last.alc} K/µL on ${isoLabel(last.date)}, is inside the reference range, so there is no isolated lymphopenia here.`
+      : `No. ALC is low, but ${outside.map((k) => CBC_RANGE[k][2]).join(', ')} ${outside.length === 1 ? 'is' : 'are'} outside the reference range, so more than one cell line is involved.` };
+  steps.g1.field = 'Results · CBC collected ' + isoLabel(last.date, true);
+
+  const lows = sets.filter((x) => x.alc < CBC_RANGE.alc[0]);
+  let pair = null;
+  lows.forEach((a, i) => lows.slice(i + 1).forEach((b) => {
+    const gap = isoGap(a.date, b.date);
+    if (gap >= 14 && gap <= 84) pair = [a, b, gap];
   }));
+  const repeat = AWAITING.find((a) => a.id === 'cbc');
+  steps.g2 = pair
+    ? { status: 'met', found: `Yes. ALC was low on ${isoLabel(pair[0].date)} (${pair[0].alc}) and ${isoLabel(pair[1].date)} (${pair[1].alc}), ${pair[2]} days apart and inside 12 weeks.` }
+    : { status: 'missing', found: `Not established. The branch needs two low results at least two weeks apart, both inside 12 weeks. ${lows.length ? 'Only ' + lows.map((x) => isoLabel(x.date)).join(' and ') + (lows.length === 1 ? ' is' : ' are') + ' on file.' : 'No low result is on file.'}`,
+      pending: repeat && !S.done.cbc ? `Repeat CBC with differential — requested ${repeat.asked}, due ${dueLabel(repeat)}, not back yet.` : '' };
+  steps.g2.field = `Results · ${lows.length} low ${lows.length === 1 ? 'result' : 'results'} on file` + (pair ? '' : '  ·  Orders · no matching order returned');
+
+  const age = isoAge(last.date);
+  const expires = isoLabel(isoAdd(last.date, 30));
+  steps.g3 = age <= 30
+    ? { status: 'met', found: `It is. The newest result, ${isoLabel(last.date)}, is ${age} days old, inside the 30-day limit. It passes 30 days on ${expires}.` }
+    : { status: 'missing', found: `No. The newest result, ${isoLabel(last.date)}, is ${age} days old — past the 30-day limit since ${expires}.` };
+  steps.g3.field = 'Results · CBC collected ' + isoLabel(last.date, true);
+
+  steps.g4 = d.ai.seen
+    ? { status: 'met', found: `Yes. Evaluation completed ${isoLabel(d.ai.date)} at ${d.ai.where}. No immunodeficiency identified, which clears the required-department step.`, field: 'Outside records · evaluation ' + isoLabel(d.ai.date, true) }
+    : { status: 'missing', found: 'No Allergy and Immunology evaluation is on file for this referral.', field: 'Outside records · no evaluation found' };
+
+  steps.g5 = d.exception === null
+    ? { status: 'gap', found: 'Cannot be answered. This branch defines no exception threshold for external referrals, so there is nothing to test the referral against. Nothing was assumed in its place.', field: 'Tree · isolated lymphopenia, external, rev. 4' }
+    : { status: 'met', found: d.exception ? 'An exception applies — answered by Melissa, since the tree defines none for external referrals.' : 'No exception applies — answered by Melissa, since the tree defines none for external referrals.', field: 'Answered by Melissa · the tree is silent here' };
+
+  // An overridden answer replaces what the tree worked out, and says so.
+  Object.keys(ver.answers || {}).forEach((g) => { steps[g] = Object.assign({}, steps[g], { status: ver.answers[g], overridden: true, pending: '' }); });
+
+  const end = steps.g1.status !== 'met' ? 'b1' : steps.g2.status !== 'met' ? 'b2' : steps.g3.status !== 'met' ? 'b3' : steps.g4.status !== 'met' ? 'b4' : 'accept';
+  return { steps, end, sets, last, lows, age, expires, data: d };
 }
 
-// Clicking an outcome in the canvas while rerouting picks it as the new end of the path.
-function pickFromTree(id) {
-  if (!S.reroute || !OUTCOME[id] || id === TREE_END) return;
-  S.reroute.target = id;
-  redraw();
+// Changes made in the versions up to this one, by step; the most recent change to a step wins.
+function overridesIn(ver) {
+  const out = {};
+  S.alg.versions.slice(1, ver.n).forEach((v) => { if (v.step) out[v.step] = v; });
+  return out;
 }
+
+// Saves a change as the next version. The reason travels with it into the notes and the history.
+function addVersion({ step, what, why, via, data, answers, replaceAnswers }) {
+  const prev = latestVer();
+  const v = {
+    n: prev.n + 1, by: 'Melissa', date: TODAY_SHORT, what, why, via: via || 'override', step: step || null,
+    data: data || prev.data,
+    answers: replaceAnswers ? Object.assign({}, answers) : Object.assign({}, prev.answers, answers || {})
+  };
+  const before = evaluate(prev).end;
+  const after = evaluate(v).end;
+  S.alg.versions.push(v);
+  S.alg.view = null;
+  const outcome = before === after ? `Decision unchanged: ${OUTCOME[after]}.` : `Decision changed from "${OUTCOME[before]}" to "${OUTCOME[after]}".`;
+  logNote(`V${v.n} · ${v.via === 'companion' ? 'companion' : 'override'}`, `${what}. ${outcome}\nWhy: ${why}`);
+  logEvent(`V${v.n}: ${what}`, `${outcome} By Melissa${v.via === 'companion' ? ' through the companion' : ''}. Why: ${why}`, '#2F5FA8');
+  if (S.tree && v.step) S.tree.sel = v.step;
+  showToast(`Saved as V${v.n}. ${outcome}`);
+  return v;
+}
+
+// What the algorithm still needs before it can finish, in the order the tree asks for it.
+function missingFor(ev) {
+  const s = ev.steps;
+  const m = [];
+  if (s.g2.status !== 'met' && !s.g2.overridden) m.push({ id: 'cbc', step: 'g2', kind: 'cbc', label: 'A repeat CBC result', why: 'to confirm the low count is persistent (step 2)' });
+  else if (s.g3.status !== 'met' && !s.g3.overridden) m.push({ id: 'cbc', step: 'g3', kind: 'cbc', label: 'A CBC from the last 30 days', why: 'the newest result is too old (step 3)' });
+  if (s.g4.status !== 'met' && !s.g4.overridden) m.push({ id: 'ai', step: 'g4', kind: 'ai', label: 'Allergy and Immunology evaluation', why: 'required before hematology (step 4)' });
+  if (s.g5.status === 'gap') m.push({ id: 'exception', step: 'g5', kind: 'yesno', label: 'Does an exception apply?', why: "the tree doesn't define one for external referrals (step 5), so it's your call" });
+  return m;
+}
+
+const LEAD = {
+  b2: 'Hold as awaiting until a repeat CBC confirms the low count.',
+  b3: 'Hold as awaiting: the newest CBC is too old, so a new one is needed.',
+  b4: 'Decline for now: Allergy and Immunology should see the patient first.',
+  b1: 'Move to the cytopenia tree: this is not an isolated low lymphocyte count.',
+  accept: 'Accept for a face-to-face hematology visit.'
+};
+const NEXT = {
+  b2: 'Next: chase the repeat CBC with Northgate.',
+  b3: 'Next: request a new CBC from Northgate.',
+  b4: 'Next: ask the practice to refer to Allergy and Immunology.',
+  b1: 'Next: triage on the cytopenia tree.',
+  accept: 'Next: send to scheduling for a new-patient visit.'
+};
+
+// The executive summary: five short, directive lines worked out from the same evaluation as the tree.
+function summaryLines(ev) {
+  const s = ev.steps;
+  const l = ev.last;
+  const repeat = AWAITING.find((a) => a.id === 'cbc');
+  return [
+    LEAD[ev.end],
+    s.g1.status === 'met'
+      ? `Isolated low lymphocytes: ALC ${l.alc} on ${isoLabel(l.date)}, with WBC, Hgb, Plt and ANC normal.`
+      : 'Not an isolated low lymphocyte count — see step 1.',
+    s.g2.status === 'met'
+      ? `Persistent: ${ev.lows.length} low results at least two weeks apart${s.g2.overridden ? ' (set by override)' : ''}.`
+      : `Persistence isn't confirmed: ${ev.lows.length} low result on file.` + (repeat && !S.done.cbc ? ` Repeat CBC requested ${repeat.asked}, due ${dueLabel(repeat)}.` : ''),
+    ev.age <= 30
+      ? `Act by ${ev.expires}, when the ${isoLabel(l.date)} result passes 30 days. The 12-week window closes Jan 12, 2027.`
+      : `The newest result is ${ev.age} days old, past the 30-day limit.`,
+    NEXT[ev.end] + (s.g5.status === 'gap' ? " The exception (step 5) is your call; the tree doesn't define one." : '')
+  ];
+}
+
+/* ---------- Decision tree: one lane per step, the path highlighted, a sidebar for the node picked ---------- */
 
 const GRAPH = [
   { id: 'root', parent: null, kind: 'root', kicker: 'Referral', title: 'Lymphopenia · external request',
@@ -1457,20 +2012,20 @@ const GRAPH = [
   { id: 'g4', parent: 'g3', kind: 'step', step: 3 },
   { id: 'g5', parent: 'g4', kind: 'step', step: 4 },
   { id: 'accept', parent: 'g5', kind: 'end', end: 'cold', kicker: 'If all pass', title: 'Accept · face-to-face',
-    reason: 'Where this tree ends when every step passes. Not reached on this referral: step 2 is not met and step 5 is undefined, so it needs the repeat CBC and your judgement on the exception.',
-    source: 'Outcome · not reached' },
+    reason: 'Where this tree ends when every step passes: send to scheduling for a new-patient hematology visit.',
+    source: 'Tree · outcome, accept' },
   { id: 'b1', parent: 'g1', branch: true, kind: 'end', end: 'cold', kicker: 'If no', title: 'Leave for the cytopenia path',
-    reason: 'The cytopenia tree, used when more than one cell line is abnormal. Not taken here: Hgb 13.2, Plt 239 and ANC 3.21 are all in range, so the finding is isolated.',
-    source: 'Tree · cytopenia branch, not entered' },
+    reason: 'The cytopenia tree, used when more than one cell line is abnormal or the count is not low.',
+    source: 'Tree · cytopenia branch' },
   { id: 'b2', parent: 'g2', branch: true, kind: 'end', end: 'stop', kicker: 'If no', title: 'Awaiting · hold for the repeat CBC',
-    reason: 'Where this referral stopped. Only one confirmed result set is on file, so the tree holds here rather than carrying on down the spine. The window closes Jan 12, 2027 — re-triage on receipt, no new referral order needed.',
-    source: 'Outcome · set Oct 28, 2026 · still current' },
+    reason: 'Reached when persistence is not confirmed: hold for a repeat CBC and re-triage on receipt, no new referral order needed. The window closes Jan 12, 2027.',
+    source: 'Tree · outcome, awaiting' },
   { id: 'b3', parent: 'g3', branch: true, kind: 'end', end: 'cold', kicker: 'If no', title: 'Awaiting · newest draw too old',
-    reason: 'Reached when the newest result is over 30 days old. Not reached on this referral: the Oct 20 draw stays inside the limit until Nov 19, and the repeat would satisfy this step and the one above it.',
-    source: 'Outcome · not reached' },
+    reason: 'Reached when the newest result is over 30 days old: request a new CBC and hold until it is drawn.',
+    source: 'Tree · outcome, awaiting' },
   { id: 'b4', parent: 'g4', branch: true, kind: 'end', end: 'cold', kicker: 'If no', title: 'Decline · Allergy and Immunology first',
-    reason: 'Reached when the patient has not been seen by Allergy and Immunology. Not reached: the evaluation was completed Oct 22 and came with the referral, which cleared that step.',
-    source: 'Outcome · not reached' }
+    reason: 'Reached when the patient has not been seen by Allergy and Immunology: decline and recommend that evaluation first.',
+    source: 'Tree · outcome, decline' }
 ];
 const NODE = Object.fromEntries(GRAPH.map((n) => [n.id, n]));
 const READ_ORDER = ['root', 'g1', 'b1', 'g2', 'b2', 'g3', 'b3', 'g4', 'b4', 'g5', 'accept'];
@@ -1478,53 +2033,44 @@ const READ_ORDER = ['root', 'g1', 'b1', 'g2', 'b2', 'g3', 'b3', 'g4', 'b4', 'g5'
 // What each node was read from, opened on request. The kind varies with the step:
 // labs, orders, clinical notes, outside reports, the referral itself or the tree definition.
 const LAB_COLS = ['Test', 'Result', 'Reference', 'Flag'];
-const SOURCES = {
-  root: [{ kind: 'Referral', title: 'REF-2026-4471 · received Oct 27, 2026', kv: RECORD.map((f) => [f.k, f.v]) }],
-  g1: [{
-    kind: 'Labs', title: 'CBC with differential · collected Oct 20, 2026', from: 'Outside records · Northgate Primary Care',
-    cols: LAB_COLS,
-    rows: [['WBC', '4.4 K/µL', '4.0–11.0', ''], ['Lymphocytes (ALC)', '0.78 K/µL', '1.00–4.80', 'Low'], ['Hemoglobin', '13.2 g/dL', '12.0–15.5', ''],
-      ['Platelets', '239 K/µL', '150–400', ''], ['Neutrophils (ANC)', '3.21 K/µL', '1.80–7.70', '']]
-  }],
-  g2: [
-    {
-      kind: 'Labs', title: 'Lymphocyte count over time', from: 'Outside records',
-      cols: ['Collected', 'ALC', 'Reference', 'Flag'],
-      rows: [['Oct 20, 2026', '0.78 K/µL', '1.00–4.80', 'Low'], ['Jun 3, 2026', '1.34 K/µL', '1.00–4.80', '']],
-      foot: 'One low result on file. The branch needs two low results at least two weeks apart, both within 12 weeks.'
-    },
-    {
-      kind: 'Orders', title: 'Orders against this referral',
-      lines: ['Repeat CBC with differential — asked of Northgate on Oct 28, 2026', 'No order has come back for it. This does not confirm that none was placed.']
-    },
-    { kind: 'Clinical note', title: 'K. Lozano · Nov 2, 2026', quote: NOTES[0].text }
-  ],
-  g3: [{
-    kind: 'Labs', title: 'CBC with differential · collected Oct 20, 2026',
-    kv: [['Age when decided (Oct 28)', '8 days — inside the 30-day limit'],
-      ['Age today (' + TODAY_SHORT + ')', daysSince(2026, 10, 20) + ' days — ' + (daysSince(2026, 10, 20) <= 30 ? 'inside' : 'past') + ' the limit']]
-  }],
-  g4: [{
-    kind: 'Report', title: 'Allergy and Immunology evaluation', from: 'Desert Allergy Associates · completed Oct 22, 2026 · in the outside records received Oct 27',
-    quote: 'Evaluated for recurrent infection and immunodeficiency. Immunoglobulin levels within normal limits. No primary immunodeficiency identified. Lymphopenia persists; defer to hematology as referred.'
-  }],
-  g5: [{
-    kind: 'Tree definition', title: 'Isolated lymphopenia · rev. 4 · step 5, exception check',
-    kv: [['Internal referrals', 'Exception criteria are listed'], ['External referrals', 'No exception criteria in this revision']],
-    foot: 'Read from the decision tree document. Nothing is inferred where the tree is silent.'
-  }],
-  b2: [
-    { kind: 'Status history', title: 'Set to awaiting', kv: [['Set', 'Oct 28, 2026 · K. Lozano'], ['Waiting on', 'Repeat CBC with differential'], ['Window closes', 'Jan 12, 2027']] },
-    { kind: 'Tree definition', title: 'Outcome · awaiting, persistence not confirmed', kv: [['Action', 'Hold; request a repeat CBC; re-triage on receipt']] }
-  ],
-  accept: [{ kind: 'Tree definition', title: 'Outcome · accept, face-to-face', kv: [['Action', 'Send to scheduling for a new-patient hematology visit']] }],
-  b1: [{ kind: 'Tree definition', title: 'Outcome · leave this tree', kv: [['Action', 'Triage on the cytopenia tree instead']] }],
-  b3: [{ kind: 'Tree definition', title: 'Outcome · awaiting, newest draw too old', kv: [['Action', 'Request a repeat CBC; hold until it is drawn']] }],
-  b4: [{ kind: 'Tree definition', title: 'Outcome · decline', kv: [['Action', 'Recommend Allergy and Immunology evaluation first; re-refer after']] }]
-};
+function sourcesFor(id, ev) {
+  const l = ev.last;
+  const flag = (k, v) => (v < CBC_RANGE[k][0] ? 'Low' : v > CBC_RANGE[k][1] ? 'High' : '');
+  const lab = (k) => [CBC_RANGE[k][2], `${l[k]} ${CBC_RANGE[k][3]}`, `${CBC_RANGE[k][0]}–${CBC_RANGE[k][1]}`, flag(k, l[k])];
+  const repeat = AWAITING.find((a) => a.id === 'cbc');
+  const def = (title, action) => [{ kind: 'Tree definition', title, kv: [['Action', action]] }];
+  const all = {
+    root: [{ kind: 'Referral', title: 'REF-2026-4471 · received Oct 27, 2026', kv: RECORD.map((f) => [f.k, f.v]) }],
+    g1: [{ kind: 'Labs', title: 'CBC with differential · collected ' + isoLabel(l.date, true), from: l.src, cols: LAB_COLS, rows: ['wbc', 'alc', 'hgb', 'plt', 'anc'].map(lab) }],
+    g2: [
+      { kind: 'Labs', title: 'Lymphocyte count over time', from: 'Every CBC on file', cols: ['Collected', 'ALC', 'Reference', 'Flag'],
+        rows: ev.sets.slice().reverse().map((x) => [isoLabel(x.date, true), x.alc + ' K/µL', '1.0–4.8', flag('alc', x.alc)]),
+        foot: 'The branch needs two low results at least two weeks apart, both within 12 weeks.' },
+      { kind: 'Orders', title: 'Orders against this referral',
+        lines: repeat ? [`Repeat CBC with differential — asked of Northgate on ${repeat.asked}, 2026`, S.done.cbc ? 'Ticked as received on the awaiting list.' : 'No order has come back for it. This does not confirm that none was placed.'] : ['None on file.'] },
+      { kind: 'Clinical note', title: 'K. Lozano · Nov 2, 2026', quote: NOTES[0].text }
+    ],
+    g3: [{ kind: 'Labs', title: 'Newest CBC · collected ' + isoLabel(l.date, true),
+      kv: [['Age today (' + TODAY_SHORT + ')', `${ev.age} days — ${ev.age <= 30 ? 'inside' : 'past'} the 30-day limit`], ['Passes 30 days', ev.expires]] }],
+    g4: ev.data.ai.seen
+      ? [{ kind: 'Report', title: 'Allergy and Immunology evaluation', from: `${ev.data.ai.where} · completed ${isoLabel(ev.data.ai.date, true)}`,
+        quote: 'Evaluated for recurrent infection and immunodeficiency. Immunoglobulin levels within normal limits. No primary immunodeficiency identified. Lymphopenia persists; defer to hematology as referred.' }]
+      : [{ kind: 'Outside records', title: 'No Allergy and Immunology evaluation found', foot: 'Nothing in the outside records or the chart. Marked not on file.' }],
+    g5: [{ kind: 'Tree definition', title: 'Isolated lymphopenia · rev. 4 · step 5, exception check',
+      kv: [['Internal referrals', 'Exception criteria are listed'], ['External referrals', 'No exception criteria in this revision']],
+      foot: 'Read from the decision tree document. Nothing is inferred where the tree is silent.' }],
+    b2: [
+      { kind: 'Status history', title: 'Set to awaiting', kv: [['Set', 'Oct 28, 2026 · K. Lozano'], ['Waiting on', 'Repeat CBC with differential'], ['Window closes', 'Jan 12, 2027']] },
+      ...def('Outcome · awaiting, persistence not confirmed', 'Hold; request a repeat CBC; re-triage on receipt')
+    ],
+    accept: def('Outcome · accept, face-to-face', 'Send to scheduling for a new-patient hematology visit'),
+    b1: def('Outcome · leave this tree', 'Triage on the cytopenia tree instead'),
+    b3: def('Outcome · awaiting, newest draw too old', 'Request a repeat CBC; hold until it is drawn'),
+    b4: def('Outcome · decline', 'Recommend Allergy and Immunology evaluation first; re-refer after')
+  };
+  return all[id];
+}
 const chainOf = (id) => { const out = []; for (let c = id; c; c = NODE[c].parent) out.push(c); return out; };
-const TREE_END = 'b2';
-const TAKEN = chainOf(TREE_END);
 const OUTCOME = {
   b2: 'Awaiting — hold for the repeat CBC',
   accept: 'Accept · face-to-face',
@@ -1532,309 +2078,229 @@ const OUTCOME = {
   b3: 'Awaiting · newest draw too old',
   b1: 'Leave for the cytopenia path'
 };
-// Where a rerouted path leaves the tree's own: the deepest node both share.
-const divergeAt = (end) => chainOf(end).find((id) => TAKEN.includes(id));
-const stepLabel = (id) => (NODE[id].kind === 'step' ? 'step ' + (NODE[id].step + 1) : 'the referral');
 
-function nodeInfo(n) {
+function nodeInfo(n, ev) {
   if (n.kind === 'step') {
-    const s = STEPS[n.step];
-    return { kicker: 'Step ' + s.n, title: s.q, status: s.status, chip: TONE[s.status].label, chipCls: 't-' + s.status };
+    const st = ev.steps[n.id];
+    return { kicker: 'Step ' + (n.step + 1), title: STEPS[n.step].q, status: st.status, chip: TONE[st.status].label, chipCls: 't-' + st.status };
   }
-  if (n.end === 'stop') return { kicker: n.kicker, title: n.title, status: 'stop', chip: 'Stopped here', chipCls: 't-awaiting' };
-  if (n.end === 'cold') return { kicker: n.kicker, title: n.title, status: 'cold', chip: 'Not reached', chipCls: 't-cold' };
+  if (n.kind === 'end') {
+    return n.id === ev.end
+      ? { kicker: n.kicker, title: n.title, status: 'stop', chip: n.id === 'accept' ? 'Ends here' : 'Stopped here', chipCls: n.id === 'accept' ? 't-met' : 't-awaiting' }
+      : { kicker: n.kicker, title: n.title, status: 'cold', chip: 'Not reached', chipCls: 't-cold' };
+  }
   return { kicker: n.kicker, title: n.title, status: 'root', chip: '', chipCls: '' };
 }
 
-function layoutFor(narrow) {
-  const L = narrow
-    ? { spineW: 200, branchX: 232, branchW: 172, row: 80 }
-    : { spineW: 260, branchX: 330, branchW: 260, row: 84 };
-  const pos = {};
-  ['root', 'g1', 'g2', 'g3', 'g4', 'g5', 'accept'].forEach((id, i) => { pos[id] = { x: 0, y: i * L.row, w: L.spineW }; });
-  GRAPH.filter((n) => n.branch).forEach((n) => { pos[n.id] = { x: L.branchX, y: pos[n.parent].y + 4, w: L.branchW }; });
-  pos.noteW = narrow ? 170 : 220;
-  pos.noteGap = narrow ? 40 : 56;
-  return pos;
+function showToast(text) {
+  const key = Date.now();
+  S.toast = { text, key };
+  setTimeout(() => { if (S.toast && S.toast.key === key) { S.toast = null; redraw(); } }, 4200);
 }
 
-const h = window.React ? React.createElement : null;
+const LANES = [['root'], ['g1', 'b1'], ['g2', 'b2'], ['g3', 'b3'], ['g4', 'b4'], ['g5'], ['accept']];
 
-function TreeNode({ data }) {
-  const RF = window.ReactFlow;
-  const cls = ['tn', data.status, data.state, data.sel && 'sel', data.pick && 'pick', data.target && 'target'].filter(Boolean).join(' ');
-  return h('div', { className: cls, style: { width: data.w } },
-    h(RF.Handle, { type: 'target', position: RF.Position.Top, id: 't', isConnectable: false }),
-    h(RF.Handle, { type: 'target', position: RF.Position.Left, id: 'l', isConnectable: false }),
-    h('div', { className: 'tn-head' },
-      h('span', { className: 'tn-kick' }, data.kicker),
-      data.chip ? h('span', { className: 'pill xs ' + data.chipCls }, data.chip) : null),
-    h('div', { className: 'tn-title' }, data.title),
-    data.sub ? h('div', { className: 'tn-sub' }, '↳ ' + data.sub) : null,
-    h(RF.Handle, { type: 'source', position: RF.Position.Bottom, id: 'b', isConnectable: false }),
-    h(RF.Handle, { type: 'source', position: RF.Position.Right, id: 'r', isConnectable: false }));
-}
-
-// The triager's reasoning, pinned beside the step where they left the tree's path.
-function NoteNode({ data }) {
-  const RF = window.ReactFlow;
-  return h('div', { className: 'tn note' + (data.sel ? ' sel' : ''), style: { width: data.w } },
-    h('div', { className: 'tn-head' }, h('span', { className: 'tn-kick' }, data.draft ? 'Your reasoning · draft' : 'Your reasoning')),
-    h('div', { className: 'tn-title' }, data.why),
-    h('div', { className: 'tn-by' }, 'Melissa · ' + TODAY_SHORT),
-    h(RF.Handle, { type: 'source', position: RF.Position.Right, id: 'r', isConnectable: false }));
-}
-const NODE_TYPES = { tree: TreeNode, note: NoteNode };
-
-function SourcePanel({ items }) {
-  return h('div', { className: 'source' }, items.map((it, i) => h('div', { className: 'src-item', key: i },
-    h('div', { className: 'src-head' }, h('span', { className: 'src-kind' }, it.kind), h('span', { className: 'src-title' }, it.title)),
-    it.from ? h('div', { className: 'src-from' }, it.from) : null,
-    it.rows ? h('div', { className: 'src-scroll' }, h('table', { className: 'src-table' },
-      h('thead', null, h('tr', null, it.cols.map((c) => h('th', { key: c, scope: 'col' }, c)))),
-      h('tbody', null, it.rows.map((r, j) => h('tr', { key: j, className: r[r.length - 1] ? 'flag' : '' }, r.map((c, k) => h('td', { key: k }, c))))))) : null,
-    it.kv ? h('dl', { className: 'src-kv' }, it.kv.map(([k, v]) => h(React.Fragment, { key: k }, h('dt', null, k), h('dd', null, v)))) : null,
-    it.lines ? h('ul', { className: 'src-lines' }, it.lines.map((l, j) => h('li', { key: j }, l))) : null,
-    it.quote ? h('blockquote', { className: 'src-quote' }, it.quote) : null,
-    it.foot ? h('div', { className: 'src-foot' }, it.foot) : null)));
-}
-
-// "Read from" with a way to open what it names; the source stays closed until asked for.
-function readFromRow(row, text, id, open, toggle) {
-  const items = SOURCES[id];
-  return h(React.Fragment, null,
-    row('Read from', h(React.Fragment, null,
-      h('span', { className: 'src', dangerouslySetInnerHTML: { __html: ICON.doc + esc(text) } }),
-      items ? h('button', { type: 'button', className: 'src-toggle', 'aria-expanded': open, onClick: toggle }, open ? 'Hide source' : 'Show source') : null)),
-    open && items ? h(SourcePanel, { items }) : null);
-}
-
-function TreeDetail({ id, cbcIn, onPick, order, chip, at, end, why, draft }) {
-  const [open, setOpen] = React.useState(false);
-  React.useEffect(() => setOpen(false), [id]);
-  const i = order.indexOf(id);
-  const row = (k, v) => h('div', { className: 's-row' }, h('span', { className: 'k' }, k), h('span', { className: 'v' }, v));
-  const nav = h('div', { className: 'd-nav' },
-    h('button', { type: 'button', className: 'btn secondary sm', disabled: i === 0, onClick: () => onPick(order[i - 1]) }, '← Previous'),
-    h('span', { className: 'pos' }, (i + 1) + ' of ' + order.length),
-    h('button', { type: 'button', className: 'btn secondary sm', disabled: i === order.length - 1, onClick: () => onPick(order[i + 1]) }, 'Next →'));
-
-  if (id === 'note') {
-    return h('section', { className: 'tree-detail', 'aria-live': 'polite', 'aria-label': 'Selected node' },
-      h('div', { className: 'd-head' },
-        h('span', { className: 's-kick grow' }, draft ? 'Your reasoning · draft' : 'Your reasoning'),
-        h('span', { className: 'pill t-new' }, 'Decision changed')),
-      h('div', { className: 'd-title' }, 'Rerouted at ' + stepLabel(at) + ' → ' + OUTCOME[end]),
-      row('Why', why),
-      row('Recorded', draft ? 'Not saved yet — save the change to record it' : 'Melissa · ' + TODAY_LONG + ' · also saved to the patient\'s notes'),
-      nav);
-  }
-
+function treeNode(id, ev, path, ov) {
   const n = NODE[id];
-  const info = nodeInfo(n);
-  const step = n.kind === 'step' ? STEPS[n.step] : null;
-  return h('section', { className: 'tree-detail', 'aria-live': 'polite', 'aria-label': 'Selected node' },
-    h('div', { className: 'd-head' },
-      h('span', { className: 's-kick grow' }, info.kicker),
-      chip.chip ? h('span', { className: 'pill ' + chip.chipCls }, chip.chip) : null),
-    step ? null : h('div', { className: 'd-title' }, info.title),
-    step ? row('Asked', step.q) : null,
-    row(step ? 'Found' : 'Why', step ? step.found : n.reason),
-    readFromRow(row, step ? step.field : n.source, id, open, () => setOpen(!open)),
-    id === at && end !== TREE_END
-      ? h('div', { className: 's-aside blue' }, h('strong', null, 'You rerouted here'), ', to ' + OUTCOME[end] + '.' + (why ? ' Your reasoning: “' + why + '”' : ''))
-      : null,
-    step && step.status === 'gap'
-      ? h('div', { className: 's-aside purple' }, h('strong', null, 'A gap in the tree, not in the chart. '), 'Flagged for the tree owner. The decision above stands without it.')
-      : null,
-    step && step.n === 2 && cbcIn
-      ? h('div', { className: 's-aside blue' }, 'You ticked the repeat CBC as in. The tree still reads one set until the result is filed in the chart — re-run on receipt, no new referral order needed.')
-      : null,
-    nav);
-}
-
-// The same path as the diagram, read top to bottom: the referral, each step on the path,
-// where it ended, and then the steps the path did not go through.
-function PlainView({ end, changed, at, why, cbcIn, draft }) {
-  const [openSrc, setOpenSrc] = React.useState({});
-  const flip = (id) => setOpenSrc((o) => Object.assign({}, o, { [id]: !o[id] }));
-  const path = chainOf(end).reverse();
-  const row = (k, v) => h('div', { className: 's-row' }, h('span', { className: 'k' }, k), h('span', { className: 'v' }, v));
-
-  const stepItem = (id, dim) => {
-    const s = STEPS[NODE[id].step];
-    return h('div', { className: 'step ' + s.status + (dim ? ' dim' : ''), key: id },
-      h('span', { className: 's-num ' + s.status, 'aria-hidden': true }, s.n),
-      h('div', { style: { minWidth: 0 } },
-        h('div', { className: 's-kick' }, 'Step ' + s.n),
-        h('div', { className: 's-q' }, s.q),
-        row('Found', s.found),
-        readFromRow(row, s.field, id, !!openSrc[id], () => flip(id)),
-        s.status === 'gap' ? h('div', { className: 's-aside purple' }, h('strong', null, 'A gap in the tree, not in the chart. '), 'Flagged for the tree owner. The decision stands without it.') : null,
-        s.n === 2 && cbcIn ? h('div', { className: 's-aside blue' }, 'You ticked the repeat CBC as in. The tree still reads one set until the result is filed in the chart.') : null,
-        changed && id === at
-          ? h('div', { className: 's-aside blue' }, h('strong', null, 'You rerouted here'), ' — the path goes on to ' + OUTCOME[end] + ' instead of stopping at ' + OUTCOME[TREE_END] + '.' + (why ? ' ' + (draft ? 'Your reasoning (not saved yet): “' : 'Your reasoning: “') + why + '”' : ''))
-          : null),
-      h('span', { className: 'pill t-' + s.status, style: { alignSelf: 'start' } }, TONE[s.status].label));
-  };
-
-  const plainItem = (key, mark, markCls, kicker, title, rows, chip) => h('div', { className: 'step', key },
-    h('span', { className: 's-num ' + markCls, 'aria-hidden': true }, mark),
-    h('div', { style: { minWidth: 0 } }, h('div', { className: 's-kick' }, kicker), h('div', { className: 's-q' }, title), ...rows),
-    chip ? h('span', { className: 'pill ' + chip[0], style: { alignSelf: 'start' } }, chip[1]) : h('span'));
-
-  const root = NODE.root;
-  const onPath = [plainItem('root', 'R', 'node', 'Referral', root.title, [row('Why', root.reason), readFromRow(row, root.source, 'root', !!openSrc.root, () => flip('root'))])];
-  path.filter((id) => NODE[id].kind === 'step').forEach((id) => onPath.push(stepItem(id, false)));
-  onPath.push(changed
-    ? plainItem('end', '✓', 'you', 'Your decision', OUTCOME[end],
-        [row('The tree decided', OUTCOME[TREE_END]), row('Why it differs', why || 'No reason given yet')], ['t-new', draft ? 'Previewing' : 'Changed by you'])
-    : plainItem('end', '•', 'tree', 'Where it ended', OUTCOME[end], [row('Why', NODE[end].reason), readFromRow(row, NODE[end].source, end, !!openSrc[end], () => flip(end))], ['t-awaiting', 'The tree\'s decision']));
-
-  const offPath = GRAPH.filter((n) => n.kind === 'step' && !path.includes(n.id)).map((n) => stepItem(n.id, true));
-
-  return h('div', { className: 'plain' },
-    h('div', { className: 'p-sec' }, h('span', { className: 'kicker' }, changed ? 'How you got to this decision' : 'How the tree got to this decision')),
-    h('div', { className: 'steps' }, onPath),
-    offPath.length ? h('div', { className: 'p-sec' }, h('span', { className: 'kicker' }, 'Also checked, not on this path')) : null,
-    offPath.length ? h('div', { className: 'steps' }, offPath) : null);
-}
-
-function TreeCanvas({ cbcIn, change, reroute, focus, onPickEnd }) {
-  const RF = window.ReactFlow;
-  const { useState, useEffect, useRef, useMemo } = React;
-  const [selected, setSelected] = useState('g2');
-  const [narrow, setNarrow] = useState(false);
-  // Diagram or plain language; remembered in this browser only, as a convenience.
-  const [view, setView] = useState(() => { try { return localStorage.getItem('triage.treeView') || 'diagram'; } catch (e) { return 'diagram'; } });
-  const pickView = (v) => { setView(v); try { localStorage.setItem('triage.treeView', v); } catch (e) { /* storage unavailable */ } };
-  const box = useRef(null);
-  const flow = RF.useReactFlow();
-
-  // Pick the layout from the canvas's own width, and refit whenever it changes.
-  useEffect(() => {
-    const el = box.current;
-    if (!el) return undefined;
-    const ro = new ResizeObserver(([entry]) => {
-      const w = entry.contentRect.width;
-      if (w === 0) return;
-      setNarrow(w < 600);
-      requestAnimationFrame(() => flow.fitView({ padding: 0.06, maxZoom: 1, duration: 0 }));
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [flow]);
-
-  // Only the route to the current decision is lit: the tree's own, or the one the triager rerouted to.
-  // While rerouting, the outcome being picked previews in its place.
-  const end = (reroute && reroute.target) || (change ? change.target : TREE_END);
-  const lit = chainOf(end);
-  const changed = end !== TREE_END;
-  const at = changed ? divergeAt(end) : null;
-  const why = reroute ? reroute.why.trim() : (change ? change.why : '');
-  const hasNote = changed && !!why && (reroute ? reroute.addNode : change.addNode);
-  const sel = selected === 'note' && !hasNote ? (at || 'g2') : selected;
-  const pos = useMemo(() => layoutFor(narrow), [narrow]);
-
-  // A save or revert outside the canvas asks for a particular node to be selected.
-  useEffect(() => { if (focus) setSelected(focus.id); }, [focus && focus.key]);
-  // The reasoning node widens the graph, so refit once it has been measured, whenever it or the path changes.
-  useEffect(() => {
-    const t = setTimeout(() => flow.fitView({ padding: 0.06, maxZoom: 1, duration: 200 }), 80);
-    return () => clearTimeout(t);
-  }, [hasNote, end, flow]);
-
-  const chipFor = (n) => {
-    if (changed && n.id === end) return { chip: 'Your decision', chipCls: 't-new' };
-    if (changed && n.id === TREE_END) return { chip: 'Tree\'s decision', chipCls: 't-awaiting' };
-    const info = nodeInfo(n);
-    return { chip: info.chip, chipCls: info.chipCls };
-  };
-
-  const nodes = GRAPH.map((n) => {
-    const info = nodeInfo(n);
-    const chip = chipFor(n);
-    const state = lit.includes(n.id) ? 'on' : (changed && TAKEN.includes(n.id) ? 'ai' : 'off');
-    return {
-      id: n.id, type: 'tree', position: { x: pos[n.id].x, y: pos[n.id].y },
-      data: Object.assign({}, info, chip, {
-        w: pos[n.id].w, state, sel: sel === n.id,
-        pick: !!reroute && !!OUTCOME[n.id] && n.id !== TREE_END,
-        target: !!reroute && reroute.target === n.id,
-        sub: n.id === at ? 'You rerouted here' : ''
-      }),
-      ariaLabel: info.kicker + ': ' + info.title + (chip.chip ? ', ' + chip.chip : '')
-    };
-  });
-  if (hasNote) {
-    nodes.push({
-      id: 'note', type: 'note', position: { x: -(pos.noteW + pos.noteGap), y: pos[at].y - 6 },
-      data: { w: pos.noteW, why, sel: sel === 'note', draft: !!reroute },
-      ariaLabel: 'Your reasoning: ' + why
-    });
+  const on = path.has(id);
+  const sel = S.tree.sel === id;
+  let title; let sub; let mark = ''; let cls = '';
+  let badge = '';
+  if (n.kind === 'step') {
+    const st = ev.steps[id];
+    title = SHORT[id]; sub = on ? stepSub(st) : 'Not reached · ' + stepSub(st); mark = markFor(st); cls = st.status;
+    badge = st.pending ? '<span class="sn-badge">Pending</span>' : ov[id] ? `<span class="sn-badge blue">Changed in V${ov[id].n}</span>` : '';
+  } else if (n.kind === 'end') {
+    title = n.title; sub = id === ev.end ? (id === 'accept' ? 'Ends here' : 'Stopped here') : 'Not reached'; cls = 'end';
+  } else {
+    title = 'Lymphopenia · external'; sub = 'REF-2026-4471';
   }
-
-  const edges = GRAPH.filter((n) => n.parent).map((n) => {
-    const on = lit.includes(n.id) && lit.includes(n.parent);
-    const ai = !on && changed && TAKEN.includes(n.id) && TAKEN.includes(n.parent);
-    const label = n.parent === 'root' ? undefined : (n.branch ? 'no' : 'yes');
-    return {
-      id: n.parent + '-' + n.id, source: n.parent, target: n.id,
-      sourceHandle: n.branch ? 'r' : 'b', targetHandle: n.branch ? 'l' : 't',
-      type: n.branch ? 'smoothstep' : 'straight',
-      label,
-      labelStyle: { fontSize: 9.5, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', fill: on ? '#2F5FA8' : (ai ? '#7F98C2' : '#A5A29A') },
-      labelBgStyle: { fill: '#FFFFFF' }, labelBgPadding: [4, 2],
-      style: { stroke: on ? '#2F5FA8' : (ai ? '#8FA7CF' : '#D3D0C8'), strokeWidth: on || ai ? 2 : 1.5, strokeDasharray: on ? undefined : (ai ? '6 4' : '5 4') }
-    };
-  });
-  if (hasNote) {
-    edges.push({
-      id: 'note-' + at, source: 'note', target: at, sourceHandle: 'r', targetHandle: 'l', type: 'smoothstep',
-      style: { stroke: '#9DB3D9', strokeWidth: 1.5, strokeDasharray: '3 3' }
-    });
-  }
-
-  const order = READ_ORDER.slice();
-  if (hasNote) order.splice(order.indexOf(at) + 1, 0, 'note');
-  const hint = reroute
-    ? 'Rerouting — click an outcome in the tree to end the path there'
-    : (changed ? 'Highlighted: your path to this decision · drag to pan' : 'Highlighted: the path the tree took to this decision · drag to pan');
-
-  // One card: the view toggle on top, then either the selected node above the diagram, or the plain reading.
-  const diagram = view === 'diagram';
-  return h('div', { className: 'tree-wrap' },
-    h('div', { className: 'tree-canvas' + (narrow ? ' narrow' : ''), ref: box },
-      h('div', { className: 'tree-bar' + (reroute ? ' rerouting' : '') },
-        h('div', { className: 'seg seg-sm', role: 'group', 'aria-label': 'Show the tree as' },
-          h('button', { type: 'button', 'aria-pressed': diagram, onClick: () => pickView('diagram') }, 'Diagram'),
-          h('button', { type: 'button', 'aria-pressed': !diagram, onClick: () => pickView('plain') }, 'Plain language')),
-        h('span', { className: 'tree-hint' }, diagram ? hint : (reroute ? 'Rerouting — pick an outcome in the panel above' : 'The same path, read step by step')),
-        diagram && changed ? h('span', { className: 'key' }, 'Your path') : null,
-        diagram && changed ? h('span', { className: 'key ai' }, 'Tree\'s path') : null,
-        diagram ? h('span', { className: 'pill xs t-met' }, 'Met') : null,
-        diagram ? h('span', { className: 'pill xs t-missing' }, 'Not met') : null,
-        diagram ? h('span', { className: 'pill xs t-gap' }, 'Undefined') : null,
-        diagram ? h('div', { className: 'tree-zoom', role: 'group', 'aria-label': 'Zoom' },
-          h('button', { type: 'button', 'aria-label': 'Zoom out', onClick: () => flow.zoomOut() }, '−'),
-          h('button', { type: 'button', 'aria-label': 'Zoom in', onClick: () => flow.zoomIn() }, '+'),
-          h('button', { type: 'button', 'aria-label': 'Fit the whole tree', title: 'Fit', onClick: () => flow.fitView({ padding: 0.06, maxZoom: 1, duration: 200 }) },
-            h('span', { 'aria-hidden': true, dangerouslySetInnerHTML: { __html: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>' } }))) : null),
-      diagram ? h(TreeDetail, { id: sel, cbcIn, onPick: setSelected, order, chip: sel === 'note' ? {} : chipFor(NODE[sel]), at, end, why, draft: !!reroute }) : null,
-      diagram ? h('div', { className: 'tree-flow' }, h(RF.default, {
-        nodes, edges, nodeTypes: NODE_TYPES,
-        fitView: true, fitViewOptions: { padding: 0.06, maxZoom: 1 },
-        minZoom: 0.4, maxZoom: 1.6,
-        nodesDraggable: false, nodesConnectable: false, elementsSelectable: false,
-        zoomOnScroll: false, panOnScroll: false, preventScrolling: false, zoomOnDoubleClick: false,
-        onNodeClick: (e, node) => { setSelected(node.id); onPickEnd(node.id); }
-      },
-        h(RF.Background, { gap: 18, size: 1, color: '#E7E5DF' })))
-        : h(PlainView, { end, changed, at, why, cbcIn, draft: !!reroute })));
+  return `<button type="button" class="tnode ${cls} ${on ? 'on' : 'off'} ${sel ? 'sel' : ''}" data-act="treeSel" data-v="${id}" aria-pressed="${sel}">
+    ${badge}<span class="sn-ic">${nodeIcon(id)}</span>
+    <span class="sn-txt"><span class="sn-t">${title}</span><span class="sn-s">${sub}</span></span>${mark}
+  </button>`;
 }
 
-function DecisionTree(props) {
-  return h(window.ReactFlow.ReactFlowProvider, null, h(TreeCanvas, props));
+function sourceHtml(items) {
+  return `<div class="source">${items.map((it) => `<div class="src-item">
+    <div class="src-head"><span class="src-kind">${it.kind}</span><span class="src-title">${it.title}</span></div>
+    ${it.from ? `<div class="src-from">${it.from}</div>` : ''}
+    ${it.rows ? `<div class="src-scroll"><table class="src-table"><thead><tr>${it.cols.map((c) => `<th scope="col">${c}</th>`).join('')}</tr></thead>
+      <tbody>${it.rows.map((r) => `<tr class="${r[r.length - 1] ? 'flag' : ''}">${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : ''}
+    ${it.kv ? `<dl class="src-kv">${it.kv.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>` : ''}
+    ${it.lines ? `<ul class="src-lines">${it.lines.map((l) => `<li>${l}</li>`).join('')}</ul>` : ''}
+    ${it.quote ? `<blockquote class="src-quote">${it.quote}</blockquote>` : ''}
+    ${it.foot ? `<div class="src-foot">${it.foot}</div>` : ''}
+  </div>`).join('')}</div>`;
+}
+
+// The evidence a doctor would want for each step, in the form that suits it.
+function evidenceFor(id, ev) {
+  const l = ev.last;
+  if (id === 'g1') {
+    const rows = ['alc', 'wbc', 'hgb', 'plt', 'anc'].map((k) => {
+      const [lo, hi, label, unit] = CBC_RANGE[k];
+      const f = l[k] < lo ? 'Low' : l[k] > hi ? 'High' : 'In range';
+      return `<tr><th scope="row">${label}</th><td class="mono">${l[k]} <span class="u">${unit}</span></td><td class="mono u">${lo}–${hi}</td><td><span class="pa ${f === 'In range' ? 'present' : 'pending'}">${f}</span></td></tr>`;
+    }).join('');
+    return `<p>Every cell line on the newest CBC (${isoLabel(l.date, true)}). Isolated means only the lymphocytes are out of range.</p>
+      <div class="lsum-wrap" style="margin-top: 10px"><table class="lsum"><thead><tr><th scope="col">Line</th><th scope="col">Result</th><th scope="col">Range</th><th scope="col">Flag</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+  if (id === 'g2') {
+    return `<p>Lymphocyte count over time. Two low results at least 14 days apart are needed.</p>
+      <div class="trend-box">${trendSvg(ev.sets, 'alc', true)}</div>
+      ${srcLink('note-g2', 'Clinical note · K. Lozano, Nov 2')}
+      ${S.srcOpen['note-g2'] ? `<blockquote class="quote">${NOTES[0].text}</blockquote>` : ''}`;
+  }
+  if (id === 'g3') {
+    const pct = Math.min(100, Math.round((ev.age / 30) * 100));
+    return `<p>Newest CBC ${isoLabel(l.date, true)}: <strong>${ev.age} days old</strong> of a 30-day limit. ${ev.age <= 30 ? 'It passes 30 days on ' + ev.expires + '.' : 'Past the limit since ' + ev.expires + '.'}</p>
+      <div class="meter" role="img" aria-label="${ev.age} of 30 days"><i class="${ev.age > 30 ? 'over' : ev.age > 21 ? 'near' : ''}" style="width: ${pct}%"></i></div>
+      <div class="meter-x"><span>Collected</span><span>30 days</span></div>`;
+  }
+  if (id === 'g4') {
+    const d = ev.data.ai;
+    return d.seen
+      ? `<div class="ev-row" style="border: 0; padding-top: 0"><div class="grow"><div class="t">Allergy and Immunology evaluation</div><div class="d">${d.where} · ${isoLabel(d.date, true)}</div>
+          ${srcLink('ai', 'Open the evaluation note')}${S.srcOpen.ai ? `<blockquote class="quote">${AI_QUOTE}</blockquote>` : ''}</div>${presence('present', 'Present')}</div>`
+      : `<div class="ev-row" style="border: 0; padding-top: 0"><div class="grow"><div class="t">Allergy and Immunology evaluation</div><div class="d">Not in the outside records or the chart.</div></div>${presence('absent', 'Absent')}</div>`;
+  }
+  if (id === 'g5') {
+    return `<dl class="kv"><dt>Internal referrals</dt><dd>Exception criteria listed</dd><dt>External referrals</dt><dd class="missing"><span class="pa missing">Not defined</span> No exception criteria in rev. 4</dd></dl>`;
+  }
+  if (id === 'root') {
+    return `<dl class="kv">${RECORD.map((f) => `<dt>${f.k}</dt><dd class="${f.missing ? 'missing' : ''}">${f.missing ? '<span class="pa missing">Missing</span> ' : ''}${esc(f.v)}</dd>`).join('')}</dl>`;
+  }
+  return '';
+}
+
+function overrideForm(id) {
+  const o = S.ov;
+  const latest = latestVer();
+  const lab = ['g1', 'g2', 'g3'].includes(id);
+  const answers = id === 'g5' ? [['true', 'An exception applies'], ['false', 'No exception']] : [['met', 'Met'], ['missing', 'Not met']];
+  const opts = (list) => `<div class="opts" role="group">${list.map(([v, label]) => `<button type="button" class="opt" data-act="ovPick" data-v="${v}" aria-pressed="${o.choice === v}">${label}</button>`).join('')}</div>`;
+  const num = (k, label) => `<label>${label}<input type="number" step="0.01" data-ov="${k}" value="${o.cbc[k]}"></label>`;
+  return `<div class="ov">
+    <div class="ov-h">Override step ${NODE[id].step + 1}<span>Saved as V${latest.n + 1}, with your reason</span></div>
+    ${id === 'g5' ? '' : `<div class="seg seg-sm ov-mode" role="group" aria-label="What to change">
+      <button type="button" data-act="ovMode" data-v="answer" aria-pressed="${o.mode === 'answer'}">The answer</button>
+      <button type="button" data-act="ovMode" data-v="evidence" aria-pressed="${o.mode === 'evidence'}">${lab ? 'A lab value' : 'The evidence'}</button></div>`}
+    ${o.mode === 'answer' || id === 'g5' ? opts(answers) : ''}
+    ${o.mode === 'evidence' && id === 'g4' ? opts([['true', 'Evaluation on file'], ['false', 'Not on file']]) : ''}
+    ${o.mode === 'evidence' && lab ? `<div class="ov-grid">
+        <label>Collected<input type="date" data-ov="date" value="${o.cbc.date}" max="${isoToday()}"></label>
+        ${num('alc', 'ALC')}${num('wbc', 'WBC')}${num('hgb', 'Hgb')}${num('plt', 'Plt')}${num('anc', 'ANC')}</div>
+      <div class="ov-hint">A date already on file replaces that result; a new date adds one. Other lines start from the newest set.</div>` : ''}
+    <textarea class="field" data-ov="why" placeholder="Why? This is saved with the version and in the patient's notes." aria-label="Why">${esc(o.why)}</textarea>
+    ${o.err ? `<div class="err" role="alert" style="margin-top: 8px">${o.err}</div>` : ''}
+    <div class="row">
+      <button type="button" class="btn primary sm" data-act="ovSave">Save as V${latest.n + 1}</button>
+      <button type="button" class="btn secondary sm" data-act="ovCancel">Cancel</button>
+      <span class="ov-hint">The decision updates as soon as it saves.</span>
+    </div>
+  </div>`;
+}
+
+function treeSide(id, ev, viewed) {
+  const n = NODE[id];
+  const latest = latestVer();
+  const readOnly = viewed !== latest;
+  const sec = (label, html) => `<div class="side-sec"><div class="lab">${label}</div>${html}</div>`;
+  const prev = n.parent ? NODE[n.parent] : null;
+  const prevRow = prev ? sec('Required first', `<button type="button" class="req" data-act="treeSel" data-v="${prev.id}">
+      <span class="sn-ic sm">${nodeIcon(prev.id)}</span><span class="grow">${prev.kind === 'step' ? `Step ${prev.step + 1} · ${SHORT[prev.id]}` : 'The referral'}</span>
+      ${prev.kind === 'step' ? markFor(ev.steps[prev.id]) : ''}</button>`) : '';
+  let head; let body = '';
+  if (n.kind === 'step') {
+    const st = ev.steps[id];
+    const o = overridesIn(viewed)[id];
+    head = `<span class="lane-tag">Step ${n.step + 1}</span>`;
+    body = `<div class="side-ic">${nodeIcon(id)}</div>
+      <h3 class="side-t">${STEPS[n.step].q}</h3>
+      <span class="pill t-${st.status}">${stepSub(st)}</span>${st.overridden ? ' <span class="pill t-new">Answer overridden</span>' : ''}
+      ${st.pending ? `<div class="s-aside amber"><strong>Pending:</strong> ${st.pending}</div>` : ''}
+      ${sec('The decision', `<p>${st.found}</p>`)}
+      ${sec('How it was made', `<p>${RULE[id]}</p>
+        <div class="read-from">${ICON.doc} ${esc(st.field)}</div>
+        ${srcLink('src-' + id, 'Show the source')}${S.srcOpen['src-' + id] ? sourceHtml(sourcesFor(id, ev)) : ''}`)}
+      ${sec('Evidence', evidenceFor(id, ev))}
+      ${st.status === 'gap' ? `<div class="s-aside purple"><strong>A gap in the tree, not in the chart.</strong> Flagged for the tree owner. Answer it with an override if you can.</div>` : ''}
+      ${o ? sec('Change history', `<div class="s-aside blue" style="margin-top: 0"><strong>V${o.n}</strong> · ${o.by}, ${o.date}: ${esc(o.what)}.<br>Why: “${esc(o.why)}”</div>`) : ''}
+      ${prevRow}
+      ${sec('Override', readOnly ? '<p class="muted">This is an earlier version. Go back to the latest to change this step.</p>'
+        : S.ov && S.ov.id === id ? overrideForm(id) : `<button type="button" class="btn secondary sm" data-act="ovOpen" data-v="${id}">Override this step</button>`)}`;
+  } else if (n.kind === 'end') {
+    const reached = id === ev.end;
+    head = '<span class="lane-tag">Outcome</span>';
+    body = `<div class="side-ic">${nodeIcon('end')}</div>
+      <h3 class="side-t">${n.title}</h3>
+      <span class="pill ${reached ? (id === 'accept' ? 't-met' : 't-awaiting') : 't-cold'}">${reached ? (id === 'accept' ? 'Ends here' : 'Stopped here') : 'Not reached'}</span>
+      ${sec('What it means', `<p>${n.reason}</p>`)}
+      ${reached ? sec('Next', `<p>${NEXT[id]}</p>`) : ''}
+      ${prevRow}`;
+  } else {
+    head = '<span class="lane-tag">Referral</span>';
+    body = `<div class="side-ic">${nodeIcon('root')}</div>
+      <h3 class="side-t">Lymphopenia · external request</h3>
+      ${sec('How it was routed', `<p>${n.reason}</p>`)}
+      ${sec('The referral', evidenceFor('root', ev))}`;
+  }
+  return `<aside class="tm-side" aria-label="Selected node">
+    <div class="side-top">${head}<span class="grow"></span><button type="button" class="icon-btn lg" data-act="treeSel" data-v="" aria-label="Close the sidebar">${ICON.close}</button></div>
+    ${body}
+  </aside>`;
+}
+
+function renderTreeModal() {
+  if (!S.tree || S.view !== 'patient' || S.current !== WORKED) return '';
+  const viewed = viewedVer();
+  const ev = evaluate(viewed);
+  const path = new Set(chainOf(ev.end));
+  const ov = overridesIn(viewed);
+  const laneN = (id) => {
+    if (id === 'root') return '';
+    if (id === 'accept') return ev.end === 'accept' ? 'Ends here' : '';
+    const st = ev.steps[id];
+    return path.has(id) ? stepSub(st) : 'Not reached';
+  };
+  const lanes = LANES.map(([a, b], i) => {
+    const last = i === LANES.length - 1;
+    const inEdge = i > 0 && path.has(a) && path.has(LANES[i - 1][0]);
+    const outEdge = !last && path.has(a) && path.has(LANES[i + 1][0]);
+    const down = b && path.has(b);
+    return `<div class="lane">
+      <div class="lane-h"><span class="lane-tag">${LANE[a]}</span><span class="lane-n">${laneN(a)}</span></div>
+      <div class="lcell a">
+        ${i > 0 ? `<i class="ln l ${inEdge ? 'on' : ''}"></i>` : ''}
+        ${last ? '' : `<i class="ln r ${outEdge ? 'on' : ''}"></i>`}
+        ${b ? `<i class="ln d ${down ? 'on' : ''}"></i>` : ''}
+        ${treeNode(a, ev, path, ov)}
+      </div>
+      <div class="lcell b">${b ? `<i class="ln u ${down ? 'on' : ''}"></i>${treeNode(b, ev, path, ov)}` : ''}</div>
+    </div>`;
+  }).join('');
+  return `
+    <div class="tm-scrim" role="dialog" aria-modal="true" aria-label="Decision tree">
+      <div class="tm">
+        <div class="tm-head">
+          <span class="tm-ic">${NODE_ICON.g1.replace(/18/g, '22')}</span>
+          <div class="grow" style="min-width: 0">
+            <div class="tm-t">Isolated lymphopenia · external</div>
+            <div class="tm-s">${byMrn(WORKED).name} · rev. 4 · showing V${viewed.n}</div>
+          </div>
+          ${versionChips()}
+          <button type="button" class="icon-btn lg" data-act="treeClose" aria-label="Close the tree" title="Close (Esc)">${ICON.close}</button>
+        </div>
+        <div class="tm-sub">${decisionLine()}${restoreRow()}</div>
+        <div class="tm-main">
+          <div class="tree-body"><div class="lanes">${lanes}</div>
+            <div class="tree-key"><span><i class="ln-k on"></i> The path to the decision</span><span><i class="ln-k"></i> Not taken</span><span>Click any step to see the decision, how it was made and the evidence.</span></div>
+          </div>
+          ${S.tree.sel ? treeSide(S.tree.sel, ev, viewed) : ''}
+        </div>
+      </div>
+    </div>`;
 }
 
 /* ---------- Shell ---------- */
@@ -1854,7 +2320,7 @@ function render() {
       <span class="today">${TODAY_HEAD}</span>
       <button type="button" class="tb-btn for-rail" data-act="drawer" data-v="rail" aria-controls="rail" aria-expanded="${S.drawer === 'rail'}">${ICON.list}<span class="lbl">Patients</span></button>
       ${S.view === 'queue' ? '' : `<button type="button" class="tb-btn for-track" data-act="drawer" data-v="track" aria-controls="track" aria-expanded="${S.drawer === 'track'}" aria-label="Awaiting, ${openNow} open">${ICON.cal}<span class="lbl">Awaiting</span>${openNow ? `<span class="count">${openNow}</span>` : ''}</button>`}
-      <button type="button" class="follow-btn" data-act="toPip" title="Collapse the app to a small window pinned over whatever else is open">${ICON.pip}<span class="lbl">Follow me</span></button>
+      <button type="button" class="follow-btn" data-act="toPip" title="Collapse to the companion: a small window that stays over the EHR and collects what the algorithm is missing">${ICON.pip}<span class="lbl">Companion</span></button>
       <span class="avatar" aria-label="Signed in as Melissa">M</span>
     </header>
     <div class="cols">
@@ -1862,8 +2328,9 @@ function render() {
       ${renderRail()}
       ${S.view === 'queue' ? renderQueue() : renderPatient()}
       ${renderTrack()}
-    </div>`;
-  mountTree();
+    </div>
+    ${renderTreeModal()}
+    ${S.toast ? `<div class="toast" role="status"><span class="mk met">✓</span>${esc(S.toast.text)}</div>` : ''}`;
 }
 
 /* ---------- Events ---------- */
@@ -1897,7 +2364,7 @@ const ACT = {
   clearDay: () => { S.day = null; S.range = { from: null, to: null }; },
   filter: (v) => { S.filter = v; },
   open: (v) => {
-    if (S.current !== v) { S.tab = 'decision'; S.copied = null; S.reroute = null; }
+    if (S.current !== v) { S.copied = null; S.comp = null; }
     // Opening a profile from the day shows only the awaiting column; the list is one click away.
     if (S.view === 'queue') Object.assign(S, { railCollapsed: true, trackCollapsed: false });
     S.current = v; S.view = 'patient'; S.searchMsg = ''; S.drawer = null;
@@ -1912,34 +2379,57 @@ const ACT = {
     else S[v + 'Collapsed'] = true;
   },
   expand: (v) => { S[v + 'Collapsed'] = false; },
-  tab: (v) => { S.tab = v; },
   ask: (v) => { ask(v); },
+  dash: (v) => { S.dash = v; },
+  noteTab: (v) => { S.noteTab = v; },
+  panelTab: (v) => { S.panelTab = v; },
+  srcToggle: (v) => { S.srcOpen[v] = !S.srcOpen[v]; },
+  treeOpen: (v) => { S.tree = { sel: v || null }; S.ov = null; },
+  treeClose: () => { S.tree = null; S.ov = null; },
+  treeSel: (v) => { S.tree.sel = v || null; S.ov = null; },
+  // Overrides are written in the tree sidebar and saved as the next version.
+  ovOpen: (v) => {
+    const l = evaluate(latestVer()).last;
+    S.ov = { id: v, mode: 'answer', choice: '', why: '', err: '', cbc: { date: isoToday(), alc: '', wbc: l.wbc, hgb: l.hgb, plt: l.plt, anc: l.anc } };
+  },
+  ovMode: (v) => { S.ov.mode = v; S.ov.choice = ''; S.ov.err = ''; },
+  ovPick: (v) => { S.ov.choice = v; S.ov.err = ''; },
+  ovCancel: () => { S.ov = null; },
+  ovSave: () => {
+    const o = S.ov;
+    const id = o.id;
+    const d = latestVer().data;
+    const reason = o.why.trim();
+    const lab = o.mode === 'evidence' && ['g1', 'g2', 'g3'].includes(id);
+    if (lab ? !(o.cbc.date && o.cbc.alc !== '') : !o.choice) { o.err = lab ? 'Enter the collection date and the ALC.' : 'Pick an answer.'; return; }
+    if (!reason) { o.err = 'Say why. The reason is saved with the version.'; return; }
+    const stepN = NODE[id].step + 1;
+    let change;
+    if (id === 'g5') change = { data: Object.assign({}, d, { exception: o.choice === 'true' }), what: o.choice === 'true' ? 'Step 5 answered: an exception applies' : 'Step 5 answered: no exception applies' };
+    else if (o.mode === 'answer') change = { answers: { [id]: o.choice }, what: `Step ${stepN} set to ${o.choice === 'met' ? 'Met' : 'Not met'}` };
+    else if (id === 'g4') change = { data: Object.assign({}, d, { ai: Object.assign({}, d.ai, { seen: o.choice === 'true' }) }), what: o.choice === 'true' ? 'Allergy and Immunology evaluation marked on file' : 'Allergy and Immunology evaluation marked not on file' };
+    else {
+      const set = { date: o.cbc.date, src: 'Entered by Melissa' };
+      ['alc', 'wbc', 'hgb', 'plt', 'anc'].forEach((k) => { set[k] = parseFloat(o.cbc[k]); });
+      const exists = d.cbc.some((x) => x.date === o.cbc.date);
+      change = { data: Object.assign({}, d, { cbc: d.cbc.filter((x) => x.date !== o.cbc.date).concat(set) }), what: `CBC ${isoLabel(o.cbc.date)} ${exists ? 'corrected' : 'added'} (ALC ${set.alc})` };
+    }
+    S.ov = null;
+    addVersion(Object.assign(change, { step: id, why: reason }));
+  },
   tick: (v) => { S.done[v] = !S.done[v]; },
-  changeStart: () => {
-    S.reroute = { target: S.change ? S.change.target : null, why: '', addNode: S.change ? S.change.addNode : true };
-    S.focusWhy = true;
+  // Versions: look at any of them; the latest drives the decision. Restoring an old one saves it as the next.
+  algView: (v) => { S.alg.view = +v === latestVer().n ? null : +v; S.restoreMsg = ''; },
+  algRestore: (v) => {
+    const why = ((document.querySelector((S.tree ? '.tm' : '.centre') + ' .restore-why') || {}).value || '').trim();
+    if (!why) { S.restoreMsg = 'Say why before restoring it.'; return; }
+    const old = S.alg.versions[+v - 1];
+    S.restoreMsg = '';
+    addVersion({ step: null, what: `Restored V${old.n}`, why, data: old.data, answers: old.answers, replaceAnswers: true });
   },
-  pickTarget: (v) => { if (S.reroute && v !== TREE_END) S.reroute.target = v; },
-  changeCancel: () => { S.reroute = null; },
-  // Saving records the disagreement twice: on the decision path, and as a note on the patient.
-  changeSave: () => {
-    const r = S.reroute;
-    const why = r.why.trim();
-    if (!r.target || !why) return;
-    const at = divergeAt(r.target);
-    S.change = { target: r.target, why, addNode: r.addNode, at };
-    S.reroute = null;
-    logNote('Decision changed', `Changed the decision from "${OUTCOME[TREE_END]}" to "${OUTCOME[r.target]}", rerouting at ${stepLabel(at)} of the isolated lymphopenia tree (external, rev. 4).\nReason: ${why}`);
-    logEvent('Decision changed by Melissa', `From "${OUTCOME[TREE_END]}" to "${OUTCOME[r.target]}", rerouting at ${stepLabel(at)}. Reason: ${why} Recorded on the decision path and in the notes.`, '#2F5FA8');
-    S.treeFocus = { id: r.addNode ? 'note' : at, key: Date.now() };
-  },
-  changeRevert: () => {
-    const was = S.change;
-    S.change = null;
-    logNote('Decision restored', `Went back to the tree's decision, "${OUTCOME[TREE_END]}". Set aside: "${OUTCOME[was.target]}".`);
-    logEvent('Back to the tree\'s decision', `Melissa restored "${OUTCOME[TREE_END]}" and set aside "${OUTCOME[was.target]}". Noted in the patient's notes.`, '#8C8980');
-    S.treeFocus = { id: 'g2', key: Date.now() };
-  },
+  compPick: (v) => { const [k, val] = v.split(':'); comp()[k] = val; comp().err = ''; },
+  compSend: (v) => { sendFromCompanion(v); },
+  dictate: (v) => { dictate(v); },
   noteToLog: (v) => {
     const m = S.chat[S.current][+v];
     if (!noteText(m).trim()) return;
@@ -1984,61 +2474,58 @@ const ACT = {
     const asked = itemsFor(S.current).filter((a) => m.include[a.id]);
     asked.forEach((a) => { a.asked = TODAY_SHORT; });
     m.sent = true;
-    const what = asked.length ? asked.map((a) => a.item).join('; ') : 'no outstanding items';
+    const all = asked.map((a) => a.item).concat(algorithmAsks(byMrn(S.current)).filter((a) => m.include[a.id]).map((a) => a.item));
+    const what = all.length ? all.join('; ') : 'no outstanding items';
     logNote('Message sent', `Sent a message to ${m.to}.\nAsked for: ${what}.\nSubject: ${m.subject}`);
     logEvent('Message sent to the referring provider', `To ${m.to}. Asked for: ${what}. Sent by Melissa outside the copilot and logged here.`, '#2F5FA8');
   },
   copy: (v) => {
     const m = S.chat[S.current][+v];
     const text = m.kind === 'message' ? messageText(m) : noteText(m);
-    const keep = () => [...document.querySelectorAll('.centre-scroll')].map((c) => c.scrollTop);
+    const keep = () => [...document.querySelectorAll('.centre-scroll, .panel-body')].map((c) => c.scrollTop);
     const done = () => {
       const top = keep(); S.copied = +v; render();
-      document.querySelectorAll('.centre-scroll').forEach((c, i) => { c.scrollTop = top[i]; });
-      setTimeout(() => { const t = keep(); S.copied = null; render(); document.querySelectorAll('.centre-scroll').forEach((c, i) => { c.scrollTop = t[i]; }); }, 1800);
+      document.querySelectorAll('.centre-scroll, .panel-body').forEach((c, i) => { c.scrollTop = top[i]; });
+      setTimeout(() => { const t = keep(); S.copied = null; render(); document.querySelectorAll('.centre-scroll, .panel-body').forEach((c, i) => { c.scrollTop = t[i]; }); }, 1800);
     };
     if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done);
     else done();
   },
-  toPip: () => { S.view = 'pip'; S.pipCollapsed = false; S.drawer = null; },
+  toPip: () => { S.view = 'pip'; S.pipCollapsed = false; S.drawer = null; S.tree = null; S.ov = null; },
   pipCollapse: () => { S.pipCollapsed = true; },
   pipExpand: () => { S.pipCollapsed = false; },
   toFull: () => { S.view = 'patient'; S.trackCollapsed = false; }
 };
+
+const PANES = '.rail-scroll, .centre-scroll, .panel-body, .tree-body, .tm-side';
 
 document.addEventListener('click', (e) => {
   const el = e.target.closest('[data-act]');
   if (!el || el.disabled) return;
   const fn = ACT[el.dataset.act];
   if (!fn) return;
-  const scrollers = [...document.querySelectorAll('.rail-scroll, .centre-scroll, .aw-list, .log-list')].map((s) => s.scrollTop);
+  const scrollers = [...document.querySelectorAll(PANES)].map((s) => s.scrollTop);
   fn(el.dataset.v);
   if (el.dataset.act === 'copy') return;
   render();
   // Keep scroll positions when the same view redraws, so ticking does not jump the list.
   if (!['open', 'toQueue', 'tab', 'toFull', 'mode'].includes(el.dataset.act)) {
-    document.querySelectorAll('.rail-scroll, .centre-scroll, .aw-list, .log-list').forEach((s, i) => { if (scrollers[i] != null) s.scrollTop = scrollers[i]; });
+    document.querySelectorAll(PANES).forEach((s, i) => { if (scrollers[i] != null) s.scrollTop = scrollers[i]; });
   }
   scrollToChat();
 });
 
 // Redraw from outside a click (the tree canvas), keeping every pane where it was scrolled.
 function redraw() {
-  const panes = '.rail-scroll, .centre-scroll, .aw-list, .log-list';
-  const keep = [...document.querySelectorAll(panes)].map((el) => el.scrollTop);
+  const keep = [...document.querySelectorAll(PANES)].map((el) => el.scrollTop);
   render();
-  document.querySelectorAll(panes).forEach((el, i) => { if (keep[i] != null) el.scrollTop = keep[i]; });
+  document.querySelectorAll(PANES).forEach((el, i) => { if (keep[i] != null) el.scrollTop = keep[i]; });
 }
 
 function scrollToChat() {
-  if (S.focusWhy) {
-    S.focusWhy = false;
-    const why = document.getElementById('changeWhy');
-    if (why) { why.focus({ preventScroll: true }); why.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
-  }
   if (!S.scrollChat) return;
   S.scrollChat = false;
-  const c = document.querySelector('.centre-scroll');
+  const c = document.querySelector('.panel-body');
   if (c) c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' });
 }
 
@@ -2064,12 +2551,19 @@ document.addEventListener('input', (e) => {
   if (sent) sent.disabled = !m.to.trim();
 });
 
-// The rationale updates the tree preview without redrawing the page, so typing keeps focus.
+// Override fields keep what's typed between redraws.
 document.addEventListener('input', (e) => {
-  if (e.target.id !== 'changeWhy' || !S.reroute) return;
-  S.reroute.why = e.target.value;
-  document.getElementById('changeSave').disabled = !(S.reroute.target && S.reroute.why.trim());
-  mountTree();
+  const k = e.target.dataset && e.target.dataset.ov;
+  if (!k || !S.ov) return;
+  if (k === 'why') S.ov.why = e.target.value;
+  else S.ov.cbc[k] = e.target.value;
+});
+
+// Companion fields keep what's typed between redraws.
+document.addEventListener('input', (e) => {
+  const k = e.target.dataset && e.target.dataset.comp;
+  if (!k) return;
+  comp()[k] = e.target.value;
 });
 
 document.addEventListener('change', (e) => {
@@ -2084,10 +2578,11 @@ document.addEventListener('change', (e) => {
     redraw();
     return;
   }
-  if (e.target.id === 'changeNode' && S.reroute) {
-    S.reroute.addNode = e.target.checked;
-    mountTree();
-    return;
+  // Switching patients from the companion keeps it open on the new patient.
+  if (e.target.id === 'compPatient') {
+    S.current = e.target.value;
+    S.comp = null;
+    redraw();
   }
 });
 
@@ -2123,6 +2618,8 @@ tip.hidden = true;
 document.body.appendChild(tip);
 
 function truncatedIn(node) {
+  const t = node && node.closest && node.closest('[data-tip]');
+  if (t) return { textContent: t.dataset.tip, getBoundingClientRect: () => t.getBoundingClientRect(), scrollWidth: 1, clientWidth: 0 };
   for (const [row, text] of TRUNC) {
     const r = node && node.closest && node.closest(row);
     const el = r && r.querySelector(text);
@@ -2150,8 +2647,8 @@ document.addEventListener('click', () => { tip.hidden = true; }, true);
 document.addEventListener('scroll', () => { tip.hidden = true; }, true);
 
 document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && S.tree) { if (S.ov) S.ov = null; else if (S.tree.sel) S.tree.sel = null; else S.tree = null; redraw(); return; }
   if (e.key === 'Escape' && S.drawer) { S.drawer = null; render(); return; }
-  if (e.key === 'Escape' && S.reroute) { S.reroute = null; redraw(); return; }
   if (e.key === 'Escape' && S.calPicker !== null) { S.calPicker = null; redraw(); return; }
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
     const s = document.getElementById('search');
