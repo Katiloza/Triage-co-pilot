@@ -739,6 +739,14 @@ textarea.field:focus { border-color: var(--primary); }
 .tm-side .ov-h span, .tm-side .ov-hint { font-size: 13px; }
 .tm-side .opt { font-size: 14px; }
 .tm .ver, .tm .ver span { font-size: 13px; }
+/* Moving the decision: steps and outcomes as choices */
+.route { margin-top: 10px; }
+.route-h { margin-top: 10px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.route-h:first-child { margin-top: 0; }
+.route-list { margin-top: 6px; }
+.route-opt { min-height: 36px; text-align: left; }
+.route-now { margin-left: 4px; padding: 1px 6px; border-radius: 6px; background: var(--amber-bg); color: var(--amber); font-size: 12px; font-weight: 600; }
+.route-opt[aria-pressed="true"] .route-now { background: rgba(255, 255, 255, 0.2); color: #FFFFFF; }
 /* Next step after a change */
 .next-step { margin-top: 14px; padding: 14px 16px; border: 1.5px solid #C5D4EC; border-radius: 12px; background: var(--blue-bg); }
 .next-step.card { margin: 12px 18px 0; }
@@ -1772,7 +1780,7 @@ function evidenceCard() {
           <label>Why<input type="text" data-le="why" value="${esc(le.why)}" placeholder="e.g. Lab corrected the result"></label>
         </div>
         ${le.err ? `<div class="err" role="alert" style="margin-top: 8px">${le.err}</div>` : ''}
-        <div class="row"><button type="button" class="btn primary sm" data-act="labSave">Save as V${latestVer().n + 1}</button><button type="button" class="btn secondary sm" data-act="labCancel">Cancel</button><span class="ov-hint">The decision updates as soon as it saves.</span></div>
+        <div class="row"><button type="button" class="btn primary sm" data-act="labSave">Save to decision tree</button><button type="button" class="btn secondary sm" data-act="labCancel">Cancel</button><span class="ov-hint">The decision updates as soon as it saves.</span></div>
       </div></td></tr>`;
     };
     const rows = ['alc', 'wbc', 'hgb', 'plt', 'anc'].map((k) => {
@@ -2678,6 +2686,34 @@ function evidenceFor(id, ev) {
   return '';
 }
 
+// Moving the decision: to a step (everything before it counts as met, the rest is read from the chart again)
+// or straight to an outcome (the answers that lead there). Each target lists what it does in plain words.
+const ROUTE_STEPS = ['g1', 'g2', 'g3', 'g4', 'g5'];
+const ROUTE_ENDS = { accept: ['g1', 'g2', 'g3', 'g4'], b4: ['g1', 'g2', 'g3'], b3: ['g1', 'g2'], b2: ['g1'], b1: [] };
+function routeAnswers(target, prev) {
+  const [kind, id] = target.split(':');
+  const ans = Object.assign({}, prev);
+  ['g1', 'g2', 'g3', 'g4'].forEach((g) => { delete ans[g]; });
+  if (kind === 'step') ROUTE_STEPS.slice(0, ROUTE_STEPS.indexOf(id)).forEach((g) => { if (g !== 'g5') ans[g] = 'met'; });
+  else { ROUTE_ENDS[id].forEach((g) => { ans[g] = 'met'; }); const fail = ['g1', 'g2', 'g3', 'g4'][ROUTE_ENDS[id].length]; if (fail) ans[fail] = 'missing'; }
+  return ans;
+}
+function routeLabel(target) {
+  const [kind, id] = target.split(':');
+  return kind === 'step' ? `Step ${ROUTE_STEPS.indexOf(id) + 1} · ${SHORT[id]}` : OUTCOME[id];
+}
+function routePicker(o) {
+  const ev = evaluate(latestVer());
+  const pick = (t) => `<button type="button" class="opt route-opt" data-act="ovRoute" data-v="${t}" aria-pressed="${o.route === t}">${routeLabel(t)}${t === 'end:' + ev.end ? ' <span class="route-now">now</span>' : ''}</button>`;
+  return `<div class="route">
+    <div class="route-h">Move to a step</div>
+    <div class="opts route-list">${ROUTE_STEPS.map((g) => pick('step:' + g)).join('')}</div>
+    <div class="route-h">Or set the outcome</div>
+    <div class="opts route-list">${Object.keys(ROUTE_ENDS).map((e) => pick('end:' + e)).join('')}</div>
+    ${o.route ? `<div class="ov-hint">${o.route.startsWith('step:') ? `Steps before it count as met; from ${routeLabel(o.route)} on, the tree reads the chart again.` : 'The steps are set so the path ends here.'}</div>` : ''}
+  </div>`;
+}
+
 function overrideForm(id) {
   const o = S.ov;
   const latest = latestVer();
@@ -2686,23 +2722,37 @@ function overrideForm(id) {
   const opts = (list) => `<div class="opts" role="group">${list.map(([v, label]) => `<button type="button" class="opt" data-act="ovPick" data-v="${v}" aria-pressed="${o.choice === v}">${label}</button>`).join('')}</div>`;
   const num = (k, label) => `<label>${label}<input type="number" step="0.01" data-ov="${k}" value="${o.cbc[k]}"></label>`;
   return `<div class="ov">
-    <div class="ov-h">Override step ${NODE[id].step + 1}<span>Saved as V${latest.n + 1}, with your reason</span></div>
-    ${id === 'g5' ? '' : `<div class="seg seg-sm ov-mode" role="group" aria-label="What to change">
-      <button type="button" data-act="ovMode" data-v="answer" aria-pressed="${o.mode === 'answer'}">The answer</button>
-      <button type="button" data-act="ovMode" data-v="evidence" aria-pressed="${o.mode === 'evidence'}">${lab ? 'A lab value' : 'The evidence'}</button></div>`}
-    ${o.mode === 'answer' || id === 'g5' ? opts(answers) : ''}
+    <div class="ov-h">${NODE[id].kind === 'step' ? `Override step ${NODE[id].step + 1}` : 'Change the decision'}<span>Saved as V${latest.n + 1}, with your reason</span></div>
+    <div class="seg seg-sm ov-mode" role="group" aria-label="What to change">
+      ${id === 'g5' ? `<button type="button" data-act="ovMode" data-v="answer" aria-pressed="${o.mode === 'answer'}">The answer</button>`
+        : `<button type="button" data-act="ovMode" data-v="evidence" aria-pressed="${o.mode === 'evidence'}">${lab ? 'A lab value' : 'The evidence'}</button>`}
+      <button type="button" data-act="ovMode" data-v="route" aria-pressed="${o.mode === 'route'}">Move the decision</button></div>
+    ${o.mode === 'answer' && id === 'g5' ? opts(answers) : ''}
+    ${o.mode === 'route' ? routePicker(o) : ''}
     ${o.mode === 'evidence' && id === 'g4' ? opts([['true', 'Evaluation on file'], ['false', 'Not on file']]) : ''}
     ${o.mode === 'evidence' && lab ? `<div class="ov-grid">
         <label>Collected<input type="date" data-ov="date" value="${o.cbc.date}" max="${isoToday()}"></label>
-        ${num('alc', 'ALC')}${num('wbc', 'WBC')}${num('hgb', 'Hgb')}${num('plt', 'Plt')}${num('anc', 'ANC')}</div>
-      <div class="ov-hint">A date already on file replaces that result; a new date adds one. Other lines start from the newest set.</div>` : ''}
+        ${num('alc', 'ALC')}${num('wbc', 'WBC')}${num('hgb', 'Hgb')}${num('plt', 'Plt')}${num('anc', 'ANC')}</div>` : ''}
     <textarea class="field" data-ov="why" placeholder="Why? This is saved with the version and in the patient's notes." aria-label="Why">${esc(o.why)}</textarea>
     ${o.err ? `<div class="err" role="alert" style="margin-top: 8px">${o.err}</div>` : ''}
     <div class="row">
-      <button type="button" class="btn primary sm" data-act="ovSave">Save as V${latest.n + 1}</button>
+      <button type="button" class="btn primary sm" data-act="ovSave">Save to decision tree</button>
       <button type="button" class="btn secondary sm" data-act="ovCancel">Cancel</button>
       <span class="ov-hint">The decision updates as soon as it saves.</span>
     </div>
+  </div>`;
+}
+
+// The same move, from an outcome's sidebar: only the routing choices.
+function routeForm(id) {
+  const o = S.ov;
+  return `<div class="ov">
+    <div class="ov-h">Change the decision<span>Saved as V${latestVer().n + 1}, with your reason</span></div>
+    ${routePicker(o)}
+    <textarea class="field" data-ov="why" placeholder="Why? This is saved with the version and in the patient's notes." aria-label="Why">${esc(o.why)}</textarea>
+    ${o.err ? `<div class="err" role="alert" style="margin-top: 8px">${o.err}</div>` : ''}
+    <div class="row"><button type="button" class="btn primary sm" data-act="ovSave">Save to decision tree</button><button type="button" class="btn secondary sm" data-act="ovCancel">Cancel</button>
+      <span class="ov-hint">The decision updates as soon as it saves.</span></div>
   </div>`;
 }
 
@@ -2745,7 +2795,7 @@ function treeSide(id, ev, viewed) {
     head = `<span class="lane-tag">Step ${n.step + 1}</span>`;
     body = `<div class="side-ic">${nodeIcon(id)}</div>
       <h3 class="side-t">${STEPS[n.step].q}</h3>
-      <span class="pill t-${st.status}">${stepSub(st)}</span>${st.overridden ? ' <span class="pill t-new">Answer overridden</span>' : ''}
+      ${st.overridden ? '<span class="pill t-new">Answer overridden</span>' : ''}
       ${st.pending ? `<div class="s-aside amber"><strong>Pending:</strong> ${st.pending}</div>` : ''}
       ${sec('The decision', `<p>${st.found}</p>`)}
       ${sec('How it was made', `<p>${RULE[id]}</p>
@@ -2767,6 +2817,8 @@ function treeSide(id, ev, viewed) {
       <span class="pill ${reached ? (id === 'accept' ? 't-met' : 't-awaiting') : 't-cold'}">${reached ? (id === 'accept' ? 'Ends here' : 'Stopped here') : 'Not reached'}</span>
       ${sec('What it means', `<p>${n.reason}</p>`)}
       ${reached ? sec('Next', `<p>${NEXT[id]}</p>`) : ''}
+      ${sec('Change the decision', readOnly ? '<p class="muted">This is an earlier version. Go back to the latest to change the decision.</p>'
+        : S.ov && S.ov.id === id ? routeForm(id) : `<button type="button" class="btn secondary sm" data-act="ovOpen" data-v="${id}">Move the decision</button>`)}
       ${pvSec}
       ${prevRow}`;
   } else {
@@ -2960,9 +3012,10 @@ const ACT = {
   // Overrides are written in the tree sidebar and saved as the next version.
   ovOpen: (v) => {
     const l = evaluate(latestVer()).last;
-    S.ov = { id: v, mode: 'answer', choice: '', why: '', err: '', cbc: { date: isoToday(), alc: '', wbc: l.wbc, hgb: l.hgb, plt: l.plt, anc: l.anc } };
+    S.ov = { id: v, mode: NODE[v].kind !== 'step' ? 'route' : v === 'g5' ? 'answer' : 'evidence', choice: '', route: '', why: '', err: '', cbc: { date: isoToday(), alc: '', wbc: l.wbc, hgb: l.hgb, plt: l.plt, anc: l.anc } };
   },
-  ovMode: (v) => { S.ov.mode = v; S.ov.choice = ''; S.ov.err = ''; },
+  ovMode: (v) => { S.ov.mode = v; S.ov.choice = ''; S.ov.route = ''; S.ov.err = ''; },
+  ovRoute: (v) => { S.ov.route = v; S.ov.err = ''; },
   ovPick: (v) => { S.ov.choice = v; S.ov.err = ''; },
   ovCancel: () => { S.ov = null; },
   pnOpen: (v) => { S.pnOpen = v; S.pnErr = ''; setTimeout(() => document.getElementById('pnText')?.focus(), 0); },
@@ -2978,6 +3031,15 @@ const ACT = {
     const id = o.id;
     const d = latestVer().data;
     const reason = o.why.trim();
+    if (o.mode === 'route' || NODE[id].kind !== 'step') {
+      if (!o.route) { o.err = 'Pick where the decision should go.'; return; }
+      if (!reason) { o.err = 'Say why. The reason is saved with the version.'; return; }
+      const target = o.route;
+      S.ov = null;
+      addVersion({ step: target.startsWith('step:') ? target.slice(5) : null, what: `Decision moved to ${routeLabel(target)}`, why: reason, answers: routeAnswers(target, latestVer().answers), replaceAnswers: true });
+      if (S.tree && target.startsWith('end:')) S.tree.sel = target.slice(4);
+      return;
+    }
     const lab = o.mode === 'evidence' && ['g1', 'g2', 'g3'].includes(id);
     if (lab ? !(o.cbc.date && o.cbc.alc !== '') : !o.choice) { o.err = lab ? 'Enter the collection date and the ALC.' : 'Pick an answer.'; return; }
     if (!reason) { o.err = 'Say why. The reason is saved with the version.'; return; }
