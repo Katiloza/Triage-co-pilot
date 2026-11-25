@@ -368,7 +368,6 @@ textarea.field:focus { border-color: var(--primary); }
 .pip-bar .icon-btn:hover { background: var(--sunk); color: var(--ink); }
 .pip-body { padding: 12px; }
 .pip .aw-row { padding: 9px 0; }
-.btn-full { display: flex; width: 100%; align-items: center; justify-content: center; gap: 7px; min-height: 38px; margin-top: 10px; border: 0; border-radius: 9px; color: #FFFFFF; font-size: 12.5px; font-weight: 600; cursor: pointer; background: var(--primary); }
 .pill-win { position: absolute; right: 24px; bottom: 24px; display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 8px 0 12px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 23px; box-shadow: 0 14px 32px rgba(20, 20, 15, 0.2), 0 2px 5px rgba(20, 20, 15, 0.08); cursor: pointer; font-size: 12.5px; font-weight: 600; }
 .pill-win .chev { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--faint); }
 
@@ -451,6 +450,9 @@ textarea.field:focus { border-color: var(--primary); }
 .decision .d-k { font-size: 12px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); }
 .decision .d-v { font-size: 17px; font-weight: 600; letter-spacing: -0.015em; }
 .decision .pill { align-self: center; }
+/* Card title with the current status on the same line */
+.card-title-row { min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.cur-status { padding-left: 14px; border-left: 1px solid var(--border-strong); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink-2); }
 .decision .d-was { flex-basis: 100%; font-size: 12.5px; color: var(--muted); }
 .card .ver-restore { margin: 10px 18px 0; }
 .strip-wrap { overflow-x: auto; padding: 20px 18px 20px; }
@@ -491,6 +493,26 @@ textarea.field:focus { border-color: var(--primary); }
 .aw-card .aw-body { margin-top: 12px; padding-bottom: 6px; }
 .aw-card .aw-cols { padding: 8px 18px; }
 .aw-card .aw-row { padding: 10px 18px; }
+.aw-card .aw-text { font-size: 14px; white-space: normal; }
+/* Awaiting items and To complete: one line each; clicking opens the context underneath */
+.aw-open { display: inline-flex; align-items: center; gap: 6px; padding: 2px 0; border: 0; background: none; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
+.aw-open svg, .tc-open svg { flex-shrink: 0; color: var(--muted); transition: transform 0.15s; }
+.aw-open[aria-expanded="true"] svg, .tc-open[aria-expanded="true"] svg { transform: rotate(180deg); }
+.aw-open:hover { text-decoration: underline; text-underline-offset: 3px; }
+.aw-ctx { padding: 8px 0 4px 31px; }
+.aw-ctx p { margin: 0 0 4px; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+.aw-ctx .btn { margin-top: 6px; font-size: 13.5px; }
+.aw-row.open, .tc-row.open { background: #FAFBFD; }
+.tc-card { margin-top: 14px; }
+.tc-body { margin-top: 8px; border-top: 1px solid var(--border); }
+.tc-row { padding: 4px 18px; border-bottom: 1px solid var(--border); }
+.tc-row .aw-ctx { padding: 0 0 10px; }
+.tc-open { width: 100%; min-height: 44px; display: flex; align-items: center; gap: 8px; padding: 0; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
+.tc-open .tc-label { flex: 1 1 auto; }
+.tc-open:hover .tc-label { text-decoration: underline; text-underline-offset: 3px; }
+.tc-label { font-size: 14px; font-weight: 600; color: var(--ink); }
+.tc-foot { padding: 12px 18px 6px; }
+.tc-foot .btn { font-size: 14px; }
 .pnote { padding: 16px; }
 .pnote-h { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
 .pnote-h .tnote-t { margin: 0; }
@@ -500,7 +522,6 @@ textarea.field:focus { border-color: var(--primary); }
 .pnote .kicker { font-size: 14px; }
 .pnote .exec-lines { font-size: 15px; gap: 8px; }
 .pnote .exec-lines li::marker { font-size: 14px; }
-.pnote .miss-row { font-size: 14px; }
 .pnote .ai-tag { height: auto; padding: 3px 9px; font-size: 14px; }
 .pnote .btn { font-size: 14px; }
 .pnote .tnote-t { font-size: 20px; }
@@ -775,8 +796,8 @@ textarea.field:focus { border-color: var(--primary); }
 .ov-mode { display: inline-flex; margin-top: 10px; }
 .ov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-top: 10px; }
 .ov-grid label, .cp-grid label, .cp-src { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--muted); }
-.ov-grid input, .cp-grid input, .cp-in input, .cp-sel { width: 100%; min-width: 0; height: 32px; padding: 0 8px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); font-family: var(--mono); font-size: 12px; color: var(--ink); outline: none; }
-.ov-grid input:focus, .cp-grid input:focus, .cp-in input:focus, .cp-sel:focus { border-color: var(--primary); }
+.ov-grid input, .cp-grid input, .cp-in input { width: 100%; min-width: 0; height: 32px; padding: 0 8px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); font-family: var(--mono); font-size: 12px; color: var(--ink); outline: none; }
+.ov-grid input:focus, .cp-grid input:focus, .cp-in input:focus { border-color: var(--primary); }
 .ov-hint { display: block; margin-top: 6px; font-size: 12px; line-height: 1.45; color: var(--faint); }
 .ov textarea.field { margin-top: 10px; min-height: 64px; }
 .ov .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
@@ -784,14 +805,6 @@ textarea.field:focus { border-color: var(--primary); }
 /* Executive summary: five directive lines, then what is missing, named */
 .exec-lines { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 7px; font-size: 13.5px; line-height: 1.55; color: var(--ink); max-width: 720px; }
 .exec-lines li::marker { font-family: var(--mono); font-size: 12px; color: var(--faint); }
-/* To Complete: dark blue box. White text is about 11:1, the light blue heading and links about 7:1, both passing WCAG AA. */
-.exec-miss { margin-top: 16px; padding: 14px 16px; border-radius: 12px; background: #1E3A66; color: #FFFFFF; }
-.exec-miss .kicker { color: #BFD3F2; }
-.miss-row { margin-top: 6px; font-size: 12.5px; line-height: 1.5; color: #E4ECF8; }
-.miss-row strong { color: #FFFFFF; }
-.exec-miss .lab-link { color: #BFD3F2; }
-.exec-miss .lab-link:focus-visible { outline-color: #FFFFFF; }
-.exec-miss .btn { margin-top: 12px; }
 /* Referral history, folded under the notes */
 .hist { margin-top: 12px; border-top: 1px solid var(--hair); }
 .hist summary { display: flex; align-items: center; gap: 8px; min-height: 38px; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--ink-3); list-style: none; }
@@ -802,7 +815,10 @@ textarea.field:focus { border-color: var(--primary); }
 /* Companion: collects what the algorithm is missing while the EHR is in front */
 .pip { width: 340px; max-height: calc(100% - 48px); display: flex; flex-direction: column; }
 .pip-body { overflow-y: auto; min-height: 0; }
-.cp-sel { margin-top: 4px; font-family: inherit; font-size: 12.5px; }
+/* The companion follows the patient last open in the full window; it is not a picker */
+.cp-patient { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin-top: 6px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--ground); }
+.cp-pn { font-size: 15px; font-weight: 600; color: var(--ink); }
+.cp-mrn { font-family: var(--mono); font-size: 13px; color: var(--muted); }
 .cp-sec { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--hair); }
 .cp-sec-h { display: flex; align-items: center; margin-bottom: 4px; }
 .cp-item { margin-top: 8px; padding: 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--ground); }
@@ -818,6 +834,29 @@ textarea.field:focus { border-color: var(--primary); }
 .cp-msg { margin-top: 8px; padding: 8px 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; }
 .cp-msg.err { background: #FBE9E6; }
 .cp-msg.ok { background: var(--green-bg, #E7F3EA); color: var(--green, #2E6B3F); font-weight: 600; }
+/* The companion in the patient page's style: card edges, blue section headers, white item cards, 13–15px text */
+.pip { width: 360px; border: 1px solid var(--border); border-radius: 16px; }
+.pip-bar { padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--border); }
+.pip-t { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.pip-body { padding: 0 0 4px; }
+.cp-patient { display: block; margin: 0; padding: 14px 16px; border: 0; border-radius: 0; background: var(--surface); }
+.cp-pn { display: block; font-size: 18px; font-weight: 600; letter-spacing: -0.015em; }
+.cp-mrn { display: block; margin-top: 2px; font-size: 13px; }
+.cp-sec { margin: 0; padding: 0; border-top: 0; }
+.cp-sec-h { display: block; margin: 0; padding: 8px 16px; background: var(--blue-bg); border-top: 1px solid #D3DDEC; border-bottom: 1px solid #D3DDEC; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #24497F; }
+.cp-sec-b { padding: 4px 16px 14px; }
+.cp-item { margin-top: 10px; padding: 14px; background: var(--surface); border-color: var(--border); border-radius: 12px; }
+.cp-h { font-size: 15px; }
+.cp-h span { margin-top: 4px; font-size: 13.5px; line-height: 1.5; }
+.cp-grid label, .cp-src { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.cp-more { font-size: 13px; }
+.cp-item .btn { width: auto; min-height: 38px; font-size: 14px; }
+.cp-item .opt { font-size: 14px; }
+.cp-msg { font-size: 13.5px; }
+.pip .aw-row { padding: 11px 0; }
+.pip .aw-text { font-size: 14px; white-space: normal; }
+.cp-foot { padding: 4px 16px 14px; }
+.cp-foot .draft-btn { width: 100%; }
 .mic { flex-shrink: 0; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); color: var(--muted); cursor: pointer; }
 .mic.on { background: #A33A2B; border-color: #A33A2B; color: #FFFFFF; }
 .mic:disabled { opacity: 0.45; cursor: default; }
@@ -1006,13 +1045,11 @@ const FILTERS = {
 const AWAITING = [
   { id: 'cbc', item: 'Repeat CBC with differential', mrn: '40-118-772', asked: 'Oct 28', dm: 11, dd: 6 },
   { id: 'mesa', item: 'Outside records from Mesa Clinic', mrn: '40-205-118', asked: 'Oct 13', dm: 10, dd: 24 },
-  { id: 'fax', item: 'Return fax for Northgate', mrn: '40-118-772', asked: 'Oct 28', dm: 11, dd: 4 },
   { id: 'review667', item: 'Provider review of results', mrn: '40-212-667', asked: 'Oct 8', dm: 10, dd: 28 },
   { id: 'econsult', item: 'Consult type change to eConsult', mrn: '40-162-740', asked: 'Oct 14', dm: 10, dd: 30 },
   { id: 'review374', item: 'Provider review of results', mrn: '40-219-374', asked: 'Oct 20', dm: 11, dd: 2 },
   { id: 'iron', item: 'Ferritin and iron studies', mrn: '40-233-089', asked: 'Oct 16', dm: 11, dd: 3 },
-  { id: 'previsit', item: 'Pre-visit labs: CMP and LDH', mrn: '40-230-551', asked: 'Oct 21', dm: 11, dd: 3 },
-  { id: 'subset', item: 'Lymphocyte subset panel', mrn: '40-118-772', asked: '—', dm: 11, dd: 20 }
+  { id: 'previsit', item: 'Pre-visit labs: CMP and LDH', mrn: '40-230-551', asked: 'Oct 21', dm: 11, dd: 3 }
 ].sort((a, b) => key(a.dm, a.dd) - key(b.dm, b.dd));
 
 // The tree's questions. What each one found is worked out from a version of the inputs (see evaluate).
@@ -1474,7 +1511,7 @@ function renderPatient() {
   const p = byMrn(S.current);
   const worked = p.mrn === WORKED;
   const body = worked
-    ? `${algoCard()}<div class="duo">${evidenceCard()}${awaitingCard(p)}</div>`
+    ? `${algoCard()}<div class="duo">${evidenceCard()}<div class="duo-col">${awaitingCard(p)}</div></div>`
     : `<section class="card"><div class="card-h"><span class="card-t">AI Decision Tree</span></div>
         <div class="cbody"><div class="gap-note"><strong>Not run.</strong> The algorithm has not been run on this referral in the prototype, so there is no decision, evidence or triage note yet.
           ${p.waiting ? `It is awaiting <strong>${p.waiting.toLowerCase()}</strong>; tick it off below when it lands.` : ''}</div>
@@ -1557,7 +1594,7 @@ function decisionLine(short) {
   const ai = evaluate(S.alg.versions[0]);
   return `<div class="decision">
     ${short ? '' : '<span class="d-k">Decision</span>'}
-    <span class="d-v">${short ? 'Status: ' + OUTCOME[ev.end].split(' — ')[0] : OUTCOME[ev.end]}</span>
+    <span class="d-v">${short ? 'Current status: ' + OUTCOME[ev.end].split(' — ')[0] : OUTCOME[ev.end]}</span>
     ${short ? '' : `<span class="pill xs ${latest.n > 1 ? 't-new' : 't-cold'}">V${latest.n}${latest.n > 1 ? ` · after ${latest.n - 1} ${latest.n === 2 ? 'change' : 'changes'}` : ' · AI'}</span>`}
     ${ev.end !== ai.end ? `<span class="d-was">The AI decided <s>${OUTCOME[ai.end]}</s> in V1.</span>` : ''}
   </div>`;
@@ -1599,7 +1636,9 @@ function algoCard() {
   const ov = overridesIn(viewed);
   // The strip shows only the path the referral took; steps it never reached live in the full tree.
   const all = ['g1', 'g2', 'g3', 'g4', 'g5'];
-  const ids = all.filter((id) => path.has(id));
+  // Just the last step completed on the path, then where the path ends; the step it is waiting on lives in Awaiting items.
+  const done = all.filter((id) => path.has(id) && ev.steps[id].status === 'met');
+  const ids = done.slice(-1);
   const nodes = ids.map((id, j) => {
     const i = all.indexOf(id);
     const st = ev.steps[id];
@@ -1613,22 +1652,31 @@ function algoCard() {
         ${markFor(st)}
       </button>`;
   }).join('');
-  const end = `<span class="sn-link on" aria-hidden="true"></span>
+  const end = `${ids.length ? '<span class="sn-link on" aria-hidden="true"></span>' : ''}
     <button type="button" class="snode end ${ev.end === 'accept' ? 'met' : 'missing'}" data-act="treeOpen" data-v="${ev.end}">
       <span class="sn-ic">${nodeIcon('end')}</span>
       <span class="sn-txt"><span class="sn-t">${OUTCOME[ev.end]}</span><span class="sn-s">Where the path ends · V${viewed.n}</span></span>
     </button>`;
+  // While the path is held for a CBC, the step that comes next once it arrives. A new CBC settles
+  // both "Persistent?" and "Recent enough?", so the next decision is Allergy and Immunology.
+  const WAIT_NEXT = { b2: ['g4', 'after the repeat CBC'], b3: ['g4', 'after a new CBC'] };
+  const nx = WAIT_NEXT[ev.end];
+  const upNext = nx ? `<span class="sn-link" aria-hidden="true"></span>
+    <button type="button" class="snode next off" data-act="treeOpen" data-v="${nx[0]}" aria-label="Next step, ${nx[1]}: Step ${all.indexOf(nx[0]) + 1}, ${STEPS[all.indexOf(nx[0])].q}">
+      <span class="sn-ic">${nodeIcon(nx[0])}</span>
+      <span class="sn-txt"><span class="sn-t">${SHORT[nx[0]]}</span><span class="sn-s">Up next, ${nx[1]}</span></span>
+    </button>` : '';
   return `
     <section class="card" aria-label="AI decision tree">
       <div class="card-h">
-        <div class="grow" style="min-width: 0"><span class="card-t">AI Decision Tree</span></div>
+        <div class="grow card-title-row"><span class="card-t">AI Decision Tree</span><span class="cur-status">Current status: ${OUTCOME[evaluate(latestVer()).end].split(' — ')[0]}</span></div>
         ${S.alg.versions.length > 1 ? versionChips() : ''}
         <button type="button" class="btn secondary sm" data-act="treeOpen" data-v="">${ICON.out} View full tree</button>
       </div>
-      ${decisionLine(true)}
+      ${(() => { const e = evaluate(latestVer()).end; const a = evaluate(S.alg.versions[0]).end; return e !== a ? `<div class="decision"><span class="d-was">The AI decided <s>${OUTCOME[a]}</s> in V1.</span></div>` : ''; })()}
       ${restoreRow()}
       ${nextStepPanel('card')}
-      <div class="strip-wrap"><div class="strip-row">${nodes}${end}</div>
+      <div class="strip-wrap"><div class="strip-row">${nodes}${end}${upNext}</div>
       </div>
     </section>`;
 }
@@ -1686,15 +1734,12 @@ const AI_QUOTE = 'Evaluated for recurrent infection and immunodeficiency. Immuno
 function testingRows(ev) {
   const d = ev.data;
   const cbc = AWAITING.find((a) => a.id === 'cbc');
-  const subset = AWAITING.find((a) => a.id === 'subset');
   const rows = [
     { t: 'Allergy and Immunology evaluation', pa: d.ai.seen ? presence('present', 'Present') : presence('absent', 'Absent'),
       d: d.ai.seen ? `Completed ${isoLabel(d.ai.date, true)} at ${d.ai.where}. No immunodeficiency identified.` : 'Not found in the outside records or the chart.',
       src: d.ai.seen ? srcLink('ai', 'Open the evaluation note') + (S.srcOpen.ai ? `<blockquote class="quote">${AI_QUOTE}</blockquote>` : '') : '' },
     { t: 'Repeat CBC with differential', pa: S.done.cbc ? presence('present', 'Received') : presence('pending', 'Pending'),
       d: S.done.cbc ? 'Ticked as received. Add its result with an override or the companion so the algorithm can read it.' : `Requested ${cbc.asked}, due ${dueLabel(cbc)}${dueTone(cbc) === 'late' ? ' — late' : ''}. Step 2 needs it.` },
-    { t: 'Lymphocyte subset panel', pa: S.done.subset ? presence('present', 'Received') : presence('pending', 'Pending'),
-      d: S.done.subset ? 'Ticked as received.' : `Not requested yet. Due ${dueLabel(subset)}.` },
     { t: 'Order on the referral', pa: presence('missing', 'Not in the chart'), d: 'No order data returned. That does not confirm none was placed.' }
   ];
   return rows.map((r) => `<div class="ev-row"><div class="grow" style="min-width: 0"><div class="t">${r.t}</div><div class="d">${r.d}</div>${r.src || ''}</div>${r.pa}</div>`).join('');
@@ -1764,13 +1809,38 @@ function evidenceCard() {
 function awaitingCard(p) {
   const items = itemsFor(p.mrn);
   const open = openItems(items);
+  // What the decision still needs (once the "To complete" box in the triage note). A need that matches
+  // something already requested is shown on that row; the rest get rows of their own below.
+  const ev = p.mrn === WORKED ? evaluate(latestVer()) : null;
+  const miss = ev ? missingFor(ev) : [];
+  const onRow = {};
+  const extra = [];
+  miss.forEach((m) => { if (items.some((a) => a.id === m.id && !S.done[a.id])) onRow[m.id] = `needed ${m.why}`; else extra.push(m); });
+  const toDo = extra.length;
+  const stepN = (id) => NODE[id].step + 1;
+  // Each open question is one line; clicking it shows why it matters and where to answer it.
+  const tcRow = (key, label, why, step) => {
+    const open = !!S.noteOpen['tc|' + key];
+    return `<div class="tc-row ${open ? 'open' : ''}">
+      <button type="button" class="tc-open" data-act="noteOpen" data-v="tc|${key}" aria-expanded="${open}"><span class="tc-label">${label}</span>${ICON.down}</button>
+      ${open ? `<div class="aw-ctx"><p>${why[0].toUpperCase()}${why.slice(1)}${/[.?]$/.test(why) ? '' : '.'}</p>
+        ${step ? `<button type="button" class="btn secondary sm" data-act="nextStep" data-v="${step}" aria-label="View decision tree at step ${stepN(step)}">View decision tree</button>` : ''}</div>` : ''}
+    </div>`;
+  };
+  const extraRows = extra.map((m) => tcRow(m.id, m.label, m.why, m.step)).join('');
   return `
     <section class="card aw-card" aria-label="Awaiting items">
-      <div class="card-h"><span class="card-t grow">Awaiting items</span>${items.length ? `<span class="pill ${open ? 't-awaiting' : 't-met'}" style="height: 20px">${open ? open + ' open' : 'All in'}</span>` : ''}</div>
+      <div class="card-h"><span class="card-t grow">Awaiting items</span></div>
       <div class="aw-body">${items.length
-        ? '<div class="aw-cols aw-grid"><span>Item</span><span class="r">Asked</span><span class="r">Due</span></div>' + items.map((a) => awaitingRow(a, 'patient')).join('')
-        : `<div class="aw-none">Nothing awaiting on ${p.name}. ${p.status === 'new' ? 'Untouched — nothing has been asked for yet.' : ''}</div>`}</div>
-    </section>`;
+        ? '<div class="aw-cols"><span>Item</span></div>' + items.map((a) => awaitingRow(a, 'patient', onRow[a.id])).join('')
+        : `<div class="aw-none">Nothing awaiting on ${p.name}. ${p.status === 'new' ? 'Untouched — nothing has been asked for yet.' : ''}</div>`}
+        ${miss.some((m) => m.kind !== 'yesno') ? `<div class="tc-foot"><button type="button" class="btn secondary sm" data-act="toPip">${ICON.pip} Collect in the companion</button></div>` : ''}
+      </div>
+    </section>
+    ${toDo ? `<section class="card tc-card" aria-label="To complete the decision">
+      <div class="card-h"><span class="card-t grow">To complete the decision</span></div>
+      <div class="tc-body">${extraRows}</div>
+    </section>` : ''}`;
 }
 
 // Lab names and values in the triage note become links that open that lab's trend.
@@ -1788,8 +1858,6 @@ function labLinks(html) {
 function noteBody(p) {
   const latest = latestVer();
   const ev = evaluate(latest);
-  const miss = missingFor(ev);
-  const order = RECORD.find((f) => f.missing);
   const now = new Date();
   const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
   return `
@@ -1803,13 +1871,6 @@ function noteBody(p) {
         </dl>
         <div class="kicker" style="margin-top: 16px">Snapshot</div>
         <ol class="exec-lines">${summaryLines(ev).map((l) => `<li>${labLinks(l)}</li>`).join('')}</ol>
-        <div class="exec-miss">
-          <div class="kicker">To Complete</div>
-          ${miss.map((m) => `<div class="miss-row"><strong>${m.label}</strong> — ${labLinks(m.why)}</div>`).join('')}
-          ${order ? `<div class="miss-row"><strong>Referral order</strong> — ${order.v.toLowerCase()}</div>` : ''}
-          ${miss.length || order ? '' : '<div class="miss-row">Nothing. The algorithm has what it needs.</div>'}
-          ${miss.length ? `<button type="button" class="btn secondary sm" data-act="toPip">${ICON.pip} Collect in the companion</button>` : ''}
-        </div>
     </div>`;
 }
 
@@ -2015,19 +2076,22 @@ function noteSummary(n) {
   return n.tag ? `${n.tag.split(' · ')[0]}: ${short}` : short;
 }
 
-function awaitingRow(a, scope) {
+function awaitingRow(a, scope, need) {
   const done = !!S.done[a.id];
   const tick = `<button type="button" class="tick" data-act="tick" data-v="${a.id}" aria-pressed="${done}" aria-label="${done ? 'Mark not done' : 'Mark done'}: ${a.item}">${done ? ICON.check : ''}</button>`;
   // Late shows as the red date; the word stays for screen readers and on hover, so it is not told by colour alone to them.
   const late = dueTone(a) === 'late' && !done;
   const due = `<span class="due ${done ? '' : dueTone(a)}"${late ? ' title="Late"' : ''}>${late ? '<span class="sr-only">Late, </span>' : ''}${dueLabel(a)}</span>`;
   if (scope === 'pip') {
-    return `<div class="aw-row ${done ? 'done' : ''}"><div class="aw-item">${tick}<span class="aw-text grow">${a.item}</span>${due}</div></div>`;
+    return `<div class="aw-row ${done ? 'done' : ''}"><div class="aw-item">${tick}<span class="aw-text grow">${a.item}</span></div></div>`;
   }
-  return `<div class="aw-row ${done ? 'done' : ''}"><div class="aw-grid">
-    <span class="aw-item">${tick}<span class="aw-text">${a.item}</span></span>
-    <span class="aw-sub" style="text-align: right">${a.asked}</span>${due}
-  </div></div>`;
+  const key = 'aw|' + a.id;
+  const open = !!S.noteOpen[key];
+  const ctx = `${a.asked && a.asked !== '—' ? `Requested ${a.asked}` : 'Not requested yet'}${done ? ' · marked done' : ''}.`;
+  // On the patient page the row is just the item; when it was asked and when it is due show once it is opened.
+  return `<div class="aw-row ${done ? 'done' : ''} ${open ? 'open' : ''}">
+    <span class="aw-item">${tick}<button type="button" class="aw-text aw-open" data-act="noteOpen" data-v="${key}" aria-expanded="${open}">${a.item}${ICON.down}</button></span>
+  ${open ? `<div class="aw-ctx"><p>${ctx}</p><p>${need ? `${need[0].toUpperCase()}${need.slice(1)}.` : 'Not needed by the decision tree.'}</p></div>` : ''}</div>`;
 }
 
 function draftNote() {
@@ -2175,7 +2239,6 @@ function dictate(field) {
 function sendFromCompanion(v) {
   const [kind, step] = v.split(':');
   const c = comp();
-  if (!c.src.trim()) { c.err = 'Say where in the chart you found it. That is saved as the reason.'; return; }
   const latest = latestVer();
   const data = latest.data;
   let change;
@@ -2194,7 +2257,7 @@ function sendFromCompanion(v) {
     if (!c.ai) { c.err = 'Pick whether the evaluation is on file.'; return; }
     change = { step, data: Object.assign({}, data, { ai: Object.assign({}, data.ai, { seen: c.ai === 'true' }) }), what: c.ai === 'true' ? 'Allergy and Immunology evaluation found in the chart' : 'Allergy and Immunology evaluation not in the chart' };
   }
-  const v2 = addVersion(Object.assign(change, { why: 'Found in the chart: ' + c.src.trim(), via: 'companion' }));
+  const v2 = addVersion(Object.assign(change, { why: 'Read from the chart and entered through the companion', via: 'companion' }));
   S.comp = Object.assign(blankComp(), { sent: `Saved as V${v2.n}. The decision is now: ${OUTCOME[evaluate(latestVer()).end]}.` });
 }
 
@@ -2213,11 +2276,9 @@ function renderPip() {
       <div class="g grow" style="height: 9px; background: ${head ? '#E6E3DC' : '#F4F2ED'}"></div>
       <div class="g" style="height: 9px; width: 64px; background: ${head ? '#E6E3DC' : '#F2F0EB'}"></div></div>`;
   }
-  const status = `<span class="pill xs t-${p.status}">${STATUS[p.status].label}${p.status === 'awaiting' ? ' · day ' + p.days : ''}</span>`;
-
   const worked = p.mrn === WORKED;
   const ev = worked ? evaluate(latestVer()) : null;
-  const miss = worked ? missingFor(ev) : [];
+  const miss = worked ? missingFor(ev).filter((m) => m.kind !== 'yesno') : [];
   const c = comp();
   const can = !!speechRec();
   const mic = (field) => `<button type="button" class="mic ${S.listening === field ? 'on' : ''}" data-act="dictate" data-v="${field}" ${can ? '' : 'disabled'}
@@ -2241,7 +2302,7 @@ function renderPip() {
       body = `<div class="opts">${pick('ai', 'true', 'On file')}${pick('ai', 'false', 'Not on file')}</div>`;
     }
     return `<div class="cp-item">
-      <div class="cp-h">${m.label}<span>Needed ${m.why}</span></div>
+      <div class="cp-h">${m.label}<span>${/^to |^required/.test(m.why) ? 'Needed ' + m.why : m.why[0].toUpperCase() + m.why.slice(1)}</span></div>
       ${body}
       <button type="button" class="btn primary sm" data-act="compSend" data-v="${m.kind}:${m.step}">Send to the copilot</button>
     </div>`;
@@ -2250,8 +2311,7 @@ function renderPip() {
   const collect = !worked
     ? '<div class="aw-none" style="padding: 10px 0">The algorithm has not been run on this referral in the prototype.</div>'
     : (miss.length
-      ? `${miss.map(item).join('')}
-        <label class="cp-src">Where in the chart?<span class="cp-in"><input data-comp="src" value="${esc(c.src)}" placeholder="e.g. Results tab, Nov 5 CBC">${mic('src')}</span></label>`
+      ? `${miss.map(item).join('')}`
       : '<div class="aw-none" style="padding: 10px 0">Nothing missing. The algorithm has what it needs.</div>');
 
   const panel = S.pipCollapsed
@@ -2264,28 +2324,24 @@ function renderPip() {
     : `<section class="pip" aria-label="Triage Copilot companion">
         <div class="pip-bar">
           <span class="logo sm">${ICON.logoSm}</span>
-          <span style="font-size: 12px; font-weight: 600">Companion</span>
+          <span class="pip-t">Companion</span>
           <span class="grow"></span>
           <button type="button" class="icon-btn" data-act="pipCollapse" aria-label="Collapse to a pill" title="Collapse to a pill">${ICON.minus}</button>
           <button type="button" class="icon-btn" data-act="toFull" aria-label="Close the companion" title="Close">${ICON.close}</button>
         </div>
         <div class="pip-body">
-          <label class="kicker" for="compPatient">Patient</label>
-          <select id="compPatient" class="cp-sel">${PEOPLE.map((x) => `<option value="${x.mrn}" ${x.mrn === p.mrn ? 'selected' : ''}>${x.name} · ${x.mrn}</option>`).join('')}</select>
-          <div style="display: flex; align-items: center; gap: 8px; margin-top: 7px">${status}${worked ? `<span class="pill xs ${S.alg.versions.length > 1 ? 't-new' : 't-cold'}">${OUTCOME[ev.end]} · V${latestVer().n}</span>` : ''}</div>
+          <div class="cp-patient" aria-label="Patient: ${esc(p.name)}, MRN ${p.mrn}"><span class="cp-pn">${esc(p.name)}</span><span class="cp-mrn">MRN ${p.mrn}</span></div>
 
           <div class="cp-sec">
-            <div class="cp-sec-h"><span class="kicker">To finish the algorithm</span><span class="grow"></span><span class="mono" style="font-size: 10.5px; color: var(--faint)">${worked ? miss.length + ' missing' : ''}</span></div>
+            <div class="cp-sec-h">Awaiting items</div>
+            <div class="cp-sec-b">
             ${collect}
             ${c.err ? `<div class="cp-msg err" role="alert">${esc(c.err)}</div>` : ''}
             ${c.sent ? `<div class="cp-msg ok" role="status">${esc(c.sent)}</div>` : ''}
+            </div>
           </div>
 
-          <div class="cp-sec">
-            <div class="cp-sec-h"><span class="kicker">Awaiting</span><span class="grow"></span><span class="mono" style="font-size: 10.5px; color: var(--faint)">${openLabel}</span></div>
-            ${items.length ? items.map((a) => awaitingRow(a, 'pip')).join('') : '<div class="aw-none" style="padding: 12px 0">Nothing awaiting on this referral.</div>'}
-          </div>
-          <button type="button" class="btn-full" data-act="toFull">${ICON.out} Back to the full window</button>
+          <div class="cp-foot"><button type="button" class="draft-btn" data-act="toFull">${ICON.out} Back to the full window</button></div>
         </div>
       </section>`;
 
@@ -3133,12 +3189,6 @@ document.addEventListener('change', (e) => {
     if (S.range.from) { const [y, m] = S.range.from.split('-').map(Number); S.cal = { y, m }; }
     redraw();
     return;
-  }
-  // Switching patients from the companion keeps it open on the new patient.
-  if (e.target.id === 'compPatient') {
-    S.current = e.target.value;
-    S.comp = null;
-    redraw();
   }
 });
 
