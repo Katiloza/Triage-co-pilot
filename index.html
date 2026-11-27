@@ -307,7 +307,7 @@ textarea.field:focus { border-color: var(--primary); }
 .nl-ic, .nc-ic { width: 32px; height: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 9px; background: var(--blue-bg); color: var(--primary); }
 .nc-list { margin: 0; padding: 0; list-style: none; }
 .nc { border-radius: 10px; }
-.nc.open { background: var(--surface); border: 1px solid var(--border); }
+.nc.open { background: transparent; }
 .nc-row { width: 100%; display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 8px 8px; border: 0; border-radius: 10px; background: transparent; font: inherit; text-align: left; cursor: pointer; }
 .nc-row:hover { background: rgba(20, 20, 15, 0.05); }
 .nc.open .nc-row:hover { background: transparent; }
@@ -514,9 +514,15 @@ textarea.field:focus { border-color: var(--primary); }
 .home-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; }
 .home-filters .chips { gap: 8px; }
 .date-filter { position: relative; }
+.sf-menu { left: 0; right: auto; min-width: 220px; }
+.sf-txt { font-size: 14px; font-weight: 500; color: var(--ink); }
+.sf-sep { height: 1px; margin: 4px 6px; background: var(--border); }
 .date-chip { display: inline-flex; align-items: center; gap: 8px; }
+/* The inbox filter dropdowns: plain text buttons, square, grey only on hover */
+.home-filters .chip.date-chip { border-color: transparent; border-radius: 0; background: transparent; color: var(--ink-3); padding: 0 12px; }
+.home-filters .date-chip:hover, .home-filters .date-chip[aria-expanded="true"] { background: var(--side); }
 .date-chip svg { color: var(--muted); }
-.date-chip.on { background: var(--blue-bg); border-color: var(--primary); color: var(--primary); }
+.date-chip.on, .home-filters .date-chip.on { background: var(--blue-bg); border-color: transparent; color: var(--primary); }
 .date-chip.on svg { color: var(--primary); }
 .cal-pop { position: absolute; top: calc(100% + 8px); left: 0; z-index: 30; width: 340px; padding: 12px 14px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 16px 40px rgba(20, 20, 15, 0.16); }
 .cal-pop-top { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
@@ -537,6 +543,11 @@ textarea.field:focus { border-color: var(--primary); }
 .search-top .search { padding: 28px 24px 4px; border-top: 0; }
 .landing .home { padding-top: 20px; }
 .home-list .card-h { padding-bottom: 12px; }
+/* The inbox table: no card outline or rounded corners; its title is the page heading */
+.landing .home-list { border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+.landing .home-list .card-h { align-items: baseline; padding: 8px 0 14px; }
+.hl-title { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; color: var(--ink); }
+.landing .home-list .hl-count { font-size: 15px; }
 .hl-count { font-family: var(--mono); font-size: 13px; color: var(--muted); }
 .hl-cols, .hl-row { display: grid; grid-template-columns: minmax(96px, 0.9fr) minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 0.9fr) minmax(0, 0.9fr); gap: 12px; align-items: center; padding: 0 18px; }
 .hl-cols { min-height: 36px; background: var(--blue-bg); border-top: 1px solid #D3DDEC; border-bottom: 1px solid #D3DDEC; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #24497F; }
@@ -575,10 +586,11 @@ textarea.field:focus { border-color: var(--primary); }
 .ctabs button[aria-selected="true"] { background: var(--blue-bg); color: var(--primary); font-weight: 600; }
 .thr { margin-bottom: 10px; font-size: 12px; line-height: 1.5; color: var(--muted); }
 .thr strong { color: var(--ink-2); }
-.lsum-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+.lsum-wrap { overflow-x: auto; }
+.lsum tbody tr + tr td, .lsum tbody tr + tr th { border-top: 0; }
 .lsum { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .lsum thead th { padding: 8px 10px; background: var(--blue-bg); border-bottom: 1px solid #D3DDEC; text-align: left; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #24497F; white-space: nowrap; }
-.lsum td, .lsum tbody th { padding: 9px 10px; border-bottom: 1px solid var(--hair); text-align: left; vertical-align: middle; font-weight: 500; }
+.lsum td, .lsum tbody th { padding: 9px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; font-weight: 500; }
 .lsum tbody th { font-weight: 600; white-space: nowrap; }
 .lsum tr:last-child td, .lsum tr:last-child th { border-bottom: 0; }
 .lsum .r { text-align: right; }
@@ -1009,18 +1021,25 @@ body.resizing .rail, body.resizing .track { transition: none; }
 
 
 /* ---------- Page tabs in the titlebar ---------- */
-.tb-tabs { display: flex; gap: 4px; margin-left: 18px; }
-.tb-tabs button { min-height: 32px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
-.tb-tabs button:hover { background: var(--side); color: var(--ink); }
-.tb-tabs button[aria-current="page"] { background: var(--blue-bg); color: #24497F; }
 
 /* ---------- The patient sidecard: the right half, the list stays on the left ---------- */
 .hl-row.here { background: var(--blue-bg); box-shadow: inset 3px 0 0 var(--primary); }
 /* It sits on top of the list; the list keeps its own width underneath. */
-.sidecard { position: absolute; top: 0; right: 0; bottom: 0; z-index: 30; width: 80%; min-width: 0; display: flex; border-left: 1px solid var(--border-strong); background: var(--side); box-shadow: -14px 0 32px rgba(20, 20, 15, 0.14); }
+.sidecard { position: absolute; top: 0; right: 0; bottom: 0; z-index: 30; width: 80%; min-width: 0; display: flex; border-left: 1px solid var(--border-strong); background: var(--surface); box-shadow: -14px 0 32px rgba(20, 20, 15, 0.14); }
 .sc-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; container-type: inline-size; }
-.sc-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start; min-width: 0; }
-.sc-col { display: grid; gap: 14px; min-width: 0; }
+.sc-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: stretch; min-width: 0; }
+.sc-cols > * { min-width: 0; }
+/* Testing and labs spans both columns, lining up with the cards above it */
+.sc-cols > .ev-card { grid-column: 1 / -1; }
+.ev-card .lsum-wrap, .ev-card .lsum { width: 100%; }
+/* Content groups in the sidecard: no outline, spacing alone separates them */
+.sidecard .sc-sec, .sidecard .card { border-color: transparent; box-shadow: none; }
+.sidecard .ev-panel { border-color: transparent; }
+.sidecard .sc-cols { column-gap: 28px; }
+.sidecard .sc-body { row-gap: 22px; }
+/* Card headings in the sidecard, at H2 size */
+.sc-h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; color: var(--ink); }
+.rec .sc-h2 { margin-bottom: 10px; }
 @container (max-width: 880px) { .sc-cols { grid-template-columns: minmax(0, 1fr); } }
 .sc-head { flex-shrink: 0; display: flex; align-items: flex-start; gap: 10px 28px; padding: 18px 16px 12px 22px; }
 .sc-facts { min-width: 0; max-width: 560px; margin: 14px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 16px; font-size: 14px; line-height: 1.4; }
@@ -1028,8 +1047,14 @@ body.resizing .rail, body.resizing .track { transition: none; }
 .sc-facts dd { margin: 0; color: var(--ink); }
 .sc-x { flex-shrink: 0; }
 @container (max-width: 700px) { .sc-head { flex-wrap: wrap; column-gap: 10px; } .sc-head > .grow { flex-basis: calc(100% - 44px); } .sc-head > .ts { order: 3; flex-basis: 100%; } }
-.sc-name { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; }
-.sc-meta { margin-top: 3px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.sc-name { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; }
+.sc-meta { margin-top: 3px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+/* The MRN shows a copy button on hover (or keyboard focus) */
+.sc-mrn { display: inline-flex; align-items: center; gap: 4px; }
+.mrn-copy { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 24px; padding: 0 4px; border: 0; border-radius: 6px; background: transparent; color: var(--ink-3); cursor: pointer; opacity: 0; transition: opacity 0.12s; }
+.sc-mrn:hover .mrn-copy, .mrn-copy:focus-visible, .mrn-copy:has(.mrn-ok) { opacity: 1; }
+.mrn-copy:hover { background: var(--side); }
+.mrn-ok { font-family: var(--sans, inherit); font-size: 12px; font-weight: 600; color: var(--green); }
 .ts { flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 2px; }
 .ts-lab { font-size: 12px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); }
 .ts-dd { position: relative; }
@@ -1057,10 +1082,14 @@ body.resizing .rail, body.resizing .track { transition: none; }
 .sc-hint { margin: 6px 0 10px; font-size: 13px; line-height: 1.5; color: var(--muted); }
 .sc-kv { font-size: 14px; grid-template-columns: minmax(0, 170px) minmax(0, 1fr); }
 .sc-kv dd { overflow-wrap: anywhere; }
-.rec .rec-t { margin-top: 4px; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; color: var(--ink); }
+.rec .rec-t { margin-top: 4px; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; color: var(--ink); }
 .rec-v { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 8px; }
 .rec-was { font-size: 13px; color: var(--muted); }
 .rec .exec-lines { font-size: 14px; }
+/* The explanation: an H4 heading over 14px lines, each a link to its step in the tree */
+.exp-h { margin: 18px 0 4px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.35; color: var(--ink); }
+.exp-link { display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; line-height: 1.55; color: var(--primary); text-align: left; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; cursor: pointer; }
+.exp-link:hover { text-decoration-thickness: 2px; }
 .rec-vers { margin-top: 12px; }
 
 /* The algorithm, vertical: steps down the left, the branch each can leave by indented below it */
@@ -1103,7 +1132,9 @@ body.resizing .rail, body.resizing .track { transition: none; }
 .evp-req { width: 100%; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface); font: inherit; font-size: 14px; color: var(--ink); text-align: left; cursor: pointer; }
 .evp-req:hover { border-color: #BDB9AF; }
 .ev-panel .dp-nav { flex-wrap: wrap; margin-top: 0; }
-.ev-panel .dp-tabs { margin: 0 0 0 4px; }
+.ev-panel .evp-h { margin: 0 0 10px; }
+.ev-panel .dp-tabs { margin: 0; }
+.ev-panel .dp-pager { justify-content: center; margin-top: 14px; }
 .ev-panel .dp-doc .source { background: var(--surface); }
 .dp-head { display: flex; align-items: flex-start; gap: 10px; }
 .dp-t { margin: 4px 0 0; font-size: 17px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.35; }
@@ -1145,20 +1176,35 @@ body.resizing .rail, body.resizing .track { transition: none; }
 .chat-pop-s { display: block; margin-top: 1px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .chat-pop-body { flex-grow: 1; min-height: 0; overflow-y: auto; }
 .chat-pop-sugg { flex-shrink: 0; padding: 8px 12px 0; }
+/* The inbox chat (no patient open): quick questions and answers that link to patients */
+.qc-home { min-height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px 14px 8px; }
+.qc-hi { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); }
+.qc-sub { margin: 4px 0 14px; font-size: 13.5px; color: var(--muted); }
+.qc-opts { display: grid; gap: 8px; }
+.qc-opts .draft-btn { justify-content: flex-start; min-height: 42px; font-size: 14px; }
+.qc-chat { margin: 0; padding: 4px 14px 12px; border-top: 0; }
+.qc-rows { display: grid; border-top: 1px solid var(--border); }
+.qc-row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 14px; border: 0; border-bottom: 1px solid var(--hair); background: transparent; font: inherit; text-align: left; cursor: pointer; }
+.qc-row:last-child { border-bottom: 0; border-radius: 0 0 12px 12px; }
+.qc-row:hover { background: var(--blue-bg); }
+.qc-name { font-size: 13.5px; font-weight: 600; color: var(--primary); }
+.qc-d { font-size: 12.5px; color: var(--muted); }
+.qc-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.qc-chip { flex-shrink: 0; min-height: 30px; padding: 0 11px; border: 1px solid var(--border-strong); border-radius: 15px; background: var(--surface); color: var(--ink-2); font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer; }
+.qc-chip:hover { background: var(--side); }
 .chat-pop-f { flex-shrink: 0; display: flex; gap: 8px; padding: 10px 12px 12px; }
 .chat-pop-f input { flex-grow: 1; min-width: 0; min-height: 36px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: 9px; font: inherit; font-size: 14px; }
 .chat-pop-f input:disabled, .chat-pop-f .btn-send:disabled { opacity: 0.55; cursor: default; }
 
 /* Patient lookup */
-.lk-t { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
 .lk-box { display: flex; align-items: center; gap: 10px; max-width: 520px; min-height: 46px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface); color: var(--faint); }
 .lk-box input { flex-grow: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: 15px; color: var(--ink); }
+.inbox-search { max-width: none; margin-bottom: 12px; padding-right: 8px; }
+.inbox-search .icon-btn { width: 28px; height: 28px; }
 .lk-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px var(--blue-bg); }
 
 @media (max-width: 767px) {
   .sidecard { position: absolute; inset: 0; z-index: 40; width: 100%; border-left: 0; }
-  .tb-tabs { margin-left: 6px; }
-  .tb-tabs button { padding: 0 8px; font-size: 13px; }
   .sc-tabs { flex-wrap: wrap; padding: 0 8px; }
   .sc-tabs button { padding: 0 9px; font-size: 13.5px; }
   .sc-kv { grid-template-columns: minmax(0, 1fr); gap: 2px 0; }
@@ -1365,8 +1411,7 @@ const S = {
   side: false,           // the patient sidecard is open (on S.current)
   sideTab: 'decision',   // details | decision | refs | outputs
   docIdx: 0,             // which document the node panel shows
-  page: 'inbox',         // inbox | lookup
-  lookupQ: '',           // the Patient lookup search
+  lookupQ: '',           // the inbox search: a patient name or MRN
   chatOpen: false,       // the chat bubble's panel is open
   out: {},               // the Outputs tab's drafts, by MRN: { note, reqs: [{ to, body }] }
   copied: '',            // the output last copied, for its "Copied" mark
@@ -1512,19 +1557,37 @@ function calendarParts(opt = {}) {
 }
 
 // The decision filters, shared by the sidebar list and the home screen list.
+// The status filter as one dropdown: the button names the current choice, the menu lists them all.
 function filterChips() {
-  const chip = (id, label) => `<button type="button" class="chip" data-act="filter" data-v="${id}" aria-pressed="${S.filter === id}">${label}</button>`;
-  return `<div class="chips" role="group" aria-label="Filter by triage status">${chip('all', 'All')}${STATUS_ORDER.map((k) => chip(k, STATUS[k].label)).join('')}${chip('external', 'External')}</div>`;
+  const on = S.filter !== 'all';
+  const item = (id, label, tag) => `<button type="button" role="menuitemradio" aria-checked="${S.filter === id}" class="ts-item" data-act="filter" data-v="${id}">
+      ${tag ? `<span class="pill xs t-${id}">${label}</span>` : `<span class="sf-txt">${label}</span>`}<span class="grow"></span>${S.filter === id ? '<span class="ts-tick" aria-hidden="true">✓</span>' : ''}</button>`;
+  const menu = !S.statusPop ? '' : `<div class="ts-menu sf-menu" role="menu" aria-label="Filter by triage status">
+      ${item('all', 'All referrals')}${STATUS_ORDER.map((k) => item(k, STATUS[k].label, true)).join('')}
+      <div class="sf-sep" role="separator"></div>${item('external', 'External referrals')}</div>`;
+  return `<div class="date-filter">
+    <button type="button" class="chip date-chip ${on ? 'on' : ''}" data-act="statusPop" aria-expanded="${!!S.statusPop}" aria-haspopup="menu"><span>${on ? 'Triage status: ' + FILTERS[S.filter] : 'Triage status'}</span>${ICON.down}</button>
+    ${menu}
+  </div>`;
 }
 
-// The referrals that the calendar and the filters pick out, with a title and a count for the list.
+// The inbox search: a name, or two or more digits of an MRN.
+function matchesQuery(p) {
+  const q = S.lookupQ.trim().toLowerCase();
+  if (!q) return true;
+  const digits = q.replace(/\D/g, '');
+  return (digits.length >= 2 && p.mrn.replace(/\D/g, '').includes(digits)) || p.name.toLowerCase().includes(q);
+}
+
+// The referrals that the search, the calendar and the filters pick out, with a title and a count for the list.
 function referralList() {
-  const rows = PEOPLE.filter((p) => onDay(p) && matchesFilter(p));
+  const rows = PEOPLE.filter((p) => onDay(p) && matchesFilter(p) && matchesQuery(p));
   const r = S.range;
   const span = S.rangeMode
     ? (r.from ? (r.to && r.to !== r.from ? shortLabel(r.from) + ' – ' + shortLabel(r.to) : shortLabel(r.from) + (r.to ? '' : ' – pick an end day')) : '')
     : (S.day === null ? '' : dayLabel(S.day));
-  const title = (span ? span + ' · ' : '') + (S.filter === 'all' ? 'All referrals' : FILTERS[S.filter].replace('Declined · ', ''));
+  const title = S.lookupQ.trim() ? `Results for “${esc(S.lookupQ.trim())}”`
+    : (span ? span + ' · ' : '') + (S.filter === 'all' ? 'All referrals' : FILTERS[S.filter].replace('Declined · ', ''));
   const received = !dateFiltered() ? null
     : S.rangeMode ? receivedBetween(r.from, r.to || r.from)
       : receivedOn(...S.day.split('-').map(Number)) || 0;
@@ -1665,6 +1728,7 @@ function renderQueue() {
     <main class="centre landing ${S.side ? 'with-side' : ''}" aria-label="Referral inbox">
       <div class="centre-scroll"><div class="home">
         ${SHOW_GREETING ? `<h2 class="hello"><span class="hi">${greeting}, Melissa</span><span class="sub">How can I help you today?</span></h2>` : ''}
+        <div class="lk-box inbox-search">${ICON.search}<input type="text" id="lookupQ" value="${esc(S.lookupQ)}" placeholder="Search by patient name or MRN" aria-label="Search referrals by patient name or MRN" autocomplete="off">${S.lookupQ ? '<button type="button" class="icon-btn" data-act="clearQuery" aria-label="Clear the search">' + ICON.close + '</button>' : ''}</div>
         <div class="home-filters">${filterChips()}${dateFilter()}${rangeFilter()}</div>
         ${homeList()}
         ${SHOW_HOME_CARDS ? `<div class="acards">${actionCards()}</div>
@@ -1720,9 +1784,9 @@ function homeList() {
     ? rows.map((p) => `<button type="button" class="hl-row ${S.side && S.current === p.mrn ? 'here' : ''}" data-act="open" data-v="${p.mrn}" ${S.side && S.current === p.mrn ? 'aria-current="true"' : ''}>
         <span class="hl-st"><span class="pill xs t-${p.status}">${STATUS[p.status].label}</span></span><span class="hl-name">${esc(p.name)}</span><span class="hl-mrn">${p.mrn}</span><span class="hl-d">${esc(p.received)}</span><span class="hl-src">${esc(p.source)}</span>
       </button>`).join('')
-    : '<div class="aw-none" style="padding: 16px 18px">No referrals match. Pick All, or clear the day.</div>';
+    : `<div class="aw-none" style="padding: 16px 18px">${S.lookupQ.trim() ? 'No patient matches. Check the MRN or the spelling, or clear the filters.' : 'No referrals match. Pick All, or clear the day.'}</div>`;
   return `<section class="card home-list" aria-label="${title}">
-    <div class="card-h"><span class="card-t grow">${title}</span><span class="hl-count">${count}</span>${dateFiltered() ? '<button type="button" class="btn-ghost" data-act="clearDay">Show all</button>' : ''}</div>
+    <div class="card-h"><h1 class="hl-title grow">${title}</h1><span class="hl-count">${count}</span>${dateFiltered() ? '<button type="button" class="btn-ghost" data-act="clearDay">Show all</button>' : ''}</div>
     <div class="hl-cols"><span>Status</span><span>Patient</span><span>MRN</span><span>Received</span><span>Source</span></div>
     <div class="hl-body">${body}</div>
   </section>`;
@@ -1730,6 +1794,8 @@ function homeList() {
 
 // Hidden for now; set to true to bring the dashboard cards back on the home screen.
 const SHOW_HOME_CARDS = false;
+// The companion (a small window over the EHR) is switched off for now; set to true to bring back its button.
+const SHOW_COMPANION = false;
 // Hidden for now; set to true to bring back "Good morning, Melissa / How can I help you today?".
 const SHOW_GREETING = false;
 
@@ -2036,7 +2102,7 @@ function testingRows(ev) {
     { t: 'Allergy and Immunology evaluation', pa: d.ai.seen ? presence('present', 'Present') : presence('absent', 'Absent'),
       d: d.ai.seen ? `Completed ${isoLabel(d.ai.date, true)} at ${d.ai.where}. No immunodeficiency identified.` : 'Not found in the outside records or the chart.' },
     { t: 'Repeat CBC with differential', pa: S.done.cbc ? presence('present', 'Received') : presence('pending', 'Pending'),
-      d: S.done.cbc ? 'Ticked as received. Add its result with an override or the companion so the algorithm can read it.' : `Requested ${cbc.asked}, due ${dueLabel(cbc)}${dueTone(cbc) === 'late' ? ' — late' : ''}. Step 2 needs it.` }
+      d: S.done.cbc ? 'Ticked as received. Its result is not in the chart yet, so the algorithm cannot read it.' : `Requested ${cbc.asked}, due ${dueLabel(cbc)}${dueTone(cbc) === 'late' ? ' — late' : ''}. Step 2 needs it.` }
   ];
   return rows.map((r) => `<div class="ev-row"><div class="grow" style="min-width: 0"><div class="t">${r.t}</div><div class="d">${r.d}</div>${r.src || ''}</div>${r.pa}</div>`).join('');
 }
@@ -2077,7 +2143,7 @@ function evidenceCard(only) {
       const [lo, hi, label, unit] = CBC_RANGE[k];
       const out = ev.sets.filter((x) => x[k] < lo || x[k] > hi);
       return `<tr>
-        <th scope="row">${label} <span class="u">${unit}</span></th>
+        <th scope="row">${labLinks(label)} <span class="u">${unit}</span></th>
         <td class="r mono">${ev.sets.length}</td>
         <td class="r mono ${out.length ? 'low' : ''}">${out.length}</td>
         <td>${trendSvg(ev.sets, k, false)}</td>
@@ -2096,7 +2162,7 @@ function evidenceCard(only) {
   }
   if (combo) {
     const ct = (id, label) => `<button type="button" role="tab" aria-selected="${tab === id}" data-act="evTab" data-v="${id}">${label}</button>`;
-    return `<section class="card ev-card"><div class="card-h"><span class="card-t grow">Testing and labs</span></div>
+    return `<section class="card ev-card"><div class="card-h"><h2 class="sc-h2 grow">Testing and labs</h2></div>
       <div class="ctabs" role="tablist" aria-label="Testing and labs">${ct('testing', 'Testing')}${ct('labs', 'Lab summary')}</div>
       <div class="cbody" role="tabpanel">${body}</div></section>`;
   }
@@ -2139,7 +2205,7 @@ function awaitingCard(p) {
       <div class="aw-body">${items.length
         ? '<div class="aw-cols"><span>Item</span></div>' + items.map((a) => awaitingRow(a, 'patient', onRow[a.id])).join('')
         : `<div class="aw-none">Nothing requested on ${p.name} yet${p.status === 'received' ? '; the referral is waiting for a triage decision' : ''}.</div>`}
-        ${miss.some((m) => m.kind !== 'yesno') ? `<div class="tc-foot"><button type="button" class="btn secondary sm" data-act="toPip">${ICON.pip} Collect in the companion</button></div>` : ''}
+        ${SHOW_COMPANION && miss.some((m) => m.kind !== 'yesno') ? `<div class="tc-foot"><button type="button" class="btn secondary sm" data-act="toPip">${ICON.pip} Collect in the companion</button></div>` : ''}
       </div>
     </section>
     ${toDo ? `<section class="card tc-card" aria-label="To complete the decision">
@@ -3230,7 +3296,7 @@ function renderSidecard() {
       <div class="sc-head">
         <div class="grow" style="min-width: 0">
           <h2 class="sc-name">${esc(p.name)}</h2>
-          <div class="sc-meta">MRN ${p.mrn}${p.meta ? ' · ' + p.meta : ''}</div>
+          <div class="sc-meta"><span class="sc-mrn">MRN ${p.mrn}<button type="button" class="mrn-copy" data-act="copyMrn" data-v="${p.mrn}" aria-label="Copy MRN ${p.mrn}" title="Copy MRN">${S.mrnCopied === p.mrn ? '<span class="mrn-ok">Copied</span>' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>'}</button></span>${(p.meta || '').split(' · ').filter(Boolean).map((m) => `<span>${esc(m)}</span>`).join('')}</div>
           ${referralFacts(p)}
         </div>
         <div class="ts"><span class="ts-lab" id="tsLab">Triage status</span>
@@ -3243,8 +3309,8 @@ function renderSidecard() {
   </aside>`;
 }
 
-// Two columns side by side; they stack when the sidecard is narrow.
-const cols2 = (a, b) => `<div class="sc-cols"><div class="sc-col">${a}</div><div class="sc-col">${b}</div></div>`;
+// Cards two to a row, in reading order, so cards side by side are the same height; one column when the sidecard is narrow.
+const pairs = (...cards) => `<div class="sc-cols">${cards.join('')}</div>`;
 
 // 1. Referral details
 // The referral's key facts, in the sidecard header beside the patient's name.
@@ -3260,11 +3326,11 @@ function sideDetails(p) {
   const worked = p.mrn === WORKED;
   const more = worked ? RECORD.map((f) => [f.k, f.v, f.missing]) : [];
   const kv = (list) => `<dl class="kv sc-kv">${list.map(([k, v, miss]) => `<dt>${k}</dt><dd class="${miss ? 'missing' : ''}">${miss ? '<span class="pa missing">Missing</span> ' : ''}${esc(v)}</dd>`).join('')}</dl>`;
-  const record = `<section class="card"><div class="card-h"><span class="card-t grow">Referral record</span></div><div class="cbody">${more.length ? kv(more) : '<p class="sc-hint" style="margin: 0">Only the worked example (Alvarez) has the full referral loaded in this prototype.</p>'}</div></section>`;
+  const record = `<section class="card"><div class="card-h"><h2 class="sc-h2 grow">Referral record</h2></div><div class="cbody">${more.length ? kv(more) : '<p class="sc-hint" style="margin: 0">Only the worked example (Alvarez) has the full referral loaded in this prototype.</p>'}</div></section>`;
   const notes = notesCard(p);
   return worked
-    ? cols2(record + evidenceCard('combo'), notes)
-    : cols2(record, notes);
+    ? pairs(record, notes, evidenceCard('combo'))
+    : pairs(record, notes);
 }
 
 // 2. AI decision: the recommendation and the outputs side by side; the decision tree across both columns below,
@@ -3272,24 +3338,28 @@ function sideDetails(p) {
 function sideDecision(p) {
   const outputs = outputsCard(p);
   if (p.mrn !== WORKED) {
-    return cols2(`<section class="sc-sec"><div class="gap-note"><strong>No AI recommendation yet.</strong> The algorithm has not been run on this referral in the prototype.</div></section>`, outputs);
+    return pairs(`<section class="sc-sec"><div class="gap-note"><strong>No AI recommendation yet.</strong> The algorithm has not been run on this referral in the prototype.</div></section>`, outputs);
   }
   const latest = latestVer();
   const viewed = viewedVer();
   const ev = evaluate(latest);
   const ai = evaluate(S.alg.versions[0]);
-  return cols2(`<section class="sc-sec rec">
-      <div class="kicker">AI recommendation</div>
+  return pairs(`<section class="sc-sec rec">
+      <h2 class="sc-h2">AI recommendation</h2>
       <div class="rec-t">${OUTCOME[ev.end]}</div>
-      <div class="rec-v"><span class="pill xs ${latest.n > 1 ? 't-new' : 't-cold'}">V${latest.n}${latest.n > 1 ? ` · after ${latest.n - 1} change${latest.n > 2 ? 's' : ''}` : ' · AI'}</span>
-        ${ev.end !== ai.end ? `<span class="rec-was">The AI recommended <s>${OUTCOME[ai.end]}</s> in V1.</span>` : ''}</div>
-      <div class="kicker" style="margin-top: 14px">Why</div>
-      <ol class="exec-lines">${summaryLines(ev).map((l) => `<li>${labLinks(l)}</li>`).join('')}</ol>
+      ${ev.end !== ai.end ? `<div class="rec-v"><span class="rec-was">The AI recommended <s>${OUTCOME[ai.end]}</s> in V1.</span></div>` : ''}
+      <h4 class="exp-h">AI suggestion explanation</h4>
+      <ol class="exec-lines exp-lines">${summaryLines(ev).map((l, i) => {
+        // Each line jumps to the step of the decision tree it explains.
+        const to = [ev.end, 'g1', 'g2', 'g3', ev.end][i];
+        const name = NODE[to].kind === 'step' ? `step ${NODE[to].step + 1}` : 'the outcome';
+        return `<li><button type="button" class="exp-link" data-act="treeJump" data-v="${to}" aria-label="${l.replace(/"/g, '&quot;')} Show ${name} in the decision tree.">${l}</button></li>`;
+      }).join('')}</ol>
       ${S.alg.versions.length > 1 ? `<div class="rec-vers">${versionChips()}</div>` : ''}
       ${restoreRow()}
       ${nextStepPanel('card')}
-    </section>`, outputs) + `<section class="sc-sec dt-card">
-      <div class="sc-sec-h"><span class="card-t grow">Decision tree</span>${viewed !== latest ? `<span class="pill xs t-awaiting">Showing V${viewed.n}</span>` : ''}</div>
+    </section>`, outputs) + `<section class="sc-sec dt-card" id="dt-tree">
+      <div class="sc-sec-h"><h2 class="sc-h2 grow">Decision tree</h2>${viewed !== latest ? `<span class="pill xs t-awaiting">Showing V${viewed.n}</span>` : ''}</div>
       <p class="sc-hint">Pick a step to see the evidence behind it.</p>
       <div class="dt-grid">${vtree(evaluate(viewed))}${evidencePanel(treeSel(evaluate(viewed)))}</div>
     </section>`;
@@ -3310,7 +3380,7 @@ function vtree(ev) {
     const b = BR[g];
     const bOn = b && path.has(b);
     rows.push(`<li class="vt-row ${on ? 'on' : 'off'}">
-      ${node(g, `Step ${i + 1} · ${SHORT[g]}`, on ? stepSub(st) : 'Not reached · ' + stepSub(st), `${on ? 'on ' + st.status : 'off'}`, markFor(st))}
+      ${node(g, `Step ${i + 1} · ${SHORT[g]}`, on ? stepSub(st) : 'Not reached · ' + stepSub(st), `${on ? 'on ' + st.status : 'off'}`, '')}
       ${b ? `<div class="vt-branch ${bOn ? 'end' : ''}"><span class="vt-if">If not met</span>${node(b, OUTCOME[b], bOn ? 'The path ends here' : 'Not reached', bOn ? 'on end' : 'off', '')}</div>` : ''}
     </li>`);
   });
@@ -3335,7 +3405,10 @@ function docsFor(id, ev) {
   const items = (sourcesFor(id, ev) || []).map((it) => Object.assign({}, it, {
     quote: it.quote ? hl(it.quote, terms) : it.quote,
     lines: it.lines ? it.lines.map((l) => hl(l, terms)) : it.lines,
-    kv: it.kv ? it.kv.map(([k, v]) => [k, hl(v, terms)]) : it.kv
+    kv: it.kv ? it.kv.map(([k, v]) => [k, hl(v, terms)]) : it.kv,
+    // Lab names open that lab's trend graph.
+    cols: it.cols ? it.cols.map((c) => labLinks(c)) : it.cols,
+    rows: it.rows && it.cols && it.cols[0] === 'Test' ? it.rows.map((r) => [labLinks(r[0])].concat(r.slice(1))) : it.rows
   }));
   (PROVIDER_NOTES[id] || []).forEach((n) => items.push({ kind: 'Provider note', title: `${n.who} · ${n.date}`, from: `${n.role} · ${n.src}`, quote: hl(esc(n.text), terms) }));
   return items;
@@ -3355,14 +3428,14 @@ function evidencePanel(id) {
   const i = Math.min(S.docIdx, Math.max(0, docs.length - 1));
   const name = n.kind === 'step' ? `Step ${n.step + 1} · ${SHORT[id]}` : n.kind === 'root' ? 'Referral received' : OUTCOME[id];
   return `<aside class="ev-panel sc-docs" aria-label="Documents for ${esc(name)}">
-    <div class="evp-k">${esc(name)} · ${docs.length} document${docs.length === 1 ? '' : 's'}</div>
-    ${docs.length ? `<div class="dp-nav">
+    <h4 class="exp-h evp-h">Supporting documents</h4>
+    ${docs.length ? `<div class="dp-tabs" role="tablist" aria-label="Documents for ${esc(name)}">${docs.map((d, j) => `<button type="button" role="tab" aria-selected="${j === i}" data-act="docNav" data-v="${j}">${d.kind}</button>`).join('')}</div>
+      <div class="dp-doc">${sourceHtml([docs[i]])}</div>
+      ${docs.length > 1 ? `<div class="dp-nav dp-pager">
         <button type="button" class="icon-btn" data-act="docNav" data-v="${i - 1}" aria-label="Previous document" ${i === 0 ? 'disabled' : ''}>${ICON.left}</button>
         <span class="dp-count">${i + 1} of ${docs.length}</span>
         <button type="button" class="icon-btn" data-act="docNav" data-v="${i + 1}" aria-label="Next document" ${i >= docs.length - 1 ? 'disabled' : ''}>${ICON.right}</button>
-        <div class="dp-tabs" role="tablist" aria-label="Documents">${docs.map((d, j) => `<button type="button" role="tab" aria-selected="${j === i}" data-act="docNav" data-v="${j}">${d.kind}</button>`).join('')}</div>
-      </div>
-      <div class="dp-doc">${sourceHtml([docs[i]])}</div>` : '<p class="muted" style="margin: 0">No documents for this step.</p>'}
+      </div>` : ''}` : '<p class="muted" style="margin: 0">No documents for this step.</p>'}
   </aside>`;
 }
 
@@ -3431,12 +3504,12 @@ function draftProgressNote(p) {
   return lines.join('\n');
 }
 
-// Notes: a new note (AI draft, editable, saved into the log) and the earlier notes, as two subtabs.
+// Notes: the earlier notes (shown first) and a new note (AI draft, editable, saved into the log), as two subtabs.
 function notesCard(p) {
   const o = outFor(p);
   if (!o.pnoteEdited) o.pnote = draftProgressNote(p);
   const log = (S.added[p.mrn] || []).concat(p.mrn === WORKED ? NOTES : []);
-  const sub = S.noteSub === 'earlier' ? 'earlier' : 'new';
+  const sub = S.noteSub === 'new' ? 'new' : 'earlier';
   const t = (id, label) => `<button type="button" role="tab" aria-selected="${sub === id}" data-act="noteSub" data-v="${id}">${label}</button>`;
   const pills = (n) => `${n.tag ? `<span class="pill xs ${tagTone(n.tag)}">${esc(n.tag)}</span>` : ''}${n.fresh ? '<span class="pill xs t-new">Just added</span>' : ''}`;
   const body = sub === 'new'
@@ -3456,8 +3529,8 @@ function notesCard(p) {
         </li>`;
       }).join('')}</ul>` : `<div class="aw-none" style="padding: 4px 0">No notes on ${esc(p.name)} yet.</div>`;
   return `<section class="card out-card notes-card">
-      <div class="card-h"><span class="card-t grow">Notes</span></div>
-      <div class="ctabs" role="tablist" aria-label="Notes">${t('new', 'New note')}${t('earlier', `Earlier notes · ${log.length}`)}</div>
+      <div class="card-h"><h2 class="sc-h2 grow">Notes</h2></div>
+      <div class="ctabs" role="tablist" aria-label="Notes">${t('earlier', `Earlier notes · ${log.length}`)}${t('new', 'New note')}</div>
       <div class="cbody" role="tabpanel">${body}</div>
     </section>`;
 }
@@ -3493,7 +3566,7 @@ function outputsCard(p) {
           <button type="button" class="btn secondary sm" data-act="outRedraft" data-v="sched">Reset AI draft</button>${copied('sched')}</div>`;
   }
   return `<section class="card out-card outputs-card">
-      <div class="card-h"><span class="card-t grow">Outputs</span></div>
+      <div class="card-h"><h2 class="sc-h2 grow">Outputs</h2></div>
       <div class="ctabs" role="tablist" aria-label="Outputs">${t('note', 'Triage note')}${t('reqs', `Info requests · ${o.reqs.length}`)}${t('sched', 'Scheduling note')}</div>
       <div class="cbody" role="tabpanel">${body}</div>
     </section>`;
@@ -3502,41 +3575,77 @@ function outputsCard(p) {
 
 /* ---------- Chat: a bubble on the left, scoped to the open patient ---------- */
 
+// With no patient open, the chat answers questions about the inbox. These are the quick options.
+const QUEUE_ASKS = ['Which requests are late?', 'Who has waited longest?', 'Show new referrals', 'Show external referrals'];
+const QUEUE = '__queue';
+
+function askQueue(q) {
+  const thread = S.chat[QUEUE] || (S.chat[QUEUE] = []);
+  const ql = q.toLowerCase();
+  thread.push({ who: 'you', text: q });
+  const row = (p, detail) => ({ mrn: p.mrn, name: p.name, detail });
+  let intro; let rows = [];
+  if (/late|overdue|past due/.test(ql)) {
+    const late = AWAITING.filter((a) => !S.done[a.id] && dueTone(a) === 'late');
+    intro = late.length ? `${late.length} requests are past due:` : 'Nothing requested is past due.';
+    rows = late.map((a) => row(byMrn(a.mrn), `${a.item} · due ${dueLabel(a)}`));
+  } else if (/longest|oldest|waited|wait/.test(ql)) {
+    const open = PEOPLE.filter((p) => p.status === 'received' || p.status === 'waiting').sort((a, b) => b.days - a.days).slice(0, 5);
+    intro = 'Open referrals that have been in triage longest:';
+    rows = open.map((p) => row(p, `${p.days} days · ${STATUS[p.status].label}`));
+  } else if (/new|received|came in|today/.test(ql)) {
+    const fresh = PEOPLE.filter((p) => p.status === 'received');
+    intro = `${fresh.length} referrals are new and not yet triaged:`;
+    rows = fresh.map((p) => row(p, `Received ${p.received} · ${p.source}`));
+  } else if (/external|outside/.test(ql)) {
+    const ext = PEOPLE.filter((p) => p.source === 'External');
+    intro = `${ext.length} referrals came from outside the system:`;
+    rows = ext.map((p) => row(p, `${STATUS[p.status].label} · received ${p.received}`));
+  } else {
+    const hits = PEOPLE.filter((p) => matchesQueryText(p, q));
+    intro = hits.length ? `${hits.length === 1 ? 'This patient matches' : hits.length + ' patients match'} “${q}”:` : `No patient matches “${q}”. Try a surname or part of an MRN, or one of the options below.`;
+    rows = hits.map((p) => row(p, `MRN ${p.mrn} · ${STATUS[p.status].label}`));
+  }
+  thread.push({ who: 'copilot', kind: 'list', text: intro, rows });
+  S.scrollChat = true;
+  S.chatOpen = true;
+}
+
+// The inbox search's match, for any text.
+function matchesQueryText(p, text) {
+  const q = text.trim().toLowerCase();
+  const digits = q.replace(/\D/g, '');
+  return (digits.length >= 2 && p.mrn.replace(/\D/g, '').includes(digits)) || (q.length >= 2 && p.name.toLowerCase().includes(q));
+}
+
+function renderQueueChat() {
+  const thread = S.chat[QUEUE] || [];
+  if (!thread.length) return `<div class="qc-home">
+      <h2 class="qc-hi">Ask about your inbox</h2>
+      <p class="qc-sub">Pick a question, or type a patient name or MRN.</p>
+      <div class="qc-opts">${QUEUE_ASKS.map((a) => `<button type="button" class="draft-btn" data-act="askQueue" data-v="${a}">${ICON.search} ${a}</button>`).join('')}</div>
+    </div>`;
+  return `<div class="chat qc-chat">${thread.map((m) => m.who === 'you'
+    ? `<div class="msg-you"><div class="bubble">${esc(m.text)}</div></div>`
+    : `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card"><div class="bot-text">${esc(m.text)}</div>
+        ${m.rows.length ? `<div class="qc-rows">${m.rows.map((r) => `<button type="button" class="qc-row" data-act="open" data-v="${r.mrn}"><span class="qc-name">${esc(r.name)}</span><span class="qc-d">${esc(r.detail)}</span></button>`).join('')}</div>` : ''}
+      </div></div>`).join('')}</div>`;
+}
+
+
 function renderChatBubble() {
   const p = S.side && S.current ? byMrn(S.current) : null;
   const pop = !S.chatOpen ? '' : `<section class="chat-pop" role="dialog" aria-label="Chat">
       <div class="chat-pop-h"><span class="logo sm">${ICON.logoSm}</span><span class="grow"><span class="chat-pop-t">Chat</span><span class="chat-pop-s">${p ? esc(p.name) + ' · MRN ' + p.mrn : 'No patient open'}</span></span>
         <button type="button" class="icon-btn" data-act="chatToggle" aria-label="Close the chat">${ICON.close}</button></div>
-      <div class="chat-pop-body">${p ? renderChat(p) : '<div class="aw-none" style="padding: 16px">Open a patient from the list and the chat follows that chart.</div>'}</div>
-      ${p ? `<div class="chat-pop-sugg"><button type="button" class="draft-btn" data-act="ask" data-v="Summarize this page">${ICON.summary} Summarize this page</button></div>` : ''}
-      <form class="chat-pop-f" data-form="chat"><input type="text" id="chatQ" aria-label="Ask about this referral" placeholder="${p ? 'Ask about this referral' : 'Open a patient to chat'}" ${p ? '' : 'disabled'} autocomplete="off">
-        <button type="submit" class="btn-send" aria-label="Send" ${p ? '' : 'disabled'}>${ICON.send}</button></form>
+      <div class="chat-pop-body">${p ? renderChat(p) : renderQueueChat()}</div>
+      ${p ? `<div class="chat-pop-sugg"><button type="button" class="draft-btn" data-act="ask" data-v="Summarize this page">${ICON.summary} Summarize this page</button></div>`
+        : (S.chat[QUEUE] || []).length ? `<div class="chat-pop-sugg qc-chips">${QUEUE_ASKS.map((a) => `<button type="button" class="qc-chip" data-act="askQueue" data-v="${a}">${a}</button>`).join('')}</div>` : ''}
+      <form class="chat-pop-f" data-form="chat"><input type="text" id="chatQ" aria-label="${p ? 'Ask about this referral' : 'Ask about your inbox'}" placeholder="${p ? 'Ask about this referral' : 'Ask about your inbox, or type a name or MRN'}" autocomplete="off">
+        <button type="submit" class="btn-send" aria-label="Send">${ICON.send}</button></form>
     </section>`;
   return `${pop}<button type="button" class="chat-bubble ${S.chatOpen ? 'on' : ''}" data-act="chatToggle" aria-expanded="${S.chatOpen}" aria-label="${S.chatOpen ? 'Close the chat' : 'Open the chat'}">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></button>`;
-}
-
-/* ---------- Patient lookup: ad hoc searches outside the referral inbox ---------- */
-
-function renderLookup() {
-  const q = S.lookupQ.trim().toLowerCase();
-  const digits = q.replace(/\D/g, '');
-  const hits = !q ? [] : PEOPLE.filter((p) => (digits.length >= 2 && p.mrn.replace(/\D/g, '').includes(digits)) || (q.length >= 2 && p.name.toLowerCase().includes(q)));
-  const rows = hits.map((p) => `<button type="button" class="hl-row ${S.side && S.current === p.mrn ? 'here' : ''}" data-act="open" data-v="${p.mrn}">
-      <span class="hl-st"><span class="pill xs t-${p.status}">${STATUS[p.status].label}</span></span><span class="hl-name">${esc(p.name)}</span><span class="hl-mrn">${p.mrn}</span><span class="hl-d">${esc(p.received)}</span><span class="hl-src">${esc(p.source)}</span>
-    </button>`).join('');
-  return `<main class="centre landing ${S.side ? 'with-side' : ''}" aria-label="Patient lookup">
-      <div class="centre-scroll"><div class="home">
-        <h2 class="lk-t">Patient lookup</h2>
-        <p class="sc-hint" style="margin: 4px 0 14px">Look up any patient by MRN or name, including referrals outside your inbox.</p>
-        <div class="lk-box">${ICON.search}<input type="text" id="lookupQ" value="${esc(S.lookupQ)}" placeholder="MRN or name" aria-label="Look up a patient by MRN or name" autocomplete="off"></div>
-        ${q ? `<section class="card home-list" style="margin-top: 16px" aria-label="Results">
-          <div class="card-h"><span class="card-t grow">Results</span><span class="hl-count">${hits.length}</span></div>
-          <div class="hl-cols"><span>Status</span><span>Patient</span><span>MRN</span><span>Received</span><span>Source</span></div>
-          <div class="hl-body">${rows || '<div class="aw-none" style="padding: 16px 18px">No patient matches. Check the MRN or the spelling.</div>'}</div>
-        </section>` : ''}
-      </div></div>
-    </main>`;
 }
 
 /* ---------- Shell ---------- */
@@ -3551,20 +3660,15 @@ function render() {
     <header class="titlebar">
       <div class="logo">${ICON.logo}</div>
       <span class="app-name">Triage Copilot</span>
-      <nav class="tb-tabs" aria-label="Pages">
-        <button type="button" data-act="page" data-v="inbox" aria-current="${S.page === 'inbox' ? 'page' : 'false'}">Referral inbox</button>
-        <button type="button" data-act="page" data-v="lookup" aria-current="${S.page === 'lookup' ? 'page' : 'false'}">Patient lookup</button>
-      </nav>
       <span class="grow"></span>
-      <span class="today">${TODAY_HEAD}</span>
       ${S.view === 'queue' ? '' : `<button type="button" class="tb-btn for-rail" data-act="drawer" data-v="rail" aria-controls="rail" aria-expanded="${S.drawer === 'rail'}">${ICON.list}<span class="lbl">Patients</span></button>`}
       ${S.view === 'queue' ? '' : `<button type="button" class="tb-btn for-track" data-act="drawer" data-v="track" aria-controls="track" aria-expanded="${S.drawer === 'track'}" aria-label="Triage note">${ICON.cal}<span class="lbl">Note</span></button>`}
-      <button type="button" class="follow-btn" data-act="toPip" title="Collapse to the companion: a small window that stays over the EHR and collects what the algorithm is missing">${ICON.pip}<span class="lbl">Companion</span></button>
+      ${SHOW_COMPANION ? `<button type="button" class="follow-btn" data-act="toPip" title="Collapse to the companion: a small window that stays over the EHR and collects what the algorithm is missing">${ICON.pip}<span class="lbl">Companion</span></button>` : ''}
       <span class="avatar" aria-label="Signed in as Melissa">M</span>
     </header>
     <div class="cols" style="${S.railW ? `--rail-w: ${S.railW}px;` : ''}${S.trackW ? `--track-w: ${S.trackW}px;` : ''}">
       <button type="button" class="scrim ${S.drawer ? 'on' : ''}" data-act="closeDrawer" aria-label="Close panel" tabindex="-1"></button>
-      ${S.page === 'lookup' ? renderLookup() : renderQueue()}
+      ${renderQueue()}
       ${renderSidecard()}
     </div>
     ${renderChatBubble()}
@@ -3575,8 +3679,8 @@ function render() {
 /* ---------- Events ---------- */
 
 const ACT = {
-  calPop: () => { S.calPop = !S.calPop; S.rangePop = false; S.calPicker = null; },
-  rangePop: () => { S.rangePop = !S.rangePop; S.calPop = false; },
+  calPop: () => { S.calPop = !S.calPop; S.rangePop = false; S.statusPop = false; S.calPicker = null; },
+  rangePop: () => { S.rangePop = !S.rangePop; S.calPop = false; S.statusPop = false; },
   day: (v) => {
     // Home: the calendar picks one day; it replaces any range.
     if (S.view === 'queue') { S.rangeMode = false; S.range = { from: null, to: null }; S.day = S.day === v ? null : v; S.calPop = false; return; }
@@ -3605,11 +3709,12 @@ const ACT = {
   calMonth: (v) => { S.cal = { y: S.calPicker, m: +v }; S.calPicker = null; },
   calToday: () => { S.cal = { y: TODAY.y, m: TODAY.m }; S.calPicker = null; },
   clearDay: () => { S.day = null; S.range = { from: null, to: null }; S.rangeMode = false; S.calPop = false; S.rangePop = false; },
-  filter: (v) => { S.filter = v; },
+  filter: (v) => { S.filter = v; S.statusPop = false; },
+  statusPop: () => { S.statusPop = !S.statusPop; S.calPop = false; S.rangePop = false; },
   // Selecting a patient opens the sidecard beside the list.
   open: (v) => {
     if (S.current !== v) { S.copied = ''; S.comp = null; S.tree = null; S.ov = null; S.docIdx = 0; S.labEdit = null; }
-    if (S.current !== v) { S.noteSub = 'new'; S.noteSaved = ''; S.outSub = 'note'; S.evTab = 'testing'; }
+    if (S.current !== v) { S.noteSub = 'earlier'; S.noteSaved = ''; S.outSub = 'note'; S.evTab = 'testing'; }
     S.current = v; S.side = true; S.searchMsg = ''; S.drawer = null; S.tsOpen = false;
     return;
     if (S.current !== v) { S.copied = null; S.comp = null; }
@@ -3619,12 +3724,20 @@ const ACT = {
   },
   closeSide: () => { S.side = false; S.tree = null; S.ov = null; },
   sideTab: (v) => { S.sideTab = v === 'refs' ? 'details' : v === 'outputs' ? 'decision' : v; S.ov = null; if (v !== 'decision') S.tree = null; },
+  // From the explanation: select that node in the decision tree and scroll it into view.
+  treeJump: (v) => {
+    S.sideTab = 'decision'; S.tree = { sel: v }; S.ov = null; S.docIdx = 0;
+    setTimeout(() => {
+      document.getElementById('dt-tree')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      document.querySelector('.vt-node.sel')?.focus({ preventScroll: true });
+    }, 0);
+  },
   docOpen: (v) => { S.sideTab = 'decision'; S.tree = { sel: v }; S.ov = null; S.docIdx = 0; },
   docClose: () => { S.tree = null; S.ov = null; S.docIdx = 0; },
   docNav: (v) => { S.docIdx = Math.max(0, +v); },
   tsToggle: () => { S.tsOpen = !S.tsOpen; },
   tstatus: (v) => { S.tsOpen = false; const p = byMrn(S.current); if (p.status === v) return; const was = STATUS[p.status].label; p.status = v; logEvent(`Triage status: ${STATUS[v].label}`, `Changed from ${was} by Melissa.`, '#2F5FA8'); showToast(`Triage status set to ${STATUS[v].label}.`); },
-  page: (v) => { S.page = v; S.calPop = false; S.rangePop = false; },
+  clearQuery: () => { S.lookupQ = ''; setTimeout(() => document.getElementById('lookupQ')?.focus(), 0); },
   chatToggle: () => { S.chatOpen = !S.chatOpen; if (S.chatOpen) S.scrollChat = true; },
   outCopy: (v) => {
     const p = byMrn(S.current); const o = outFor(p);
@@ -3668,6 +3781,7 @@ const ACT = {
   },
   expand: (v) => { S[v + 'Collapsed'] = false; },
   ask: (v) => { ask(v); },
+  askQueue: (v) => { askQueue(v); },
   dash: (v) => { S.dash = v; },
   dashOpen: (v) => { S.home = 'dash'; S.dashFocus = v; S.dashScroll = true; },
   dashHome: () => { S.home = 'cards'; S.dashFocus = null; },
@@ -3819,6 +3933,11 @@ const ACT = {
     logNote('Message sent', `Sent a message to ${m.to}.\nAsked for: ${what}.\nSubject: ${m.subject}`);
     logEvent('Message sent to the referring provider', `To ${m.to}. Asked for: ${what}. Sent by Melissa outside the copilot and logged here.`, '#2F5FA8');
   },
+  copyMrn: (v) => {
+    const done = () => { S.mrnCopied = v; showToast(`MRN ${v} copied.`); redraw(); setTimeout(() => { if (S.mrnCopied === v) { S.mrnCopied = ''; redraw(); } }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(done, () => showToast('Could not copy here. Select the MRN and copy it.'));
+    else showToast('Could not copy here. Select the MRN and copy it.');
+  },
   copy: (v) => {
     const m = S.chat[S.current][+v];
     const text = m.kind === 'message' ? messageText(m) : noteText(m);
@@ -3846,7 +3965,7 @@ document.addEventListener('click', (e) => {
 
 // A click outside the open date filter closes it.
 document.addEventListener('click', (e) => {
-  if ((S.calPop || S.rangePop) && !e.target.closest('.date-filter')) { S.calPop = false; S.rangePop = false; S.calPicker = null; redraw(); }
+  if ((S.calPop || S.rangePop || S.statusPop) && !e.target.closest('.date-filter')) { S.calPop = false; S.rangePop = false; S.statusPop = false; S.calPicker = null; redraw(); }
 }, true);
 
 document.addEventListener('click', (e) => {
@@ -3914,7 +4033,7 @@ document.addEventListener('input', (e) => {
   S.copied = '';
 });
 
-// Patient lookup filters as it is typed.
+// The inbox search filters the list as it is typed.
 document.addEventListener('input', (e) => {
   if (e.target.id !== 'lookupQ') return;
   S.lookupQ = e.target.value;
@@ -3965,8 +4084,8 @@ document.addEventListener('submit', (e) => {
   if (e.target.dataset.form !== 'chat') return;
   e.preventDefault();
   const q = (document.getElementById('chatQ') || {}).value;
-  if (!q || !q.trim() || !S.side) return;
-  ask(q.trim());
+  if (!q || !q.trim()) return;
+  if (S.side && S.current) ask(q.trim()); else askQueue(q.trim());
   render();
   scrollToChat();
 });
@@ -4106,7 +4225,8 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && S.tsOpen) { S.tsOpen = false; redraw(); document.querySelector('.ts-btn')?.focus(); return; }
   if (e.key === 'Escape' && S.chatOpen) { S.chatOpen = false; redraw(); return; }
-  if (e.key === 'Escape' && S.side && !S.tree && !S.labTrend && !S.labEdit && !S.calPop && !S.rangePop) { S.side = false; S.ov = null; redraw(); return; }
+  if (e.key === 'Escape' && S.side && !S.tree && !S.labTrend && !S.labEdit && !S.calPop && !S.rangePop && !S.statusPop) { S.side = false; S.ov = null; redraw(); return; }
+  if (e.key === 'Escape' && S.statusPop) { S.statusPop = false; redraw(); document.querySelector('.date-chip[data-act="statusPop"]')?.focus(); return; }
   if (e.key === 'Escape' && (S.calPop || S.rangePop)) { const which = S.calPop ? 'calPop' : 'rangePop'; S.calPop = false; S.rangePop = false; S.calPicker = null; redraw(); document.querySelector(`.date-chip[data-act="${which}"]`)?.focus(); return; }
   if (e.key === 'Escape' && S.labTrend) { ACT.labTrendClose(); redraw(); return; }
   if (e.key === 'Escape' && S.labEdit && !S.tree) { S.labEdit = null; redraw(); return; }
@@ -4114,7 +4234,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && S.drawer) { S.drawer = null; render(); return; }
   if (e.key === 'Escape' && S.calPicker !== null) { S.calPicker = null; redraw(); return; }
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-    const s = document.getElementById('search');
+    const s = document.getElementById('lookupQ');
     if (s) { e.preventDefault(); s.focus(); }
   }
 });
