@@ -1099,7 +1099,8 @@ body.resizing .rail, body.resizing .track { transition: none; }
 .vt-row { position: relative; min-width: 0; padding: 0 0 14px 0; }
 .vt-row:not(:last-child)::before { content: ''; position: absolute; left: 19px; top: 40px; bottom: 0; width: 2px; background: var(--border-strong); }
 .vt-row.on:not(:last-child)::before { background: var(--primary); }
-.vt-node { width: 100%; display: flex; align-items: center; gap: 12px; padding: 0; border: 0; background: transparent; text-align: left; font: inherit; color: var(--ink); cursor: pointer; border-radius: 10px; }
+/* Nodes sit above the connector lines; the 4px padding is taken back by the margin so nothing moves */
+.vt-node { position: relative; z-index: 1; width: calc(100% + 8px); margin: -4px; display: flex; align-items: center; gap: 12px; padding: 4px; border: 0; background: transparent; text-align: left; font: inherit; color: var(--ink); cursor: pointer; border-radius: 10px; }
 .vt-node .sn-txt { padding: 2px 0; }
 .vt-node .sn-t { font-size: 14px; }
 .vt-node .sn-s { font-size: 13px; }
@@ -1110,7 +1111,8 @@ body.resizing .rail, body.resizing .track { transition: none; }
 /* Steps not reached yet and the If-not-met boxes share one grey */
 .vt-node.off .sn-ic { background: #F1F3F4; border-color: #E1E4E6; color: var(--ink-3); }
 .vt-node.off .sn-t { color: var(--muted); font-weight: 500; }
-.vt-node.sel { outline: 2px solid var(--primary); outline-offset: 3px; }
+/* The selected node's box is solid, so the connector lines stop at its edge instead of running through it */
+.vt-node.sel { box-shadow: 0 0 0 2px var(--primary); background: var(--surface); }
 .vt-branch { margin: 8px 0 0 52px; padding: 8px 10px; border-left: 2px dashed #CDD2D5; border-radius: 0 10px 10px 0; background: #F1F3F4; }
 .vt-branch.end { border-left-color: var(--amber-dot); background: #FDFAF3; }
 .vt-if { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
