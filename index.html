@@ -1107,12 +1107,14 @@ body.resizing .rail, body.resizing .track { transition: none; }
 .vt-node.on .sn-ic { border-color: var(--primary); background: var(--blue-bg); color: var(--primary); }
 .vt-node.on.end .sn-ic { border-color: var(--amber-dot); background: var(--amber-bg); color: var(--amber); }
 .vt-node.on.end.met .sn-ic { border-color: var(--green); background: var(--green-bg); color: var(--green); }
-.vt-node.off .sn-ic { background: var(--sunk); color: var(--faint); }
+/* Steps not reached yet and the If-not-met boxes share one grey */
+.vt-node.off .sn-ic { background: #F1F3F4; border-color: #E1E4E6; color: var(--ink-3); }
 .vt-node.off .sn-t { color: var(--muted); font-weight: 500; }
 .vt-node.sel { outline: 2px solid var(--primary); outline-offset: 3px; }
-.vt-branch { margin: 8px 0 0 52px; padding: 8px 10px; border-left: 2px dashed var(--border-strong); border-radius: 0 10px 10px 0; background: var(--ground); }
+.vt-branch { margin: 8px 0 0 52px; padding: 8px 10px; border-left: 2px dashed #CDD2D5; border-radius: 0 10px 10px 0; background: #F1F3F4; }
 .vt-branch.end { border-left-color: var(--amber-dot); background: #FDFAF3; }
-.vt-if { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+.vt-if { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.vt-branch .vt-node.off .sn-ic { background: var(--surface); border-color: #DADEE1; }
 .vt-branch .sn-ic { width: 32px; height: 32px; }
 
 /* The document panel beside the sidecard's content */
