@@ -611,7 +611,7 @@ textarea.field:focus { border-color: var(--primary); }
 .spark { display: block; width: 92px; height: 28px; overflow: visible; }
 .trend { display: block; width: 100%; height: auto; overflow: visible; }
 .trend .ax { font-family: var(--mono); font-size: 12px; fill: var(--faint); }
-.trend .val { font-family: var(--mono); font-size: 12px; font-weight: 600; fill: var(--ink-2); }
+.trend .val { font-family: var(--mono); font-size: 12px; font-weight: 600; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
 /* Lab links in the triage note, and the trend they open. Link blue is about 6:1 on white and 5:1 on the amber box. */
 .lab-link { display: inline; padding: 0; border: 0; background: none; font: inherit; color: var(--primary); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; cursor: pointer; border-radius: 3px; }
 .lab-link:hover { text-decoration-thickness: 2px; }
@@ -1096,7 +1096,7 @@ body.resizing .rail, body.resizing .track { transition: none; }
 
 /* The algorithm, vertical: steps down the left, the branch each can leave by indented below it */
 .vt { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
-.vt-row { position: relative; min-width: 0; padding: 0 0 14px 0; }
+.vt-row { position: relative; min-width: 0; padding: 0 0 24px 0; }
 .vt-row:not(:last-child)::before { content: ''; position: absolute; left: 19px; top: 40px; bottom: 0; width: 2px; background: var(--border-strong); }
 .vt-row.on:not(:last-child)::before { background: var(--primary); }
 /* Nodes sit above the connector lines; the 4px padding is taken back by the margin so nothing moves */
@@ -1112,18 +1112,36 @@ body.resizing .rail, body.resizing .track { transition: none; }
 .vt-node.off .sn-ic { background: #F1F3F4; border-color: #E1E4E6; color: var(--ink-3); }
 .vt-node.off .sn-t { color: var(--muted); font-weight: 500; }
 /* The selected node's box is solid, so the connector lines stop at its edge instead of running through it */
-.vt-node.sel { box-shadow: 0 0 0 2px var(--primary); background: var(--surface); }
-.vt-branch { margin: 8px 0 0 52px; padding: 8px 10px; border-left: 2px dashed #CDD2D5; border-radius: 0 10px 10px 0; background: #F1F3F4; }
+.vt-node.sel { background: var(--primary); border-radius: 12px; }
+.vt-node.sel .sn-t, .vt-node.sel.off .sn-t { color: #FFFFFF; }
+.vt-node.sel .sn-s { color: #E9EFF8; }
+.vt-node.sel:hover .sn-t { text-decoration-color: #FFFFFF; }
+/* The selected step reaches across the gap and joins the documents panel, in one colour */
+/* The band runs across the gap and ends exactly at the documents panel's edge */
+.dt-grid > .vt .vt-node.sel { width: calc(100% + 24px); margin-right: -20px; }
+.dt-grid > .vt .vt-branch .vt-node.sel { width: calc(100% + 40px); margin-right: -36px; }
+/* The selected step's icon sits in the band itself: same dark blue, no outline, white icon */
+.vt-node.sel .sn-ic, .vt-node.sel.on .sn-ic, .vt-node.sel.off .sn-ic, .vt-node.sel.on.end .sn-ic, .vt-node.sel.on.end.met .sn-ic { background: var(--primary); border-color: transparent; color: #FFFFFF; }
+.vt-branch { margin: 14px 0 0 52px; padding: 14px 16px; border-left: 2px dashed #CDD2D5; border-radius: 0 10px 10px 0; background: #F1F3F4; }
 .vt-branch.end { border-left-color: var(--amber-dot); background: #FDFAF3; }
-.vt-if { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.vt-if { display: block; margin-bottom: 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .vt-branch .vt-node.off .sn-ic { background: var(--surface); border-color: #DADEE1; }
 .vt-branch .sn-ic { width: 32px; height: 32px; }
 
 /* The document panel beside the sidecard's content */
 /* The decision tree spans the sidecard: steps on the left, the evidence for the picked step on the right */
-.dt-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: start; margin-top: 4px; }
+.dt-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: stretch; margin-top: 4px; }
 @container (max-width: 880px) { .dt-grid { grid-template-columns: minmax(0, 1fr); } }
-.ev-panel { position: sticky; top: 0; min-width: 0; padding: 20px 22px 22px; border-radius: 18px; background: var(--side); border: 1px solid var(--border); }
+/* The documents panel runs the height of the tree: white inside, outlined in the selected step's dark blue so the two join */
+/* The documents panel: no outline; its content stays in view while the steps scroll */
+.ev-panel { position: relative; min-width: 0; padding: 0 0 21px; border-radius: 0; background: var(--surface); border: 0; }
+/* The tree's heading stays pinned at the top while the steps scroll under it; the documents stay in view below it */
+.dt-head { position: sticky; top: -16px; z-index: 3; margin: -16px -18px 0; padding: 16px 18px 2px; background: var(--surface); }
+.dt-head .sc-hint { margin-bottom: 8px; }
+.evp-inner { position: sticky; top: 63px; z-index: 2; margin: 0; padding: 22px 24px 0; background: var(--surface); }
+/* The panel spans exactly from the top of the first step to the bottom of the last */
+.dt-grid > .vt > .vt-row:last-child { padding-bottom: 0; }
+.dt-grid > .ev-panel { margin-bottom: -4px; }
 .evp-chip { display: inline-flex; align-items: center; height: 26px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: 13px; background: var(--surface); font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
 .evp-ic { width: 56px; height: 56px; margin-top: 16px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-strong); border-radius: 14px; background: var(--surface); color: var(--ink-3); }
 .evp-ic svg { width: 24px; height: 24px; }
@@ -1140,7 +1158,18 @@ body.resizing .rail, body.resizing .track { transition: none; }
 .ev-panel .dp-nav { flex-wrap: wrap; margin-top: 0; }
 .ev-panel .evp-h { margin: 0 0 10px; }
 .ev-panel .dp-tabs { margin: 0; }
+/* Document tabs styled like the sidecard's own tabs: plain text, the open one blue and underlined */
+.ev-panel .dp-tabs { gap: 2px; margin: 0; border-bottom: 1px solid var(--border-strong); }
+.ev-panel .dp-tabs button { position: relative; min-height: 40px; padding: 0 12px; border: 0; border-radius: 0; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.ev-panel .dp-tabs button:first-child { padding-left: 0; }
+.ev-panel .dp-tabs button:hover { color: var(--ink); }
+.ev-panel .dp-tabs button[aria-selected="true"] { color: var(--primary); background: transparent; }
+.ev-panel .dp-tabs button[aria-selected="true"]::after { content: ''; position: absolute; left: 8px; right: 8px; bottom: -1px; height: 3px; border-radius: 2px; background: var(--primary); }
+.ev-panel .dp-tabs button:first-child[aria-selected="true"]::after { left: 0; }
 .ev-panel .dp-pager { justify-content: center; margin-top: 14px; }
+/* Pager arrows without outlines; grey on hover */
+.ev-panel .dp-pager .icon-btn { border-color: transparent; background: transparent; border-radius: 8px; }
+.ev-panel .dp-pager .icon-btn:not(:disabled):hover { background: var(--side); }
 .ev-panel .dp-doc .source { background: var(--surface); }
 .dp-head { display: flex; align-items: flex-start; gap: 10px; }
 .dp-t { margin: 4px 0 0; font-size: 17px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.35; }
@@ -1156,6 +1185,13 @@ body.resizing .rail, body.resizing .track { transition: none; }
 .dp-doc mark, .sc-docs mark { background: #FCE9B8; color: var(--ink); border-radius: 3px; padding: 0 2px; }
 .dp-doc .src-table tr.flag td { background: #FCE9B8; color: var(--ink); font-weight: 600; }
 .dp-doc .src-scroll { overflow-x: hidden; }
+.dp-doc .src-trend { margin: 12px 0 4px; }
+/* Inside the documents panel the content sits straight on white: no grey card or chart outlines */
+.ev-panel .dp-doc .source { border: 0; border-radius: 0; background: transparent; overflow: visible; }
+.ev-panel .dp-doc .src-item { padding: 4px 0 0; }
+.ev-panel .dp-doc .trend-box { border: 0; border-radius: 0; padding: 6px 0 0; }
+/* The open tab already names the kind of document, so the kind tag is not repeated */
+.ev-panel .dp-doc .src-kind { display: none; }
 .dp-doc .src-table { width: 100%; min-width: 0; table-layout: fixed; }
 .dp-doc .src-table th { letter-spacing: 0.03em; }
 .sc-docs .s-aside { font-size: 13.5px; }
@@ -1168,8 +1204,14 @@ body.resizing .rail, body.resizing .track { transition: none; }
 .out-lab { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
 .out-lab input { flex-grow: 1; min-width: 0; min-height: 36px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 8px; font: inherit; font-size: 14px; font-weight: 400; color: var(--ink); }
 .out-add svg { width: 14px; height: 14px; }
-.notes-card .ctabs, .outputs-card .ctabs, .ev-card .ctabs { padding: 10px 14px 0; }
-.notes-card .ctabs button, .outputs-card .ctabs button, .ev-card .ctabs button { font-size: 14px; }
+/* Subtabs in the sidecard's cards share the sidecard tabs' style: plain text on a baseline, the open one blue and underlined */
+.sidecard .card .ctabs { gap: 2px; margin: 10px 18px 0; padding: 0; overflow: visible; border-bottom: 1px solid var(--border-strong); }
+.sidecard .card .ctabs button { position: relative; min-height: 40px; padding: 0 12px; border: 0; border-radius: 0; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.sidecard .card .ctabs button:first-child { padding-left: 0; }
+.sidecard .card .ctabs button:hover { color: var(--ink); }
+.sidecard .card .ctabs button[aria-selected="true"] { color: var(--primary); background: transparent; }
+.sidecard .card .ctabs button[aria-selected="true"]::after { content: ''; position: absolute; left: 8px; right: 8px; bottom: -1px; height: 3px; border-radius: 2px; background: var(--primary); }
+.sidecard .card .ctabs button:first-child[aria-selected="true"]::after { left: 0; }
 .out-hint { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 13px; color: var(--muted); }
 .nc-earlier { margin: 0; }
 
@@ -2073,15 +2115,20 @@ function trendSvg(sets, k, big) {
   const show = new Set(); let lastX = Infinity;
   for (let i = pts.length - 1; i >= 0; i -= 1) { if (lastX - pts[i][0] >= 58) { show.add(i); lastX = pts[i][0]; } }
   const anchor = (i) => (pts.length < 2 ? 'middle' : i === 0 ? 'start' : i === pts.length - 1 ? 'end' : 'middle');
+  // A value label goes on the side away from the line: below the point when the line arrives from above, otherwise above.
+  const labelY = (i) => {
+    const near = [pts[i - 1], pts[i + 1]].filter(Boolean).map((n) => n[1] - pts[i][1]);
+    const below = near.length && near.every((d) => d < 0);
+    return below ? Math.min(pts[i][1] + 19, H - P.b + 2) : Math.max(pts[i][1] - 10, 12);
+  };
   return `<svg class="${big ? 'trend' : 'spark'}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${label} over time: ${sets.map((s) => isoLabel(s.date) + ' ' + s[k]).join(', ')}. Reference ${lo}–${hi} ${unit}.">
     ${bandBot > bandTop ? `<rect x="${P.l}" y="${bandTop}" width="${W - P.l - P.r}" height="${bandBot - bandTop}" fill="#E7F4EE"/>` : ''}
     <line x1="${P.l}" x2="${W - P.r}" y1="${y(lo)}" y2="${y(lo)}" stroke="#9CCDB5" stroke-dasharray="3 3" stroke-width="1"/>
     ${big ? `<text x="${P.l - 6}" y="${y(lo) + 3.5}" text-anchor="end" class="ax">${lo}</text>
-      <text x="${W - P.r}" y="${bandTop + 11}" text-anchor="end" class="ax">Reference ${lo}–${hi}</text>
       ${pts.map((q, i) => (!show.has(i) ? '' : `<text x="${q[0]}" y="${H - 8}" text-anchor="${anchor(i)}" class="ax">${isoLabel(q[2].date)}</text>`)).join('')}` : ''}
     <polyline points="${pts.map((q) => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ')}" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round"/>
     ${pts.map((q, i) => `<circle cx="${q[0]}" cy="${q[1]}" r="${r}" fill="${flag(q[2][k]) ? 'var(--amber-dot)' : 'var(--primary)'}" stroke="var(--surface)" stroke-width="2"/>
-      ${big && show.has(i) ? `<text x="${q[0]}" y="${q[1] - 9}" text-anchor="${anchor(i)}" class="val">${q[2][k]}${flag(q[2][k]) ? ' · ' + flag(q[2][k]) : ''}</text>` : ''}
+      ${big && show.has(i) ? `<text x="${q[0]}" y="${labelY(i)}" text-anchor="${anchor(i)}" class="val">${q[2][k]}${flag(q[2][k]) ? ' · ' + flag(q[2][k]) : ''}</text>` : ''}
       <circle cx="${q[0]}" cy="${q[1]}" r="${big ? 12 : 8}" fill="transparent" data-tip="${isoLabel(q[2].date, true)}: ${label} ${q[2][k]} ${unit}${flag(q[2][k]) ? ' (' + flag(q[2][k]) + ')' : ''}"/>`).join('')}
   </svg>`;
 }
@@ -2929,7 +2976,7 @@ function sourcesFor(id, ev) {
     root: [{ kind: 'Referral', title: 'REF-2026-4471 · received Oct 27, 2026', kv: RECORD.map((f) => [f.k, f.v]) }],
     g1: [{ kind: 'Labs', title: 'CBC with differential · collected ' + isoLabel(l.date, true), from: l.src, cols: LAB_COLS, rows: ['wbc', 'alc', 'hgb', 'plt', 'anc'].map(lab) }],
     g2: [
-      { kind: 'Labs', title: 'Lymphocyte count over time', from: 'Every CBC on file', cols: ['Collected', 'ALC', 'Reference', 'Flag'],
+      { kind: 'Labs', title: 'Lymphocyte count over time', from: 'Every CBC on file', chart: 'alc', cols: ['Collected', 'ALC', 'Reference', 'Flag'],
         rows: ev.sets.slice().reverse().map((x) => [isoLabel(x.date, true), x.alc + ' K/µL', '1.0–4.8', flag('alc', x.alc)]),
         foot: 'The branch needs two low results at least two weeks apart, both within 12 weeks.' },
       { kind: 'Orders', title: 'Orders against this referral',
@@ -3008,6 +3055,7 @@ function sourceHtml(items) {
   return `<div class="source">${items.map((it) => `<div class="src-item">
     <div class="src-head"><span class="src-kind">${it.kind}</span><span class="src-title">${it.title}</span></div>
     ${it.from ? `<div class="src-from">${it.from}</div>` : ''}
+    ${it.chartHtml || ''}
     ${it.rows ? `<div class="src-scroll"><table class="src-table"><thead><tr>${it.cols.map((c) => `<th scope="col">${c}</th>`).join('')}</tr></thead>
       <tbody>${it.rows.map((r) => `<tr class="${r[r.length - 1] ? 'flag' : ''}">${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : ''}
     ${it.kv ? `<dl class="src-kv">${it.kv.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>` : ''}
@@ -3224,8 +3272,6 @@ function renderLabTrend() {
       <div class="lsum-wrap lt-table"><table class="lsum">
         <thead><tr><th scope="col">Collected</th><th scope="col">${label}</th><th scope="col">Flag</th><th scope="col">Source</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
-      <div class="lt-foot"><span class="grow">Shaded: the reference range. Amber points are out of range.</span>
-        <button type="button" class="btn secondary sm" data-act="labTrendShow" data-v="${k}">Show in the Lab summary</button></div>
     </div>
   </div>`;
 }
@@ -3365,8 +3411,10 @@ function sideDecision(p) {
       ${restoreRow()}
       ${nextStepPanel('card')}
     </section>`, outputs) + `<section class="sc-sec dt-card" id="dt-tree">
-      <div class="sc-sec-h"><h2 class="sc-h2 grow">Decision tree</h2>${viewed !== latest ? `<span class="pill xs t-awaiting">Showing V${viewed.n}</span>` : ''}</div>
-      <p class="sc-hint">Pick a step to see the evidence behind it.</p>
+      <div class="dt-head">
+        <div class="sc-sec-h"><h2 class="sc-h2 grow">Decision tree</h2>${viewed !== latest ? `<span class="pill xs t-awaiting">Showing V${viewed.n}</span>` : ''}</div>
+        <p class="sc-hint">Pick a step to see the evidence behind it.</p>
+      </div>
       <div class="dt-grid">${vtree(evaluate(viewed))}${evidencePanel(treeSel(evaluate(viewed)))}</div>
     </section>`;
 }
@@ -3414,7 +3462,9 @@ function docsFor(id, ev) {
     kv: it.kv ? it.kv.map(([k, v]) => [k, hl(v, terms)]) : it.kv,
     // Lab names open that lab's trend graph.
     cols: it.cols ? it.cols.map((c) => labLinks(c)) : it.cols,
-    rows: it.rows && it.cols && it.cols[0] === 'Test' ? it.rows.map((r) => [labLinks(r[0])].concat(r.slice(1))) : it.rows
+    rows: it.rows && it.cols && it.cols[0] === 'Test' ? it.rows.map((r) => [labLinks(r[0])].concat(r.slice(1))) : it.rows,
+    // A lab followed over time shows its trend chart, the same one the lab table opens.
+    chartHtml: it.chart ? `<div class="trend-box src-trend">${trendSvg(ev.sets, it.chart, true)}</div>` : ''
   }));
   (PROVIDER_NOTES[id] || []).forEach((n) => items.push({ kind: 'Provider note', title: `${n.who} · ${n.date}`, from: `${n.role} · ${n.src}`, quote: hl(esc(n.text), terms) }));
   return items;
@@ -3433,7 +3483,7 @@ function evidencePanel(id) {
   const docs = docsFor(id, ev);
   const i = Math.min(S.docIdx, Math.max(0, docs.length - 1));
   const name = n.kind === 'step' ? `Step ${n.step + 1} · ${SHORT[id]}` : n.kind === 'root' ? 'Referral received' : OUTCOME[id];
-  return `<aside class="ev-panel sc-docs" aria-label="Documents for ${esc(name)}">
+  return `<aside class="ev-panel sc-docs" aria-label="Documents for ${esc(name)}"><div class="evp-inner">
     <h4 class="exp-h evp-h">Supporting documents</h4>
     ${docs.length ? `<div class="dp-tabs" role="tablist" aria-label="Documents for ${esc(name)}">${docs.map((d, j) => `<button type="button" role="tab" aria-selected="${j === i}" data-act="docNav" data-v="${j}">${d.kind}</button>`).join('')}</div>
       <div class="dp-doc">${sourceHtml([docs[i]])}</div>
@@ -3442,7 +3492,7 @@ function evidencePanel(id) {
         <span class="dp-count">${i + 1} of ${docs.length}</span>
         <button type="button" class="icon-btn" data-act="docNav" data-v="${i + 1}" aria-label="Next document" ${i >= docs.length - 1 ? 'disabled' : ''}>${ICON.right}</button>
       </div>` : ''}` : '<p class="muted" style="margin: 0">No documents for this step.</p>'}
-  </aside>`;
+  </div></aside>`;
 }
 
 
@@ -3525,10 +3575,11 @@ function notesCard(p) {
         <button type="button" class="btn secondary sm" data-act="pnoteReset">Reset AI draft</button>
         ${S.noteSaved === p.mrn ? '<span class="out-ok" role="status">Saved to earlier notes</span>' : ''}</div>`
     : log.length ? `<ul class="nc-list nc-earlier">${log.map((n, i) => {
-        const key = n.date + '|' + i + '|' + (n.sum || n.text).slice(0, 20);
-        const open = !!S.noteOpen[key];
+        const key = p.mrn + '|' + n.date + '|' + (n.sum || n.text).slice(0, 20);
+        // The most recent note starts open; any note stays as Melissa last left it.
+        const open = key in S.noteOpen ? S.noteOpen[key] : i === 0;
         return `<li class="nc ${open ? 'open' : ''}">
-          <button type="button" class="nc-row" data-act="noteOpen" data-v="${esc(key)}" aria-expanded="${open}">
+          <button type="button" class="nc-row" data-act="noteSet" data-v="${open ? 'c' : 'o'}:${esc(key)}" aria-expanded="${open}">
             <span class="nc-ic">${noteIcon(n)}</span><span class="nc-sum">${esc(noteSummary(n))}</span><span class="nc-d">${esc(n.date)}</span>
           </button>
           ${open ? `<div class="nc-full"><div class="nc-meta">${esc(n.who)} ${pills(n)}</div><p>${esc(n.text)}</p></div>` : ''}
@@ -3862,6 +3913,7 @@ const ACT = {
   },
   labCancel: () => { S.labEdit = null; },
   noteOpen: (v) => { S.noteOpen[v] = !S.noteOpen[v]; },
+  noteSet: (v) => { S.noteOpen[v.slice(2)] = v[0] === 'o'; },
   labTrend: (v) => { S.labTrend = v; setTimeout(() => document.getElementById('ltClose')?.focus(), 0); },
   labTrendClose: () => { const k = S.labTrend; S.labTrend = null; setTimeout(() => document.querySelector(`.lab-link[data-v="${k}"]`)?.focus(), 0); },
   labTrendShow: () => { S.labTrend = null; S.noteTab = 'labs'; setTimeout(() => document.querySelector('.lsum')?.scrollIntoView({ block: 'nearest' }), 0); },
