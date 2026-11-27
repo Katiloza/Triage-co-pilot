@@ -1313,18 +1313,18 @@ const COUNTS = { 1: 9, 2: 7, 5: 14, 6: 11, 7: 10, 8: 8, 9: 12, 12: 15, 13: 9, 14
 
 const PEOPLE = [
   { name: 'Alvarez, Rosa M.', mrn: '40-118-772', rm: 10, rd: 27, status: 'waiting', waiting: 'Repeat CBC with differential', ref: 'REF-2026-4471', source: 'External', meta: 'F · 54 y · DOB Mar 12, 1972' },
-  { name: 'Okonkwo, Daniel', mrn: '40-221-905', rm: 10, rd: 27, status: 'received', waiting: '', ref: 'REF-2026-5102', source: 'Internal' },
+  { name: 'Okonkwo, Daniel', mrn: '40-221-905', rm: 10, rd: 27, status: 'received', waiting: '', ref: 'REF-2026-5102', source: 'Internal', meta: 'M · 61 y · DOB Feb 2, 1965' },
   { name: 'Bhatt, Priya', mrn: '40-198-443', rm: 10, rd: 27, status: 'received', waiting: '', ref: 'REF-2026-5104', source: 'Internal' },
   { name: 'Ferreira, Luis A.', mrn: '40-205-118', rm: 10, rd: 12, status: 'waiting', waiting: 'Outside records from Mesa Clinic', ref: 'REF-2026-4839', source: 'External' },
   { name: 'Nakamura, Hana', mrn: '40-176-330', rm: 10, rd: 27, status: 'received', waiting: '', ref: 'REF-2026-5107', source: 'Internal' },
   { name: 'Whitfield-Cruz, Ana', mrn: '40-212-667', rm: 10, rd: 6, status: 'waiting', waiting: 'Provider review of results', ref: 'REF-2026-4688', source: 'Internal' },
-  { name: 'Delgado, Marisol', mrn: '40-189-024', rm: 10, rd: 27, status: 'declined', decline: 'malig', waiting: '', ref: 'REF-2026-5111', source: 'Internal' },
-  { name: 'Haddad, Omar', mrn: '40-230-551', rm: 10, rd: 19, status: 'scheduled', waiting: '', ref: 'REF-2026-4950', source: 'Internal' },
+  { name: 'Delgado, Marisol', mrn: '40-189-024', rm: 10, rd: 27, status: 'declined', decline: 'malig', waiting: '', ref: 'REF-2026-5111', source: 'Internal', meta: 'F · 38 y · DOB Jul 9, 1988' },
+  { name: 'Haddad, Omar', mrn: '40-230-551', rm: 10, rd: 19, status: 'scheduled', waiting: '', ref: 'REF-2026-4950', source: 'Internal', meta: 'M · 47 y · DOB Nov 30, 1978' },
   { name: 'Pierce, Gwen', mrn: '40-144-806', rm: 10, rd: 5, status: 'declined', decline: 'invest', waiting: '', ref: 'REF-2026-4652', source: 'Internal' },
   { name: 'Sorensen, Erik', mrn: '40-227-913', rm: 10, rd: 27, status: 'received', waiting: '', ref: 'REF-2026-5115', source: 'Internal' },
   { name: 'Park, Jin-Ho', mrn: '40-162-740', rm: 10, rd: 13, status: 'waiting', waiting: 'Consult type change to eConsult', ref: 'REF-2026-4851', source: 'Internal' },
   { name: 'Oyelaran, Tope', mrn: '40-233-089', rm: 10, rd: 15, status: 'waiting', waiting: 'Ferritin and iron studies', ref: 'REF-2026-4877', source: 'External' },
-  { name: 'Lindqvist, Mia', mrn: '40-219-374', rm: 10, rd: 18, status: 'waiting', waiting: 'Provider review of results', ref: 'REF-2026-4930', source: 'Internal' },
+  { name: 'Lindqvist, Mia', mrn: '40-219-374', rm: 10, rd: 18, status: 'waiting', waiting: 'New CBC with differential', ref: 'REF-2026-4930', source: 'Internal', meta: 'F · 29 y · DOB Apr 4, 1997' },
   { name: 'Abadi, Noor', mrn: '40-187-612', rm: 10, rd: 20, status: 'sent', waiting: '', ref: 'REF-2026-4968', source: 'Internal' }
 ];
 // Days in triage are counted from the received date to today.
@@ -1353,11 +1353,11 @@ const FILTERS = {
 
 // One flat list. Every view reads the same items, so a tick lands everywhere.
 const AWAITING = [
-  { id: 'cbc', item: 'Repeat CBC with differential', mrn: '40-118-772', asked: 'Oct 28', dm: 11, dd: 6 },
+  { id: 'cbc', item: 'Repeat CBC with differential', mrn: '40-118-772', asked: 'Oct 28', dm: 11, dd: 6, lab: true },
   { id: 'mesa', item: 'Outside records from Mesa Clinic', mrn: '40-205-118', asked: 'Oct 13', dm: 10, dd: 24 },
   { id: 'review667', item: 'Provider review of results', mrn: '40-212-667', asked: 'Oct 8', dm: 10, dd: 28 },
   { id: 'econsult', item: 'Consult type change to eConsult', mrn: '40-162-740', asked: 'Oct 14', dm: 10, dd: 30 },
-  { id: 'review374', item: 'Provider review of results', mrn: '40-219-374', asked: 'Oct 20', dm: 11, dd: 2 },
+  { id: 'cbc374', item: 'New CBC with differential', mrn: '40-219-374', asked: 'Oct 20', dm: 11, dd: 2, lab: true },
   { id: 'iron', item: 'Ferritin and iron studies', mrn: '40-233-089', asked: 'Oct 16', dm: 11, dd: 3 },
   { id: 'previsit', item: 'Pre-visit labs: CMP and LDH', mrn: '40-230-551', asked: 'Oct 21', dm: 11, dd: 3 }
 ].sort((a, b) => key(a.dm, a.dd) - key(b.dm, b.dd));
@@ -1377,10 +1377,14 @@ const TONE = {
 
 // Referring provider, where the referral carries one. The name is missing on about a fifth of referrals.
 const PROVIDERS = {
-  '40-118-772': { name: 'J. Whitfield, MD', practice: 'Northgate Primary Care', salutation: 'Dr. Whitfield' }
+  '40-118-772': { name: 'J. Whitfield, MD', practice: 'Northgate Primary Care', salutation: 'Dr. Whitfield' },
+  '40-230-551': { name: 'L. Moreno, MD', practice: 'Internal Medicine, Main Campus', salutation: 'Dr. Moreno' },
+  '40-189-024': { name: 'S. Patel, MD', practice: 'Family Medicine, Eastgate Clinic', salutation: 'Dr. Patel' },
+  '40-221-905': { name: 'R. Chen, MD', practice: 'Internal Medicine, Main Campus', salutation: 'Dr. Chen' },
+  '40-219-374': { name: 'A. Okafor, MD', practice: 'Family Medicine, Westside Clinic', salutation: 'Dr. Okafor' }
 };
 
-const RECORD = [
+let RECORD = [
   { k: 'Referring provider', v: 'J. Whitfield, MD · Northgate Primary Care' },
   { k: 'Specialty requested', v: 'Hematology · face-to-face' },
   { k: 'Reason for referral', v: 'Lymphopenia, unspecified · D72.810' },
@@ -1394,20 +1398,20 @@ const CBC_RANGE = {
   wbc: [4.0, 11.0, 'WBC', 'K/µL'], alc: [1.0, 4.8, 'ALC', 'K/µL'], hgb: [12.0, 15.5, 'Hgb', 'g/dL'],
   plt: [150, 400, 'Plt', 'K/µL'], anc: [1.8, 7.7, 'ANC', 'K/µL']
 };
-const CHART = {
+let CHART = {
   cbc: [
     { date: '2026-06-03', wbc: 5.1, alc: 1.34, hgb: 13.0, plt: 248, anc: 3.52, src: 'Outside records' },
     { date: '2026-10-20', wbc: 4.4, alc: 0.78, hgb: 13.2, plt: 239, anc: 3.21, src: 'Outside records' }
   ],
   ai: { seen: true, date: '2026-10-22', where: 'Desert Allergy Associates' }
 };
-const HISTORY = [
+let HISTORY = [
   { date: 'OCT 27, 2026', fill: '#FFFFFF', ring: '#C9C6BD', t: 'Referral received', b: 'Whitfield, MD · Northgate Primary Care · external, face-to-face requested. Outside records include the Oct 20 CBC and the Oct 22 Allergy and Immunology evaluation.' },
   { date: 'OCT 28, 2026', fill: '#C98A2B', ring: '#C98A2B', t: 'Set to awaiting', b: 'One required step unmet: only one confirmed result set. The Allergy and Immunology evaluation was already in the outside records. Charted by K. Lozano.' },
   { date: 'OCT 28, 2026', fill: '#2F5FA8', ring: '#2F5FA8', t: 'Message sent to the practice', b: 'Repeat CBC requested. Read receipt Oct 29.' },
   { date: 'NOV 2, 2026', fill: '#8A3324', ring: '#8A3324', t: 'Still waiting on the repeat CBC', b: 'No order has come back. The window closes Jan 12, 2027.' }
 ];
-const NOTES = [
+let NOTES = [
   { date: 'NOV 2', who: 'K. Lozano', icon: 'call', sum: 'Called Northgate re: CBC order', text: 'Called Northgate. Front desk says Dr. Whitfield is back Wednesday and they will ask him to place the repeat CBC order. Nothing in writing yet.' },
   { date: 'OCT 28', who: 'K. Lozano', icon: 'send', sum: 'Requirements sent and read', text: 'Sent the requirements message through the chart. Repeat CBC spelled out. Read receipt the next day.' },
   { date: 'OCT 28', who: 'K. Lozano', icon: 'doc', sum: 'A&I evaluation found in records', text: 'A and I evaluation was already in the outside records packet that came with the referral. That requirement is met.' },
@@ -1416,7 +1420,7 @@ const NOTES = [
 const WORKED = '40-118-772';
 
 // Provider notes that bear on each node of the tree. Sample text for the prototype, not from Epic.
-const PROVIDER_NOTES = {
+let PROVIDER_NOTES = {
   root: [
     { who: 'J. Whitfield, MD', role: 'Referring · Northgate Primary Care', date: 'Oct 27', src: 'Referral letter',
       text: 'Incidental low lymphocytes on routine labs. Asymptomatic, no recurrent infections. Please advise whether hematology needs to see her.' }
@@ -1436,6 +1440,145 @@ const PROVIDER_NOTES = {
       text: 'Immunoglobulins within range. No primary immunodeficiency suspected. No further immunology follow-up needed.' }
   ]
 };
+
+/* ---------- Worked cases: each patient run through the tree, Alvarez's chart as the template ---------- */
+// Opening a patient swaps these in (see useCase), so every view reads the open patient's chart.
+const AI_LETTER = 'Evaluated for recurrent infection and immunodeficiency. Immunoglobulin levels within normal limits. No primary immunodeficiency identified. Lymphopenia persists; defer to hematology as referred.';
+const CASES = {
+  '40-118-772': { // Alvarez · holds at step 2 · awaiting the repeat CBC
+    record: RECORD, chart: CHART, history: HISTORY, notes: NOTES, pnotes: PROVIDER_NOTES, ranOn: 'Oct 28', practiceShort: 'Northgate',
+    window: 'Jan 12, 2027', aiQuote: AI_LETTER, g2Note: { title: 'K. Lozano · Nov 2, 2026', text: NOTES[0].text }, b2Set: 'Oct 28, 2026 · K. Lozano',
+    routed: 'Matched on the reason for referral and the Oct 20 CBC — ALC low with the other cell lines in range. The referral came from outside, so the external criteria apply rather than the internal ones.'
+  },
+  '40-230-551': { // Haddad · every step passes · accepted and scheduled
+    ranOn: 'Nov 5', practiceShort: 'Internal Medicine', window: '',
+    routed: 'Matched on the reason for referral and the Nov 4 CBC — ALC low with the other cell lines in range. An internal referral, so the internal criteria apply.',
+    aiQuote: 'Seen for recurrent sinus infections. Immunoglobulins and vaccine titres normal. No primary immunodeficiency. Persistent lymphopenia noted; recommend hematology review.',
+    record: [
+      { k: 'Referring provider', v: 'L. Moreno, MD · Internal Medicine, Main Campus' },
+      { k: 'Specialty requested', v: 'Hematology · face-to-face' },
+      { k: 'Reason for referral', v: 'Lymphopenia, unspecified · D72.810' },
+      { k: 'Clinical question', v: 'Low lymphocytes on two CBCs six weeks apart. Mild fatigue, no fevers or weight loss. Please assess.' },
+      { k: 'Orders on the referral', v: 'CBC with differential, Nov 4 · CMP and LDH ordered for the visit' },
+      { k: 'Outside records', v: 'None needed · internal chart' },
+      { k: 'Prior hematology contact', v: 'No record on file for this MRN in the last 3 years' }
+    ],
+    chart: {
+      cbc: [
+        { date: '2026-09-21', wbc: 5.0, alc: 0.82, hgb: 14.1, plt: 260, anc: 3.4, src: 'Main Campus lab' },
+        { date: '2026-11-04', wbc: 4.8, alc: 0.71, hgb: 14.0, plt: 255, anc: 3.3, src: 'Main Campus lab' }
+      ],
+      ai: { seen: true, date: '2026-10-02', where: 'Main Campus Allergy & Immunology' }
+    },
+    history: [
+      { date: 'OCT 19, 2026', fill: '#FFFFFF', ring: '#C9C6BD', t: 'Referral received', b: 'Moreno, MD · internal, face-to-face requested.' },
+      { date: 'NOV 5, 2026', fill: '#0E7A52', ring: '#0E7A52', t: 'Accepted', b: 'Every step met once the Nov 4 CBC confirmed persistence. Sent to scheduling.' },
+      { date: 'NOV 7, 2026', fill: '#0E7A52', ring: '#0E7A52', t: 'Scheduled', b: 'New-patient visit booked for Dec 3. Pre-visit CMP and LDH requested.' }
+    ],
+    notes: [
+      { date: 'NOV 7', who: 'K. Lozano', icon: 'call', sum: 'Booked for Dec 3', text: 'Called the patient and booked the new-patient visit for Dec 3. Asked for CMP and LDH before the visit.' },
+      { date: 'NOV 5', who: 'K. Lozano', icon: 'flag', sum: 'Accepted; all steps met', text: 'Nov 4 CBC came back low again, six weeks after the first. All four steps met. Sent to scheduling.' }
+    ],
+    pnotes: {
+      root: [{ who: 'L. Moreno, MD', role: 'Referring · Internal Medicine', date: 'Oct 19', src: 'Referral letter', text: 'Lymphocytes low in September. Repeating the CBC now. Fatigue but otherwise well.' }],
+      g4: [{ who: 'N. Iqbal, MD', role: 'Allergy & Immunology', date: 'Oct 2', src: 'Consult note', text: 'Immunoglobulins normal. No immunodeficiency. Back to hematology for the lymphopenia.' }]
+    }
+  },
+  '40-189-024': { // Delgado · stops at step 4 · declined until Allergy and Immunology sees her
+    ranOn: 'Oct 28', practiceShort: 'Eastgate Clinic', window: '',
+    routed: 'Matched on the reason for referral and the Nov 9 CBC — ALC low with the other cell lines in range. An internal referral, so the internal criteria apply.',
+    record: [
+      { k: 'Referring provider', v: 'S. Patel, MD · Family Medicine, Eastgate Clinic' },
+      { k: 'Specialty requested', v: 'Hematology · face-to-face' },
+      { k: 'Reason for referral', v: 'Lymphopenia, unspecified · D72.810' },
+      { k: 'Clinical question', v: 'Recurrent chest infections this year and a low lymphocyte count twice. Could this be an immune problem?' },
+      { k: 'Orders on the referral', v: 'CBC with differential, Oct 1 and Nov 9' },
+      { k: 'Outside records', v: 'None · internal chart' },
+      { k: 'Prior hematology contact', v: 'No record on file for this MRN in the last 3 years' }
+    ],
+    chart: {
+      cbc: [
+        { date: '2026-10-01', wbc: 5.6, alc: 0.88, hgb: 12.9, plt: 301, anc: 4.1, src: 'Eastgate lab' },
+        { date: '2026-11-09', wbc: 5.2, alc: 0.79, hgb: 12.7, plt: 288, anc: 3.9, src: 'Eastgate lab' }
+      ],
+      ai: { seen: false }
+    },
+    history: [
+      { date: 'OCT 27, 2026', fill: '#FFFFFF', ring: '#C9C6BD', t: 'Referral received', b: 'Patel, MD · internal, face-to-face requested.' },
+      { date: 'NOV 10, 2026', fill: '#8A3324', ring: '#8A3324', t: 'Declined', b: 'No Allergy and Immunology evaluation on file. Recommended that evaluation first; re-refer after.' }
+    ],
+    notes: [
+      { date: 'NOV 10', who: 'K. Lozano', icon: 'send', sum: 'Decline letter sent', text: 'Sent the decline to Dr. Patel: refer to Allergy and Immunology first given the recurrent infections, then re-refer if the count stays low.' }
+    ],
+    pnotes: {
+      root: [{ who: 'S. Patel, MD', role: 'Referring · Eastgate Clinic', date: 'Oct 27', src: 'Referral letter', text: 'Three chest infections since spring. Lymphocytes low on two counts. Worried about an immune cause.' }]
+    }
+  },
+  '40-221-905': { // Okonkwo · fails step 1 · two cell lines low, so the cytopenia path
+    ranOn: 'Oct 28', practiceShort: 'Internal Medicine', window: '',
+    routed: 'Matched on the reason for referral and the Oct 24 CBC — ALC low. An internal referral, so the internal criteria apply.',
+    record: [
+      { k: 'Referring provider', v: 'R. Chen, MD · Internal Medicine, Main Campus' },
+      { k: 'Specialty requested', v: 'Hematology · face-to-face' },
+      { k: 'Reason for referral', v: 'Lymphopenia · D72.810' },
+      { k: 'Clinical question', v: 'Low lymphocytes and low neutrophils on the latest CBC. Weight loss of 4 kg over three months.' },
+      { k: 'Orders on the referral', v: 'CBC with differential, Oct 24' },
+      { k: 'Outside records', v: 'None · internal chart' },
+      { k: 'Prior hematology contact', v: 'No record on file for this MRN in the last 3 years' }
+    ],
+    chart: {
+      cbc: [
+        { date: '2026-08-15', wbc: 5.4, alc: 1.1, hgb: 13.8, plt: 240, anc: 3.6, src: 'Main Campus lab' },
+        { date: '2026-10-24', wbc: 3.1, alc: 0.82, hgb: 13.1, plt: 198, anc: 1.2, src: 'Main Campus lab' }
+      ],
+      ai: { seen: false }
+    },
+    history: [
+      { date: 'OCT 27, 2026', fill: '#FFFFFF', ring: '#C9C6BD', t: 'Referral received', b: 'Chen, MD · internal, face-to-face requested. The AI read the Oct 24 CBC.' }
+    ],
+    notes: [],
+    pnotes: {
+      root: [{ who: 'R. Chen, MD', role: 'Referring · Internal Medicine', date: 'Oct 27', src: 'Referral letter', text: 'Both lymphocytes and neutrophils are down, with some weight loss. Would value hematology input.' }]
+    }
+  },
+  '40-219-374': { // Lindqvist · stops at step 3 · newest draw too old, new CBC requested
+    ranOn: 'Oct 19', practiceShort: 'Westside Clinic', window: '',
+    routed: 'Matched on the reason for referral and the Sep 14 CBC — ALC low with the other cell lines in range. An internal referral, so the internal criteria apply.',
+    aiQuote: 'Assessed for frequent colds. Immunoglobulins normal. No immunodeficiency identified.',
+    record: [
+      { k: 'Referring provider', v: 'A. Okafor, MD · Family Medicine, Westside Clinic' },
+      { k: 'Specialty requested', v: 'Hematology · face-to-face' },
+      { k: 'Reason for referral', v: 'Lymphopenia, unspecified · D72.810' },
+      { k: 'Clinical question', v: 'Low lymphocyte count on two CBCs this summer. Otherwise well. Is this significant?' },
+      { k: 'Orders on the referral', v: 'CBC with differential, Aug 3 and Sep 14' },
+      { k: 'Outside records', v: 'None · internal chart' },
+      { k: 'Prior hematology contact', v: 'No record on file for this MRN in the last 3 years' }
+    ],
+    chart: {
+      cbc: [
+        { date: '2026-08-03', wbc: 6.0, alc: 0.81, hgb: 12.6, plt: 274, anc: 4.3, src: 'Westside lab' },
+        { date: '2026-09-14', wbc: 5.8, alc: 0.76, hgb: 12.8, plt: 266, anc: 4.1, src: 'Westside lab' }
+      ],
+      ai: { seen: true, date: '2026-07-22', where: 'Westside Allergy & Immunology' }
+    },
+    history: [
+      { date: 'OCT 18, 2026', fill: '#FFFFFF', ring: '#C9C6BD', t: 'Referral received', b: 'Okafor, MD · internal, face-to-face requested.' },
+      { date: 'OCT 20, 2026', fill: '#C98A2B', ring: '#C98A2B', t: 'Set to awaiting', b: 'Newest CBC is past the 30-day limit. New CBC requested from Westside Clinic.' }
+    ],
+    notes: [
+      { date: 'NOV 6', who: 'K. Lozano', icon: 'call', sum: 'Chased the new CBC', text: 'Called Westside. The patient missed the lab slot; they are rebooking her this week.' },
+      { date: 'OCT 20', who: 'K. Lozano', icon: 'send', sum: 'New CBC requested', text: 'Asked Dr. Okafor for a new CBC with differential. The September draw is too old to triage on.' }
+    ],
+    pnotes: {
+      root: [{ who: 'A. Okafor, MD', role: 'Referring · Westside Clinic', date: 'Oct 18', src: 'Referral letter', text: 'Two low lymphocyte counts six weeks apart. No infections to speak of. Grateful for advice.' }]
+    }
+  }
+};
+const hasCase = (mrn) => !!CASES[mrn];
+const C = () => CASES[S.current] || {};
+// The open patient's lab request (a repeat or new CBC), if one is out.
+const cbcAsk = () => AWAITING.find((a) => a.mrn === S.current && a.lab);
+const cbcDone = () => { const a = cbcAsk(); return !!(a && S.done[a.id]); };
 
 /* ---------- State ---------- */
 
@@ -1479,6 +1622,7 @@ const S = {
     versions: [{ n: 1, by: 'AI', date: 'Oct 28', what: 'Read from the chart and run through the tree', why: '', via: 'ai', step: null, data: CHART, answers: {} }],
     view: null
   },
+  algs: {},              // each case's version history, by MRN (S.alg points at the open patient's)
   restoreMsg: '',
   comp: null,            // companion entries in progress (see blankComp)
   listening: null,       // companion field being dictated
@@ -1924,7 +2068,7 @@ function renderSearch(placeholder, suggestions) {
 
 function renderPatient() {
   const p = byMrn(S.current);
-  const worked = p.mrn === WORKED;
+  const worked = hasCase(p.mrn);
   const body = worked
     ? `${algoCard()}<div class="duo">${evidenceCard()}<div class="duo-col">${awaitingCard(p)}</div></div>`
     : `<section class="card"><div class="card-h"><span class="card-t">AI Decision Tree</span></div>
@@ -2150,12 +2294,12 @@ const AI_QUOTE = 'Evaluated for recurrent infection and immunodeficiency. Immuno
 
 function testingRows(ev) {
   const d = ev.data;
-  const cbc = AWAITING.find((a) => a.id === 'cbc');
+  const cbc = cbcAsk();
   const rows = [
     { t: 'Allergy and Immunology evaluation', pa: d.ai.seen ? presence('present', 'Present') : presence('absent', 'Absent'),
       d: d.ai.seen ? `Completed ${isoLabel(d.ai.date, true)} at ${d.ai.where}. No immunodeficiency identified.` : 'Not found in the outside records or the chart.' },
-    { t: 'Repeat CBC with differential', pa: S.done.cbc ? presence('present', 'Received') : presence('pending', 'Pending'),
-      d: S.done.cbc ? 'Ticked as received. Its result is not in the chart yet, so the algorithm cannot read it.' : `Requested ${cbc.asked}, due ${dueLabel(cbc)}${dueTone(cbc) === 'late' ? ' — late' : ''}. Step 2 needs it.` }
+    ...(cbc ? [{ t: cbc.item, pa: cbcDone() ? presence('present', 'Received') : presence('pending', 'Pending'),
+      d: cbcDone() ? 'Ticked as received. Its result is not in the chart yet, so the algorithm cannot read it.' : `Requested ${cbc.asked}, due ${dueLabel(cbc)}${dueTone(cbc) === 'late' ? ' — late' : ''}. ${evaluate(latestVer()).steps.g2.status === 'met' ? 'Step 3' : 'Step 2'} needs it.` }] : [])
   ];
   return rows.map((r) => `<div class="ev-row"><div class="grow" style="min-width: 0"><div class="t">${r.t}</div><div class="d">${r.d}</div>${r.src || ''}</div>${r.pa}</div>`).join('');
 }
@@ -2235,7 +2379,7 @@ function awaitingCard(p) {
   const open = openItems(items);
   // What the decision still needs (once the "To complete" box in the triage note). A need that matches
   // something already requested is shown on that row; the rest get rows of their own below.
-  const ev = p.mrn === WORKED ? evaluate(latestVer()) : null;
+  const ev = hasCase(p.mrn) ? evaluate(latestVer()) : null;
   const miss = ev ? missingFor(ev) : [];
   const onRow = {};
   const extra = [];
@@ -2290,7 +2434,7 @@ function noteBody(p) {
         <dl class="kv tight">
           <dt>Date/time</dt><dd>${TODAY_LONG} · ${time}</dd>
           <dt>Patient</dt><dd>${p.name} · MRN ${p.mrn} · F</dd>
-          <dt>Referring</dt><dd>J. Whitfield, MD · Northgate Primary Care</dd>
+          <dt>Referring</dt><dd>${esc((RECORD.find((f) => f.k === 'Referring provider') || {}).v || '')}</dd>
           <dt>Assessment (labs)</dt><dd>${labLinks(`Lymphopenia · ALC ${ev.last.alc} K/µL on ${isoLabel(ev.last.date)}`)}</dd>
         </dl>
         <div class="kicker" style="margin-top: 16px">Snapshot</div>
@@ -2307,7 +2451,7 @@ function pageSummary(p) {
   const aw = open.length
     ? `<strong>Awaiting:</strong> ${open.length} open — ${open.map((a) => `${esc(a.item)} (due ${dueLabel(a)}${dueTone(a) === 'late' ? ', late' : ''})`).join('; ')}.`
     : '<strong>Awaiting:</strong> nothing open.';
-  if (p.mrn !== WORKED) {
+  if (!hasCase(p.mrn)) {
     return [`<strong>${esc(p.name)}</strong> · ${esc(p.source)} referral ${esc(p.ref)}, received ${esc(p.received)}, ${p.days} days in triage.`,
       `<strong>Status:</strong> ${STATUS[p.status].label}. The decision tree has not been run on this referral in the prototype.`, aw];
   }
@@ -2341,7 +2485,7 @@ function ask(q) {
   } else if (/message|referring|provider|letter|fax/.test(ql)) {
     thread.push(newMessage(p));
   } else if (/note|draft|document|chart|write/.test(ql)) {
-    thread.push(p.mrn === WORKED
+    thread.push(hasCase(p.mrn)
       ? { who: 'copilot', kind: 'note' }
       : { who: 'copilot', text: `The tree has not been run on ${p.name}'s referral in this prototype, so there is nothing to draft the note from.` });
   } else if (/await|missing|outstanding|wait|left|due/.test(ql)) {
@@ -2363,10 +2507,10 @@ function ask(q) {
 // the copilot never sends it — the triager copies it into the EHR or a fax, then marks it sent.
 // Things only the referring practice can supply, that the algorithm is missing and the awaiting list doesn't cover.
 function algorithmAsks(p) {
-  if (p.mrn !== WORKED) return [];
+  if (!hasCase(p.mrn)) return [];
   const asked = itemsFor(p.mrn).filter((a) => !S.done[a.id]).map((a) => a.id);
   return missingFor(evaluate(latestVer()))
-    .filter((m) => (m.kind === 'cbc' && !asked.includes('cbc')) || m.kind === 'ai')
+    .filter((m) => (m.kind === 'cbc' && !asked.includes(m.id)) || m.kind === 'ai')
     .map((m) => ({ id: 'alg-' + m.id, item: m.kind === 'cbc' ? 'A recent CBC with differential' : 'Allergy and Immunology evaluation', why: m.why }));
 }
 
@@ -2391,7 +2535,7 @@ function messageBody(p, m) {
   const lines = asks.map((a) => `• ${a.item} — ${a.asked !== '—' ? 'first requested ' + a.asked + ', ' : ''}needed by ${dueLabel(a)}`)
     .concat(extra.map((a) => `• ${a.item} — ${a.why}`)).join('\n');
   const need = asks.length || extra.length
-    ? `Thank you for this referral to hematology. To finish triaging it, we still need:\n${lines}\n\nOnce these are in, we will re-triage it — no new referral order is needed.${p.mrn === WORKED ? ' The window for this referral closes Jan 12, 2027.' : ''}`
+    ? `Thank you for this referral to hematology. To finish triaging it, we still need:\n${lines}\n\nOnce these are in, we will re-triage it — no new referral order is needed.${hasCase(p.mrn) && C().window ? ' The window for this referral closes ' + C().window + '.' : ''}`
     : 'Thank you for this referral to hematology. We have what we need for now and will be in touch once triage is complete.';
   return `Dear ${prov ? prov.salutation : 'colleague'},\n\nRe: ${p.name} · MRN ${p.mrn} · referral ${p.ref}, received ${p.received}, 2026\n\n${need}\n\nThank you,\nMelissa\nHematology referral triage`;
 }
@@ -2526,8 +2670,8 @@ function draftNote() {
   const missing = missingFor(ev).map((m) => m.label + ' — ' + m.why);
   return [
     `Triage decision: ${OUTCOME[ev.end].toUpperCase()}.`,
-    `Tree applied: isolated lymphopenia, external referral, rev. 4 · V${latest.n}${latest.n > 1 ? ', with changes' : ', as read from the chart'}.`,
-    STEPS.map((q, i) => { const st = ev.steps['g' + (i + 1)]; return `${q.n}. ${q.q} ${TONE[st.status].label}${st.overridden ? ' (overridden)' : ''}. ${st.found}`; }).join('\n'),
+    `Tree applied: isolated lymphopenia, ${byMrn(S.current).source.toLowerCase()} referral, rev. 4 · V${latest.n}${latest.n > 1 ? ', with changes' : ', as read from the chart'}.`,
+    STEPS.map((q, i) => { const id = 'g' + (i + 1); const st = ev.steps[id]; return chainOf(ev.end).includes(id) ? `${q.n}. ${q.q} ${TONE[st.status].label}${st.overridden ? ' (overridden)' : ''}. ${st.found}` : `${q.n}. ${q.q} Not reached.`; }).join('\n'),
     changes.length ? 'Changes:\n' + changes.join('\n') : '',
     missing.length ? 'Still missing:\n' + missing.join('\n') : '',
     NEXT[ev.end]
@@ -2536,7 +2680,7 @@ function draftNote() {
 
 // Notes and history for one patient, newest first; used by the sidecard's References tab.
 function notesHtml(cur) {
-  const log = (S.added[cur.mrn] || []).concat(cur.mrn === WORKED ? NOTES : []);
+  const log = (S.added[cur.mrn] || []).concat(hasCase(cur.mrn) ? NOTES : []);
   let body;
     // The newest note shows in full; earlier ones collapse to an icon and a short summary that opens on click.
     const [latestNote, ...earlier] = log;
@@ -2563,7 +2707,7 @@ function notesHtml(cur) {
 }
 
 function historyHtml(cur) {
-  const hist = (cur.mrn === WORKED ? HISTORY : []).concat(S.history[cur.mrn] || []);
+  const hist = (hasCase(cur.mrn) ? HISTORY : []).concat(S.history[cur.mrn] || []);
   let body;
     // Same layout as Notes: the newest event in full, earlier ones as icon + title rows that open on click.
     const events = hist.slice().reverse();
@@ -2613,14 +2757,14 @@ function renderTrack() {
   }
 
   const cur = byMrn(S.current);
-  const log = (S.added[cur.mrn] || []).concat(cur.mrn === WORKED ? NOTES : []);
-  const hist = (cur.mrn === WORKED ? HISTORY : []).concat(S.history[cur.mrn] || []);
+  const log = (S.added[cur.mrn] || []).concat(hasCase(cur.mrn) ? NOTES : []);
+  const hist = (hasCase(cur.mrn) ? HISTORY : []).concat(S.history[cur.mrn] || []);
   const thread = S.chat[cur.mrn] || [];
   const tab = S.panelTab;
 
   let body;
   if (tab === 'note') {
-    body = cur.mrn === WORKED
+    body = hasCase(cur.mrn)
       ? noteBody(cur)
       : `<div class="pnote"><div class="gap-note"><strong>No triage note yet.</strong> The algorithm has not been run on this referral in the prototype, so there is nothing to draft the note from.</div></div>`;
   } else if (tab === 'notes') {
@@ -2712,7 +2856,7 @@ function renderPip() {
       <div class="g grow" style="height: 9px; background: ${head ? '#E6E3DC' : '#F4F2ED'}"></div>
       <div class="g" style="height: 9px; width: 64px; background: ${head ? '#E6E3DC' : '#F2F0EB'}"></div></div>`;
   }
-  const worked = p.mrn === WORKED;
+  const worked = hasCase(p.mrn);
   const ev = worked ? evaluate(latestVer()) : null;
   const miss = worked ? missingFor(ev).filter((m) => m.kind !== 'yesno') : [];
   const c = comp();
@@ -2814,6 +2958,23 @@ const viewedVer = () => (S.alg.view === null ? latestVer() : S.alg.versions[S.al
 
 // Runs the isolated-lymphopenia tree on one version: each step's answer and what it found,
 // and the outcome the path reaches. The first step that isn't met ends the path.
+// Point every view at one patient's case: their chart, notes, history and version history.
+function useCase(mrn) {
+  const c = CASES[mrn];
+  if (!c) return;
+  const p = byMrn(mrn);
+  RECORD = c.record; CHART = c.chart; HISTORY = c.history; NOTES = c.notes; PROVIDER_NOTES = c.pnotes || {};
+  if (!S.algs[mrn]) S.algs[mrn] = mrn === WORKED && S.alg.versions[0].data === CASES[WORKED].chart ? S.alg
+    : { versions: [{ n: 1, by: 'AI', date: c.ranOn, what: 'Read from the chart and run through the tree', why: '', via: 'ai', step: null, data: c.chart, answers: {} }], view: null };
+  S.alg = S.algs[mrn];
+  NODE.root.title = `Lymphopenia · ${p.source.toLowerCase()} request`;
+  NODE.root.reason = c.routed;
+  NODE.root.source = `Referral ${p.ref} · received ${p.received}, 2026`;
+  NODE.b2.reason = 'Reached when persistence is not confirmed: hold for a repeat CBC and re-triage on receipt, no new referral order needed.' + (c.window ? ` The window closes ${c.window}.` : '');
+  NEXT.b2 = `Next: chase the repeat CBC with ${c.practiceShort}.`;
+  NEXT.b3 = `Next: request a new CBC from ${c.practiceShort}.`;
+}
+
 function evaluate(ver) {
   const d = ver.data;
   const sets = d.cbc.slice().sort((a, b) => a.date.localeCompare(b.date));
@@ -2835,11 +2996,11 @@ function evaluate(ver) {
     const gap = isoGap(a.date, b.date);
     if (gap >= 14 && gap <= 84) pair = [a, b, gap];
   }));
-  const repeat = AWAITING.find((a) => a.id === 'cbc');
+  const repeat = cbcAsk();
   steps.g2 = pair
     ? { status: 'met', found: `Yes. ALC was low on ${isoLabel(pair[0].date)} (${pair[0].alc}) and ${isoLabel(pair[1].date)} (${pair[1].alc}), ${pair[2]} days apart and inside 12 weeks.` }
     : { status: 'missing', found: `Not established. The branch needs two low results at least two weeks apart, both inside 12 weeks. ${lows.length ? 'Only ' + lows.map((x) => isoLabel(x.date)).join(' and ') + (lows.length === 1 ? ' is' : ' are') + ' on file.' : 'No low result is on file.'}`,
-      pending: repeat && !S.done.cbc ? `Repeat CBC with differential — requested ${repeat.asked}, due ${dueLabel(repeat)}, not back yet.` : '' };
+      pending: repeat && !cbcDone() ? `Repeat CBC with differential — requested ${repeat.asked}, due ${dueLabel(repeat)}, not back yet.` : '' };
   steps.g2.field = `Results · ${lows.length} low ${lows.length === 1 ? 'result' : 'results'} on file` + (pair ? '' : '  ·  Orders · no matching order returned');
 
   const age = isoAge(last.date);
@@ -2893,9 +3054,12 @@ function addVersion({ step, what, why, via, data, answers, replaceAnswers }) {
 function missingFor(ev) {
   const s = ev.steps;
   const m = [];
-  if (s.g2.status !== 'met' && !s.g2.overridden) m.push({ id: 'cbc', step: 'g2', kind: 'cbc', label: 'A repeat CBC result', why: 'to confirm the low count is persistent (step 2)' });
-  else if (s.g3.status !== 'met' && !s.g3.overridden) m.push({ id: 'cbc', step: 'g3', kind: 'cbc', label: 'A CBC from the last 30 days', why: 'the newest result is too old (step 3)' });
-  if (s.g4.status !== 'met' && !s.g4.overridden) m.push({ id: 'ai', step: 'g4', kind: 'ai', label: 'Allergy and Immunology evaluation', why: 'required before hematology (step 4)' });
+  const on = new Set(chainOf(ev.end));
+  const cid = (cbcAsk() || {}).id || 'cbc';
+  if (!on.has('g2')) return m;
+  if (s.g2.status !== 'met' && !s.g2.overridden) m.push({ id: cid, step: 'g2', kind: 'cbc', label: 'A repeat CBC result', why: 'to confirm the low count is persistent (step 2)' });
+  else if (on.has('g3') && s.g3.status !== 'met' && !s.g3.overridden) m.push({ id: cid, step: 'g3', kind: 'cbc', label: 'A CBC from the last 30 days', why: 'the newest result is too old (step 3)' });
+  if (on.has('g4') && s.g4.status !== 'met' && !s.g4.overridden) m.push({ id: 'ai', step: 'g4', kind: 'ai', label: 'Allergy and Immunology evaluation', why: 'required before hematology (step 4)' });
   return m;
 }
 
@@ -2915,24 +3079,32 @@ const NEXT = {
 };
 
 // The executive summary: five short, directive lines worked out from the same evaluation as the tree.
-function summaryLines(ev) {
+// The explanation: one line per step the referral actually went through, each tied to its step in the tree.
+function summaryItems(ev) {
   const s = ev.steps;
   const l = ev.last;
-  const repeat = AWAITING.find((a) => a.id === 'cbc');
-  return [
-    LEAD[ev.end],
-    s.g1.status === 'met'
-      ? `Isolated low lymphocytes: ALC ${l.alc} on ${isoLabel(l.date)}, with WBC, Hgb, Plt and ANC normal.`
-      : 'Not an isolated low lymphocyte count — see step 1.',
-    s.g2.status === 'met'
-      ? `Persistent: ${ev.lows.length} low results at least two weeks apart${s.g2.overridden ? ' (set by override)' : ''}.`
-      : `Persistence isn't confirmed: ${ev.lows.length} low result on file.` + (repeat && !S.done.cbc ? ` Repeat CBC requested ${repeat.asked}, due ${dueLabel(repeat)}.` : ''),
-    ev.age <= 30
-      ? `Act by ${ev.expires}, when the ${isoLabel(l.date)} result passes 30 days. The 12-week window closes Jan 12, 2027.`
-      : `The newest result is ${ev.age} days old, past the 30-day limit.`,
-    NEXT[ev.end]
-  ];
+  const on = new Set(chainOf(ev.end));
+  const repeat = cbcAsk();
+  const others = ['wbc', 'hgb', 'plt', 'anc'].filter((k) => l[k] < CBC_RANGE[k][0] || l[k] > CBC_RANGE[k][1]);
+  const items = [{ t: LEAD[ev.end], to: ev.end }];
+  items.push({ to: 'g1', t: s.g1.status === 'met'
+    ? `Isolated low lymphocytes: ALC ${l.alc} on ${isoLabel(l.date)}, with WBC, Hgb, Plt and ANC normal.`
+    : others.length
+      ? `Not isolated: ALC ${l.alc} is low on ${isoLabel(l.date)}, but ${others.map((k) => `${CBC_RANGE[k][2]} ${l[k]}`).join(' and ')} ${others.length === 1 ? 'is' : 'are'} out of range too.`
+      : 'Not an isolated low lymphocyte count — see step 1.' });
+  if (on.has('g2')) items.push({ to: 'g2', t: s.g2.status === 'met'
+    ? `Persistent: ${ev.lows.length} low results at least two weeks apart${s.g2.overridden ? ' (set by override)' : ''}.`
+    : `Persistence isn't confirmed: ${ev.lows.length} low result on file.` + (repeat && !cbcDone() ? ` ${repeat.item} requested ${repeat.asked}, due ${dueLabel(repeat)}.` : '') });
+  if (on.has('g3')) items.push({ to: 'g3', t: ev.age <= 30
+    ? `Recent enough: the ${isoLabel(l.date)} result is ${ev.age} days old and passes 30 days on ${ev.expires}.`
+    : `The newest result is ${ev.age} days old, past the 30-day limit.` + (repeat && !cbcDone() ? ` ${repeat.item} requested ${repeat.asked}, due ${dueLabel(repeat)}.` : '') });
+  if (on.has('g4')) items.push({ to: 'g4', t: s.g4.status === 'met'
+    ? `Seen by Allergy and Immunology on ${isoLabel(ev.data.ai.date)}; no immunodeficiency found.`
+    : 'No Allergy and Immunology evaluation is on file.' });
+  items.push({ t: NEXT[ev.end] + (C().window && /^b[23]$/.test(ev.end) ? ` The 12-week window closes ${C().window}.` : ''), to: ev.end });
+  return items;
 }
+function summaryLines(ev) { return summaryItems(ev).map((x) => x.t); }
 
 /* ---------- Decision tree: one lane per step, the path highlighted, a sidebar for the node picked ---------- */
 
@@ -2970,27 +3142,27 @@ function sourcesFor(id, ev) {
   const l = ev.last;
   const flag = (k, v) => (v < CBC_RANGE[k][0] ? 'Low' : v > CBC_RANGE[k][1] ? 'High' : '');
   const lab = (k) => [CBC_RANGE[k][2], `${l[k]} ${CBC_RANGE[k][3]}`, `${CBC_RANGE[k][0]}–${CBC_RANGE[k][1]}`, flag(k, l[k])];
-  const repeat = AWAITING.find((a) => a.id === 'cbc');
+  const repeat = cbcAsk();
   const def = (title, action) => [{ kind: 'Tree definition', title, kv: [['Action', action]] }];
   const all = {
-    root: [{ kind: 'Referral', title: 'REF-2026-4471 · received Oct 27, 2026', kv: RECORD.map((f) => [f.k, f.v]) }],
+    root: [{ kind: 'Referral', title: `${byMrn(S.current).ref} · received ${byMrn(S.current).received}, 2026`, kv: RECORD.map((f) => [f.k, f.v]) }],
     g1: [{ kind: 'Labs', title: 'CBC with differential · collected ' + isoLabel(l.date, true), from: l.src, cols: LAB_COLS, rows: ['wbc', 'alc', 'hgb', 'plt', 'anc'].map(lab) }],
     g2: [
       { kind: 'Labs', title: 'Lymphocyte count over time', from: 'Every CBC on file', chart: 'alc', cols: ['Collected', 'ALC', 'Reference', 'Flag'],
         rows: ev.sets.slice().reverse().map((x) => [isoLabel(x.date, true), x.alc + ' K/µL', '1.0–4.8', flag('alc', x.alc)]),
         foot: 'The branch needs two low results at least two weeks apart, both within 12 weeks.' },
       { kind: 'Orders', title: 'Orders against this referral',
-        lines: repeat ? [`Repeat CBC with differential — asked of Northgate on ${repeat.asked}, 2026`, S.done.cbc ? 'Ticked as received on the awaiting list.' : 'No order has come back for it. This does not confirm that none was placed.'] : ['None on file.'] },
-      { kind: 'Clinical note', title: 'K. Lozano · Nov 2, 2026', quote: NOTES[0].text }
+        lines: repeat ? [`${repeat.item} — asked of ${C().practiceShort} on ${repeat.asked}, 2026`, cbcDone() ? 'Ticked as received on the awaiting list.' : 'No order has come back for it. This does not confirm that none was placed.'] : ['None on file.'] },
+      ...(C().g2Note ? [{ kind: 'Clinical note', title: C().g2Note.title, quote: C().g2Note.text }] : [])
     ],
     g3: [{ kind: 'Labs', title: 'Newest CBC · collected ' + isoLabel(l.date, true),
       kv: [['Age today (' + TODAY_SHORT + ')', `${ev.age} days — ${ev.age <= 30 ? 'inside' : 'past'} the 30-day limit`], ['Passes 30 days', ev.expires]] }],
     g4: ev.data.ai.seen
       ? [{ kind: 'Report', title: 'Allergy and Immunology evaluation', from: `${ev.data.ai.where} · completed ${isoLabel(ev.data.ai.date, true)}`,
-        quote: 'Evaluated for recurrent infection and immunodeficiency. Immunoglobulin levels within normal limits. No primary immunodeficiency identified. Lymphopenia persists; defer to hematology as referred.' }]
+        quote: C().aiQuote || AI_LETTER }]
       : [{ kind: 'Outside records', title: 'No Allergy and Immunology evaluation found', foot: 'Nothing in the outside records or the chart. Marked not on file.' }],
     b2: [
-      { kind: 'Status history', title: 'Set to awaiting', kv: [['Set', 'Oct 28, 2026 · K. Lozano'], ['Waiting on', 'Repeat CBC with differential'], ['Window closes', 'Jan 12, 2027']] },
+      ...(C().b2Set ? [{ kind: 'Status history', title: 'Set to awaiting', kv: [['Set', C().b2Set], ['Waiting on', byMrn(S.current).waiting], ['Window closes', C().window]] }] : []),
       ...def('Outcome · awaiting, persistence not confirmed', 'Hold; request a repeat CBC; re-triage on receipt')
     ],
     accept: def('Outcome · accept, face-to-face', 'Send to scheduling for a new-patient hematology visit'),
@@ -3251,7 +3423,7 @@ function treeSide(id, ev, viewed) {
 // One lab over time, opened from a link in the triage note.
 function renderLabTrend() {
   const k = S.labTrend;
-  if (!k || !S.side || S.current !== WORKED) return '';
+  if (!k || !S.side || !hasCase(S.current)) return '';
   const ev = evaluate(latestVer());
   const [lo, hi, label, unit] = CBC_RANGE[k];
   const sets = ev.sets;
@@ -3277,7 +3449,7 @@ function renderLabTrend() {
 }
 
 function renderTreeModal() {
-  if (!S.tree || S.view !== 'patient' || S.current !== WORKED) return '';
+  if (!S.tree || S.view !== 'patient' || !hasCase(S.current)) return '';
   const viewed = viewedVer();
   const ev = evaluate(viewed);
   const path = new Set(chainOf(ev.end));
@@ -3375,7 +3547,7 @@ function referralFacts(p) {
 // 1. Referral details: the referral record, the labs and testing the decision used, and the notes.
 // Each fact appears once; the referral ID, dates and source are in the header above.
 function sideDetails(p) {
-  const worked = p.mrn === WORKED;
+  const worked = hasCase(p.mrn);
   const more = worked ? RECORD.map((f) => [f.k, f.v, f.missing]) : [];
   const kv = (list) => `<dl class="kv sc-kv">${list.map(([k, v, miss]) => `<dt>${k}</dt><dd class="${miss ? 'missing' : ''}">${miss ? '<span class="pa missing">Missing</span> ' : ''}${esc(v)}</dd>`).join('')}</dl>`;
   const record = `<section class="card"><div class="card-h"><h2 class="sc-h2 grow">Referral record</h2></div><div class="cbody">${more.length ? kv(more) : '<p class="sc-hint" style="margin: 0">Only the worked example (Alvarez) has the full referral loaded in this prototype.</p>'}</div></section>`;
@@ -3389,7 +3561,7 @@ function sideDetails(p) {
 // its steps on the left and the evidence for the step picked on the right.
 function sideDecision(p) {
   const outputs = outputsCard(p);
-  if (p.mrn !== WORKED) {
+  if (!hasCase(p.mrn)) {
     return pairs(`<section class="sc-sec"><div class="gap-note"><strong>No AI recommendation yet.</strong> The algorithm has not been run on this referral in the prototype.</div></section>`, outputs);
   }
   const latest = latestVer();
@@ -3401,9 +3573,8 @@ function sideDecision(p) {
       <div class="rec-t">${OUTCOME[ev.end]}</div>
       ${ev.end !== ai.end ? `<div class="rec-v"><span class="rec-was">The AI recommended <s>${OUTCOME[ai.end]}</s> in V1.</span></div>` : ''}
       <h4 class="exp-h">AI suggestion explanation</h4>
-      <ol class="exec-lines exp-lines">${summaryLines(ev).map((l, i) => {
+      <ol class="exec-lines exp-lines">${summaryItems(ev).map(({ t: l, to }) => {
         // Each line jumps to the step of the decision tree it explains.
-        const to = [ev.end, 'g1', 'g2', 'g3', ev.end][i];
         const name = NODE[to].kind === 'step' ? `step ${NODE[to].step + 1}` : 'the outcome';
         return `<li><button type="button" class="exp-link" data-act="treeJump" data-v="${to}" aria-label="${l.replace(/"/g, '&quot;')} Show ${name} in the decision tree.">${l}</button></li>`;
       }).join('')}</ol>
@@ -3427,7 +3598,7 @@ function vtree(ev) {
   const node = (id, title, sub, cls, mark) => `<button type="button" class="vt-node ${cls} ${sel === id ? 'sel' : ''}" data-act="docOpen" data-v="${id}" aria-pressed="${sel === id}">
       <span class="sn-ic">${nodeIcon(NODE[id].kind === 'step' ? id : (id === 'root' ? 'root' : 'end'))}</span>
       <span class="sn-txt"><span class="sn-t">${title}</span><span class="sn-s">${sub}</span></span>${mark || ''}</button>`;
-  const rows = [`<li class="vt-row on">${node('root', 'Referral received', 'REF-2026-4471 · Oct 27', 'on', '')}</li>`];
+  const rows = [`<li class="vt-row on">${node('root', 'Referral received', `${byMrn(S.current).ref} · ${byMrn(S.current).received}`, 'on', '')}</li>`];
   ['g1', 'g2', 'g3', 'g4'].forEach((g, i) => {
     const st = ev.steps[g];
     const on = path.has(g);
@@ -3501,21 +3672,21 @@ function outFor(p) {
   if (S.out[p.mrn]) return S.out[p.mrn];
   const prov = PROVIDERS[p.mrn];
   let reqs = [];
-  if (p.mrn === WORKED) {
+  if (hasCase(p.mrn)) {
     const m = newMessage(p);
-    reqs = [{ to: m.to, body: m.body, ai: true }];
+    if (Object.keys(m.include).length) reqs = [{ to: m.to, body: m.body, ai: true }];
   } else if (p.waiting) {
     reqs = [{ to: 'Referring provider', body: `Dear colleague,\n\nRe: ${p.name} · MRN ${p.mrn} · referral ${p.ref}, received ${p.received}, 2026\n\nTo finish triaging this referral, we still need: ${p.waiting.toLowerCase()}.\n\nThank you,\nMelissa\nHematology referral triage`, ai: true }];
   }
   S.out[p.mrn] = {
-    note: p.mrn === WORKED ? draftNote() : `Triage note — ${p.name} · MRN ${p.mrn}\n\nThe algorithm has not been run on this referral in the prototype, so there is no AI draft. Write the note here.`,
+    note: hasCase(p.mrn) ? draftNote() : `Triage note — ${p.name} · MRN ${p.mrn}\n\nThe algorithm has not been run on this referral in the prototype, so there is no AI draft. Write the note here.`,
     reqs
   };
   return S.out[p.mrn];
 }
 // A referral is accepted when the decision ends at Accept, or Melissa has set it to Scheduled.
 function isAccepted(p) {
-  return (p.mrn === WORKED && evaluate(latestVer()).end === 'accept') || p.status === 'scheduled';
+  return (hasCase(p.mrn) && evaluate(latestVer()).end === 'accept') || p.status === 'scheduled';
 }
 
 // The note to scheduling, drafted from the referral. It is always drafted; until the referral
@@ -3523,7 +3694,7 @@ function isAccepted(p) {
 function draftSchedNote(p) {
   const accepted = isAccepted(p);
   const rec = (k) => (RECORD.find((f) => f.k === k) || {}).v;
-  const worked = p.mrn === WORKED;
+  const worked = hasCase(p.mrn);
   const ver = latestVer();
   return [
     'Scheduling request — Hematology new-patient visit',
@@ -3548,7 +3719,7 @@ function draftProgressNote(p) {
   const lc = (t) => t.charAt(0).toLowerCase() + t.slice(1); // keeps CBC, Mesa Clinic and the like as written
   const a = itemsFor(p.mrn).find((x) => !S.done[x.id]);
   lines.push(`Status: ${STATUS[p.status].label}${a ? ` — ${lc(a.item)} requested ${a.asked}, due ${dueLabel(a)}${dueTone(a) === 'late' ? ' (late)' : ''}` : p.waiting ? ` — waiting on ${lc(p.waiting)}` : ''}.`);
-  if (p.mrn === WORKED) {
+  if (hasCase(p.mrn)) {
     const ev = evaluate(latestVer());
     lines.push(`AI recommendation: ${OUTCOME[ev.end]}.`);
     const last = (S.added[p.mrn] || []).concat(NOTES)[0];
@@ -3564,7 +3735,7 @@ function draftProgressNote(p) {
 function notesCard(p) {
   const o = outFor(p);
   if (!o.pnoteEdited) o.pnote = draftProgressNote(p);
-  const log = (S.added[p.mrn] || []).concat(p.mrn === WORKED ? NOTES : []);
+  const log = (S.added[p.mrn] || []).concat(hasCase(p.mrn) ? NOTES : []);
   const sub = S.noteSub === 'new' ? 'new' : 'earlier';
   const t = (id, label) => `<button type="button" role="tab" aria-selected="${sub === id}" data-act="noteSub" data-v="${id}">${label}</button>`;
   const pills = (n) => `${n.tag ? `<span class="pill xs ${tagTone(n.tag)}">${esc(n.tag)}</span>` : ''}${n.fresh ? '<span class="pill xs t-new">Just added</span>' : ''}`;
@@ -3605,7 +3776,7 @@ function outputsCard(p) {
     body = `<label class="sr-only" for="outNote">Triage note</label>
         <textarea class="field out-text" id="outNote" data-out="note" rows="12">${esc(o.note)}</textarea>
         <div class="out-acts"><button type="button" class="btn primary sm" data-act="outCopy" data-v="note">Copy</button>
-          ${p.mrn === WORKED ? '<button type="button" class="btn secondary sm" data-act="outRedraft" data-v="note">Reset AI draft</button>' : ''}${copied('note')}</div>`;
+          ${hasCase(p.mrn) ? '<button type="button" class="btn secondary sm" data-act="outRedraft" data-v="note">Reset AI draft</button>' : ''}${copied('note')}</div>`;
   } else if (sub === 'reqs') {
     body = `${o.reqs.length ? o.reqs.map((r, i) => `<div class="out-req">
           <label class="out-lab">To<input type="text" data-out="to:${i}" value="${esc(r.to)}" placeholder="Who this goes to"></label>
@@ -3771,8 +3942,9 @@ const ACT = {
   // Selecting a patient opens the sidecard beside the list.
   open: (v) => {
     if (S.current !== v) { S.copied = ''; S.comp = null; S.tree = null; S.ov = null; S.docIdx = 0; S.labEdit = null; }
-    if (S.current !== v) { S.noteSub = 'earlier'; S.noteSaved = ''; S.outSub = 'note'; S.evTab = 'testing'; }
+    if (S.current !== v) { S.lastOv = null; S.ov = null; S.labEdit = null; S.noteSub = 'earlier'; S.noteSaved = ''; S.outSub = 'note'; S.evTab = 'testing'; }
     S.current = v; S.side = true; S.searchMsg = ''; S.drawer = null; S.tsOpen = false;
+    useCase(v);
     return;
     if (S.current !== v) { S.copied = null; S.comp = null; }
     // Opening a profile from the day shows only the awaiting column; the list is one click away.
