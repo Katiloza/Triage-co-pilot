@@ -159,6 +159,10 @@ button { font-family: inherit; color: inherit; }
 .t-new { background: var(--blue-bg); color: var(--blue); }
 .t-accepted, .t-met { background: var(--green-bg); color: var(--green); }
 .t-declined { background: var(--red-bg); color: var(--red); }
+.t-received { background: var(--blue-bg); color: #24497F; }
+.t-waiting { background: var(--amber-bg); color: var(--amber); }
+.t-sent { background: var(--purple-bg); color: #3F3480; }
+.t-scheduled { background: var(--green-bg); color: var(--green); }
 .t-missing { background: var(--amber-bg); color: var(--amber); }
 .t-gap { background: var(--purple-bg); color: var(--purple); }
 .t-cold { background: var(--sunk); color: var(--faint); }
@@ -413,8 +417,8 @@ textarea.field:focus { border-color: var(--primary); }
 
 /* Home: four small action cards, each opening the dashboard at its chart */
 .acards { display: grid; grid-template-columns: repeat(4, minmax(0, 184px)); gap: 12px; margin-top: 48px; }
-/* The home column is as wide as the card row and sits in the middle, with the search bar matching it */
-.landing .home { max-width: calc(4 * 184px + 3 * 12px + 56px); }
+/* The home column fills the screen from the left edge */
+.landing .home { max-width: none; margin: 0; }
 .landing .search form { max-width: calc(4 * 184px + 3 * 12px); margin: 0 auto; }
 .acard { min-width: 0; height: 184px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; padding: 14px 14px 12px; text-align: left; background: var(--tile); border: 0; border-radius: 16px; color: var(--ink); font: inherit; cursor: pointer; transition: background-color 0.15s, border-color 0.15s; }
 .acard:hover { background: var(--tile-hover); }
@@ -504,6 +508,46 @@ textarea.field:focus { border-color: var(--primary); }
 .aw-ctx .btn { margin-top: 6px; font-size: 13.5px; }
 .aw-row.open, .tc-row.open { background: #FAFBFD; }
 .tc-card { margin-top: 14px; }
+/* Referral list on the home screen */
+.home-list { margin-top: 36px; overflow: hidden; }
+.home > .home-list:first-child { margin-top: 0; }
+.home-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; }
+.home-filters .chips { gap: 8px; }
+.date-filter { position: relative; }
+.date-chip { display: inline-flex; align-items: center; gap: 8px; }
+.date-chip svg { color: var(--muted); }
+.date-chip.on { background: var(--blue-bg); border-color: var(--primary); color: var(--primary); }
+.date-chip.on svg { color: var(--primary); }
+.cal-pop { position: absolute; top: calc(100% + 8px); left: 0; z-index: 30; width: 340px; padding: 12px 14px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 16px 40px rgba(20, 20, 15, 0.16); }
+.cal-pop-top { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.cal-pop-top .icon-btn { width: 30px; height: 30px; border-radius: 8px; }
+.cal-pop-foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
+.cal-plain .cell { min-height: 40px; }
+.cal-plain .cell .n { font-size: 14px; }
+.range-pop { width: 320px; }
+.range-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.range-grid label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.range-grid input { height: 36px; padding: 0 8px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); font-family: var(--mono); font-size: 13px; color: var(--ink); }
+.range-grid input:focus { outline: none; border-color: var(--primary); }
+@container (max-width: 560px) { .cal-pop { width: min(340px, calc(100cqi - 32px)); } }
+.home-filters .chip { min-height: 36px; padding: 0 16px; border-radius: 18px; font-size: 14px; }
+.home-filters + .home-list { margin-top: 0; }
+/* Home: the search bar sits at the top, above the list, the same width as the list */
+.search-top { flex-shrink: 0; }
+.search-top .search { padding: 28px 24px 4px; border-top: 0; }
+.landing .home { padding-top: 20px; }
+.home-list .card-h { padding-bottom: 12px; }
+.hl-count { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.hl-cols, .hl-row { display: grid; grid-template-columns: minmax(96px, 0.9fr) minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 0.9fr) minmax(0, 0.9fr); gap: 12px; align-items: center; padding: 0 18px; }
+.hl-cols { min-height: 36px; background: var(--blue-bg); border-top: 1px solid #D3DDEC; border-bottom: 1px solid #D3DDEC; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #24497F; }
+.hl-row { width: 100%; min-height: 52px; border: 0; border-bottom: 1px solid var(--border); background: var(--surface); font: inherit; text-align: left; cursor: pointer; }
+.hl-row:last-child { border-bottom: 0; }
+.hl-row:hover { background: #F7F9FC; }
+.hl-name { font-size: 15px; font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hl-mrn, .hl-d { font-family: var(--mono); font-size: 13.5px; color: var(--ink-3); }
+.hl-src { font-size: 14px; color: var(--ink-3); }
+.hl-st .pill { height: 24px; padding: 0 10px; font-size: 13px; }
+@container (max-width: 560px) { .hl-cols { display: none; } .hl-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: 2px; padding: 10px 16px; } .hl-d { text-align: right; } .hl-st { grid-column: 1; grid-row: 1; } .hl-name { grid-column: 1; grid-row: 2; } .hl-mrn { grid-column: 1; grid-row: 3; } .hl-d { grid-column: 2; grid-row: 2; } .hl-src { grid-column: 2; grid-row: 3; text-align: right; } }
 .tc-body { margin-top: 8px; border-top: 1px solid var(--border); }
 .tc-row { padding: 4px 18px; border-bottom: 1px solid var(--border); }
 .tc-row .aw-ctx { padding: 0 0 10px; }
@@ -963,6 +1007,165 @@ body.resizing .rail, body.resizing .track { transition: none; }
   .note-foot .why { flex-basis: 100%; }
 }
 
+
+/* ---------- Page tabs in the titlebar ---------- */
+.tb-tabs { display: flex; gap: 4px; margin-left: 18px; }
+.tb-tabs button { min-height: 32px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.tb-tabs button:hover { background: var(--side); color: var(--ink); }
+.tb-tabs button[aria-current="page"] { background: var(--blue-bg); color: #24497F; }
+
+/* ---------- The patient sidecard: the right half, the list stays on the left ---------- */
+.hl-row.here { background: var(--blue-bg); box-shadow: inset 3px 0 0 var(--primary); }
+/* It sits on top of the list; the list keeps its own width underneath. */
+.sidecard { position: absolute; top: 0; right: 0; bottom: 0; z-index: 30; width: 80%; min-width: 0; display: flex; border-left: 1px solid var(--border-strong); background: var(--side); box-shadow: -14px 0 32px rgba(20, 20, 15, 0.14); }
+.sc-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; container-type: inline-size; }
+.sc-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start; min-width: 0; }
+.sc-col { display: grid; gap: 14px; min-width: 0; }
+@container (max-width: 880px) { .sc-cols { grid-template-columns: minmax(0, 1fr); } }
+.sc-head { flex-shrink: 0; display: flex; align-items: flex-start; gap: 10px 28px; padding: 18px 16px 12px 22px; }
+.sc-facts { min-width: 0; max-width: 560px; margin: 14px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 16px; font-size: 14px; line-height: 1.4; }
+.sc-facts dt { color: var(--muted); white-space: nowrap; }
+.sc-facts dd { margin: 0; color: var(--ink); }
+.sc-x { flex-shrink: 0; }
+@container (max-width: 700px) { .sc-head { flex-wrap: wrap; column-gap: 10px; } .sc-head > .grow { flex-basis: calc(100% - 44px); } .sc-head > .ts { order: 3; flex-basis: 100%; } }
+.sc-name { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; }
+.sc-meta { margin-top: 3px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.ts { flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 2px; }
+.ts-lab { font-size: 12px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); }
+.ts-dd { position: relative; }
+.ts-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 10px 0 6px; border: 1px solid var(--border-strong); border-radius: 9px; font: inherit; cursor: pointer; }
+.ts-btn:hover { filter: brightness(0.96); }
+.ts-btn[aria-expanded="true"] { border-color: var(--primary); box-shadow: 0 0 0 3px var(--blue-bg); }
+/* Triage status: the button takes the colours of the current status's tag */
+.ts-val { font-size: 14px; font-weight: 600; color: inherit; }
+.ts-btn { padding-left: 12px; border-color: transparent; }
+.ts-btn.t-received { border-color: #C9D7EC; } .ts-btn.t-waiting { border-color: #EBD3A8; } .ts-btn.t-sent { border-color: #D6CEF2; } .ts-btn.t-scheduled { border-color: #BFE0D0; } .ts-btn.t-declined { border-color: #F0C9C0; }
+.ts-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 50; min-width: 180px; padding: 6px; display: grid; gap: 2px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 12px; box-shadow: 0 12px 28px rgba(20, 20, 15, 0.16); }
+.ts-item { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 10px 0 8px; border: 0; border-radius: 8px; background: transparent; font: inherit; cursor: pointer; text-align: left; }
+.ts-item:hover, .ts-item:focus-visible { background: var(--side); }
+.ts-item .pill { font-size: 13px; height: 22px; }
+.ts-tick { font-size: 14px; font-weight: 700; color: var(--primary); }
+.sc-tabs { flex-shrink: 0; display: flex; gap: 2px; padding: 0 16px; border-bottom: 1px solid var(--border-strong); }
+.sc-tabs button { position: relative; min-height: 42px; padding: 0 12px; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.sc-tabs button:hover { color: var(--ink); }
+.sc-tabs button[aria-selected="true"] { color: var(--primary); }
+.sc-tabs button[aria-selected="true"]::after { content: ''; position: absolute; left: 8px; right: 8px; bottom: -1px; height: 3px; border-radius: 2px; background: var(--primary); }
+.sc-body { flex-grow: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 16px 18px 90px; display: grid; gap: 14px; align-content: start; }
+.sc-sec { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; min-width: 0; }
+.sc-sec-h { display: flex; align-items: center; gap: 8px; }
+.sc-cards { display: grid; gap: 14px; min-width: 0; }
+.sc-hint { margin: 6px 0 10px; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.sc-kv { font-size: 14px; grid-template-columns: minmax(0, 170px) minmax(0, 1fr); }
+.sc-kv dd { overflow-wrap: anywhere; }
+.rec .rec-t { margin-top: 4px; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; color: var(--ink); }
+.rec-v { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 8px; }
+.rec-was { font-size: 13px; color: var(--muted); }
+.rec .exec-lines { font-size: 14px; }
+.rec-vers { margin-top: 12px; }
+
+/* The algorithm, vertical: steps down the left, the branch each can leave by indented below it */
+.vt { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
+.vt-row { position: relative; min-width: 0; padding: 0 0 14px 0; }
+.vt-row:not(:last-child)::before { content: ''; position: absolute; left: 19px; top: 40px; bottom: 0; width: 2px; background: var(--border-strong); }
+.vt-row.on:not(:last-child)::before { background: var(--primary); }
+.vt-node { width: 100%; display: flex; align-items: center; gap: 12px; padding: 0; border: 0; background: transparent; text-align: left; font: inherit; color: var(--ink); cursor: pointer; border-radius: 10px; }
+.vt-node .sn-txt { padding: 2px 0; }
+.vt-node .sn-t { font-size: 14px; }
+.vt-node .sn-s { font-size: 13px; }
+.vt-node:hover .sn-t { text-decoration: underline; text-underline-offset: 2px; }
+.vt-node.on .sn-ic { border-color: var(--primary); background: var(--blue-bg); color: var(--primary); }
+.vt-node.on.end .sn-ic { border-color: var(--amber-dot); background: var(--amber-bg); color: var(--amber); }
+.vt-node.on.end.met .sn-ic { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+.vt-node.off .sn-ic { background: var(--sunk); color: var(--faint); }
+.vt-node.off .sn-t { color: var(--muted); font-weight: 500; }
+.vt-node.sel { outline: 2px solid var(--primary); outline-offset: 3px; }
+.vt-branch { margin: 8px 0 0 52px; padding: 8px 10px; border-left: 2px dashed var(--border-strong); border-radius: 0 10px 10px 0; background: var(--ground); }
+.vt-branch.end { border-left-color: var(--amber-dot); background: #FDFAF3; }
+.vt-if { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+.vt-branch .sn-ic { width: 32px; height: 32px; }
+
+/* The document panel beside the sidecard's content */
+/* The decision tree spans the sidecard: steps on the left, the evidence for the picked step on the right */
+.dt-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: start; margin-top: 4px; }
+@container (max-width: 880px) { .dt-grid { grid-template-columns: minmax(0, 1fr); } }
+.ev-panel { position: sticky; top: 0; min-width: 0; padding: 20px 22px 22px; border-radius: 18px; background: var(--side); border: 1px solid var(--border); }
+.evp-chip { display: inline-flex; align-items: center; height: 26px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: 13px; background: var(--surface); font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.evp-ic { width: 56px; height: 56px; margin-top: 16px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-strong); border-radius: 14px; background: var(--surface); color: var(--ink-3); }
+.evp-ic svg { width: 24px; height: 24px; }
+.evp-t { margin: 14px 0 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; color: var(--ink); }
+.evp-status { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.evp-status .pill { height: 26px; padding: 0 12px; border-radius: 13px; font-size: 13px; }
+.evp-sec { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border-strong); }
+.evp-k { margin-bottom: 8px; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.evp-sec p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+.evp-sec p + p { margin-top: 8px; }
+.evp-next { font-weight: 600; }
+.evp-req { width: 100%; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface); font: inherit; font-size: 14px; color: var(--ink); text-align: left; cursor: pointer; }
+.evp-req:hover { border-color: #BDB9AF; }
+.ev-panel .dp-nav { flex-wrap: wrap; margin-top: 0; }
+.ev-panel .dp-tabs { margin: 0 0 0 4px; }
+.ev-panel .dp-doc .source { background: var(--surface); }
+.dp-head { display: flex; align-items: flex-start; gap: 10px; }
+.dp-t { margin: 4px 0 0; font-size: 17px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.35; }
+.dp-found { margin: 10px 0 0; font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+.dp-nav { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+.dp-nav .icon-btn { width: 32px; height: 32px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink-3); }
+.dp-nav .icon-btn:disabled { color: #B9B6AE; }
+.dp-count { font-size: 13px; font-weight: 600; color: var(--ink-3); }
+.dp-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.dp-tabs button { min-height: 30px; padding: 0 11px; border: 1px solid var(--border-strong); border-radius: 15px; background: var(--surface); color: var(--ink-2); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.dp-tabs button[aria-selected="true"] { border-color: var(--primary); background: var(--blue-bg); color: #24497F; }
+.dp-doc { margin-top: 12px; font-size: 14px; }
+.dp-doc mark, .sc-docs mark { background: #FCE9B8; color: var(--ink); border-radius: 3px; padding: 0 2px; }
+.dp-doc .src-table tr.flag td { background: #FCE9B8; color: var(--ink); font-weight: 600; }
+.dp-doc .src-scroll { overflow-x: hidden; }
+.dp-doc .src-table { width: 100%; min-width: 0; table-layout: fixed; }
+.dp-doc .src-table th { letter-spacing: 0.03em; }
+.sc-docs .s-aside { font-size: 13.5px; }
+
+/* Outputs */
+.out-text { width: 100%; min-height: 160px; resize: vertical; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; line-height: 1.55; }
+.out-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.out-ok { font-size: 13px; font-weight: 600; color: var(--green); }
+.out-req { padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+.out-lab { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.out-lab input { flex-grow: 1; min-width: 0; min-height: 36px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 8px; font: inherit; font-size: 14px; font-weight: 400; color: var(--ink); }
+.out-add svg { width: 14px; height: 14px; }
+.notes-card .ctabs, .outputs-card .ctabs, .ev-card .ctabs { padding: 10px 14px 0; }
+.notes-card .ctabs button, .outputs-card .ctabs button, .ev-card .ctabs button { font-size: 14px; }
+.out-hint { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+.nc-earlier { margin: 0; }
+
+/* Chat bubble, bottom left */
+.chat-bubble { position: fixed; left: 20px; bottom: 20px; z-index: 60; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 50%; background: var(--primary); color: #FFFFFF; cursor: pointer; box-shadow: 0 10px 24px rgba(20, 20, 15, 0.22), 0 2px 5px rgba(20, 20, 15, 0.1); }
+.chat-bubble.on { background: #24497F; }
+.chat-pop { position: fixed; left: 20px; bottom: 84px; z-index: 60; width: min(380px, calc(100vw - 40px)); height: min(560px, calc(100vh - 150px)); display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 16px; box-shadow: 0 18px 40px rgba(20, 20, 15, 0.22); overflow: hidden; }
+.chat-pop-h { flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 14px; border-bottom: 1px solid var(--border); background: var(--side); }
+.chat-pop-t { display: block; font-size: 14px; font-weight: 600; }
+.chat-pop-s { display: block; margin-top: 1px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-pop-body { flex-grow: 1; min-height: 0; overflow-y: auto; }
+.chat-pop-sugg { flex-shrink: 0; padding: 8px 12px 0; }
+.chat-pop-f { flex-shrink: 0; display: flex; gap: 8px; padding: 10px 12px 12px; }
+.chat-pop-f input { flex-grow: 1; min-width: 0; min-height: 36px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: 9px; font: inherit; font-size: 14px; }
+.chat-pop-f input:disabled, .chat-pop-f .btn-send:disabled { opacity: 0.55; cursor: default; }
+
+/* Patient lookup */
+.lk-t { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+.lk-box { display: flex; align-items: center; gap: 10px; max-width: 520px; min-height: 46px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface); color: var(--faint); }
+.lk-box input { flex-grow: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: 15px; color: var(--ink); }
+.lk-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px var(--blue-bg); }
+
+@media (max-width: 767px) {
+  .sidecard { position: absolute; inset: 0; z-index: 40; width: 100%; border-left: 0; }
+  .tb-tabs { margin-left: 6px; }
+  .tb-tabs button { padding: 0 8px; font-size: 13px; }
+  .sc-tabs { flex-wrap: wrap; padding: 0 8px; }
+  .sc-tabs button { padding: 0 9px; font-size: 13.5px; }
+  .sc-kv { grid-template-columns: minmax(0, 1fr); gap: 2px 0; }
+  .sc-kv dd { margin-bottom: 8px; }
+  .chat-bubble { left: 14px; bottom: 14px; }
+  .chat-pop { left: 10px; right: 10px; width: auto; bottom: 76px; }
+}
 </style>
 </head>
 <body>
@@ -1015,36 +1218,41 @@ const ICON = {
 const COUNTS = { 1: 9, 2: 7, 5: 14, 6: 11, 7: 10, 8: 8, 9: 12, 12: 15, 13: 9, 14: 11, 15: 10, 16: 7, 19: 14, 20: 13, 21: 9, 22: 12, 23: 8, 26: 15, 27: 13 };
 
 const PEOPLE = [
-  { name: 'Alvarez, Rosa M.', mrn: '40-118-772', rm: 10, rd: 27, status: 'awaiting', waiting: 'Repeat CBC with differential', ref: 'REF-2026-4471', source: 'External', meta: 'F · 54 y · DOB Mar 12, 1972' },
-  { name: 'Okonkwo, Daniel', mrn: '40-221-905', rm: 10, rd: 27, status: 'new', waiting: '', ref: 'REF-2026-5102', source: 'Internal' },
-  { name: 'Bhatt, Priya', mrn: '40-198-443', rm: 10, rd: 27, status: 'new', waiting: '', ref: 'REF-2026-5104', source: 'External' },
-  { name: 'Ferreira, Luis A.', mrn: '40-205-118', rm: 10, rd: 12, status: 'awaiting', waiting: 'Outside records from Mesa Clinic', ref: 'REF-2026-4839', source: 'External' },
-  { name: 'Nakamura, Hana', mrn: '40-176-330', rm: 10, rd: 27, status: 'new', waiting: '', ref: 'REF-2026-5107', source: 'Internal' },
-  { name: 'Whitfield-Cruz, Ana', mrn: '40-212-667', rm: 10, rd: 6, status: 'awaiting', waiting: 'Provider review of results', ref: 'REF-2026-4688', source: 'Internal' },
-  { name: 'Delgado, Marisol', mrn: '40-189-024', rm: 10, rd: 27, status: 'declined', decline: 'malig', waiting: '', ref: 'REF-2026-5111', source: 'External' },
-  { name: 'Haddad, Omar', mrn: '40-230-551', rm: 10, rd: 19, status: 'accepted', waiting: '', ref: 'REF-2026-4950', source: 'Internal' },
-  { name: 'Pierce, Gwen', mrn: '40-144-806', rm: 10, rd: 5, status: 'declined', decline: 'invest', waiting: '', ref: 'REF-2026-4652', source: 'External' },
-  { name: 'Sorensen, Erik', mrn: '40-227-913', rm: 10, rd: 27, status: 'new', waiting: '', ref: 'REF-2026-5115', source: 'Internal' },
-  { name: 'Park, Jin-Ho', mrn: '40-162-740', rm: 10, rd: 13, status: 'awaiting', waiting: 'Consult type change to eConsult', ref: 'REF-2026-4851', source: 'Internal' },
-  { name: 'Oyelaran, Tope', mrn: '40-233-089', rm: 10, rd: 15, status: 'awaiting', waiting: 'Ferritin and iron studies', ref: 'REF-2026-4877', source: 'External' },
-  { name: 'Lindqvist, Mia', mrn: '40-219-374', rm: 10, rd: 18, status: 'awaiting', waiting: 'Provider review of results', ref: 'REF-2026-4930', source: 'Internal' },
-  { name: 'Abadi, Noor', mrn: '40-187-612', rm: 10, rd: 20, status: 'accepted', waiting: '', ref: 'REF-2026-4968', source: 'External' }
+  { name: 'Alvarez, Rosa M.', mrn: '40-118-772', rm: 10, rd: 27, status: 'waiting', waiting: 'Repeat CBC with differential', ref: 'REF-2026-4471', source: 'External', meta: 'F · 54 y · DOB Mar 12, 1972' },
+  { name: 'Okonkwo, Daniel', mrn: '40-221-905', rm: 10, rd: 27, status: 'received', waiting: '', ref: 'REF-2026-5102', source: 'Internal' },
+  { name: 'Bhatt, Priya', mrn: '40-198-443', rm: 10, rd: 27, status: 'received', waiting: '', ref: 'REF-2026-5104', source: 'Internal' },
+  { name: 'Ferreira, Luis A.', mrn: '40-205-118', rm: 10, rd: 12, status: 'waiting', waiting: 'Outside records from Mesa Clinic', ref: 'REF-2026-4839', source: 'External' },
+  { name: 'Nakamura, Hana', mrn: '40-176-330', rm: 10, rd: 27, status: 'received', waiting: '', ref: 'REF-2026-5107', source: 'Internal' },
+  { name: 'Whitfield-Cruz, Ana', mrn: '40-212-667', rm: 10, rd: 6, status: 'waiting', waiting: 'Provider review of results', ref: 'REF-2026-4688', source: 'Internal' },
+  { name: 'Delgado, Marisol', mrn: '40-189-024', rm: 10, rd: 27, status: 'declined', decline: 'malig', waiting: '', ref: 'REF-2026-5111', source: 'Internal' },
+  { name: 'Haddad, Omar', mrn: '40-230-551', rm: 10, rd: 19, status: 'scheduled', waiting: '', ref: 'REF-2026-4950', source: 'Internal' },
+  { name: 'Pierce, Gwen', mrn: '40-144-806', rm: 10, rd: 5, status: 'declined', decline: 'invest', waiting: '', ref: 'REF-2026-4652', source: 'Internal' },
+  { name: 'Sorensen, Erik', mrn: '40-227-913', rm: 10, rd: 27, status: 'received', waiting: '', ref: 'REF-2026-5115', source: 'Internal' },
+  { name: 'Park, Jin-Ho', mrn: '40-162-740', rm: 10, rd: 13, status: 'waiting', waiting: 'Consult type change to eConsult', ref: 'REF-2026-4851', source: 'Internal' },
+  { name: 'Oyelaran, Tope', mrn: '40-233-089', rm: 10, rd: 15, status: 'waiting', waiting: 'Ferritin and iron studies', ref: 'REF-2026-4877', source: 'External' },
+  { name: 'Lindqvist, Mia', mrn: '40-219-374', rm: 10, rd: 18, status: 'waiting', waiting: 'Provider review of results', ref: 'REF-2026-4930', source: 'Internal' },
+  { name: 'Abadi, Noor', mrn: '40-187-612', rm: 10, rd: 20, status: 'sent', waiting: '', ref: 'REF-2026-4968', source: 'Internal' }
 ];
 // Days in triage are counted from the received date to today.
 PEOPLE.forEach((p) => { p.received = MONTHS[p.rm - 1] + ' ' + p.rd; p.days = daysSince(2026, p.rm, p.rd); });
 const byMrn = (mrn) => PEOPLE.find((p) => p.mrn === mrn);
 
+// Triage status: where the referral is in Melissa's logistics, set by her in the sidecard.
 const STATUS = {
-  awaiting: { label: 'Awaiting', dot: '#C98A2B' },
-  new: { label: 'New', dot: '#2F5FA8' },
-  accepted: { label: 'Accepted', dot: '#0E7A52' },
-  declined: { label: 'Declined', dot: '#8A3324' }
+  received: { label: 'Received' },
+  waiting: { label: 'Waiting' },
+  sent: { label: 'Sent' },
+  scheduled: { label: 'Scheduled' },
+  declined: { label: 'Declined' }
 };
+const STATUS_ORDER = ['received', 'waiting', 'sent', 'scheduled', 'declined'];
 
 const FILTERS = {
   all: 'All referrals',
-  awaiting: 'Awaiting',
-  accepted: 'Accepted',
+  received: 'Received',
+  waiting: 'Waiting',
+  sent: 'Sent',
+  scheduled: 'Scheduled',
   declined: 'Declined',
   external: 'External referrals'
 };
@@ -1065,8 +1273,7 @@ const STEPS = [
   { n: 1, q: 'Is the finding isolated?' },
   { n: 2, q: 'Is the lymphopenia persistent?' },
   { n: 3, q: 'Is the newest result recent enough?' },
-  { n: 4, q: 'Has Allergy and Immunology seen the patient?' },
-  { n: 5, q: 'Does an exception apply?' }
+  { n: 4, q: 'Has Allergy and Immunology seen the patient?' }
 ];
 const TONE = {
   met: { label: 'Met', mark: '✓' },
@@ -1098,8 +1305,7 @@ const CHART = {
     { date: '2026-06-03', wbc: 5.1, alc: 1.34, hgb: 13.0, plt: 248, anc: 3.52, src: 'Outside records' },
     { date: '2026-10-20', wbc: 4.4, alc: 0.78, hgb: 13.2, plt: 239, anc: 3.21, src: 'Outside records' }
   ],
-  ai: { seen: true, date: '2026-10-22', where: 'Desert Allergy Associates' },
-  exception: null // the tree defines none for external referrals
+  ai: { seen: true, date: '2026-10-22', where: 'Desert Allergy Associates' }
 };
 const HISTORY = [
   { date: 'OCT 27, 2026', fill: '#FFFFFF', ring: '#C9C6BD', t: 'Referral received', b: 'Whitfield, MD · Northgate Primary Care · external, face-to-face requested. Outside records include the Oct 20 CBC and the Oct 22 Allergy and Immunology evaluation.' },
@@ -1155,6 +1361,16 @@ const S = {
   range: { from: null, to: null }, // 'y-m-d' each; 'to' is null until the end day is picked
   cal: { y: TODAY.y, m: TODAY.m }, // month shown in the calendar; opens on this month
   calPicker: null,       // year being browsed in the month picker, when open
+  calPop: false,         // the home screen's day filter is open
+  side: false,           // the patient sidecard is open (on S.current)
+  sideTab: 'decision',   // details | decision | refs | outputs
+  docIdx: 0,             // which document the node panel shows
+  page: 'inbox',         // inbox | lookup
+  lookupQ: '',           // the Patient lookup search
+  chatOpen: false,       // the chat bubble's panel is open
+  out: {},               // the Outputs tab's drafts, by MRN: { note, reqs: [{ to, body }] }
+  copied: '',            // the output last copied, for its "Copied" mark
+  rangePop: false,       // the home screen's date range filter is open
   filter: 'all',
   current: WORKED,        // the patient open now, or last opened
   pipCollapsed: false,
@@ -1240,7 +1456,9 @@ function receivedOn(y, m, d) {
 
 /* ---------- Rail ---------- */
 
-function renderRail() {
+// The calendar's parts: the month grid with counts, the month picker and the date-range inputs.
+// Used by the patient page's left column and the home screen's date filter.
+function calendarParts(opt = {}) {
   const { y, m } = S.cal;
   const lead = new Date(y, m - 1, 1).getDay();
   const days = new Date(y, m, 0).getDate();
@@ -1253,11 +1471,12 @@ function renderRail() {
     const r = S.range;
     const end = r.from && (k === r.from || k === r.to);
     const inside = r.from && r.to && keyNum(k) > keyNum(r.from) && keyNum(k) < keyNum(r.to);
-    const sel = S.rangeMode ? end : S.day === k;
-    const cls = ['cell', k === dayKey(TODAY.y, TODAY.m, TODAY.d) && 'today', sel && 'sel', S.rangeMode && inside && 'inrange', future && 'future'].filter(Boolean).join(' ');
+    const single = opt.single;
+    const sel = single ? (!S.rangeMode && S.day === k) : (S.rangeMode ? end : S.day === k);
+    const cls = ['cell', k === dayKey(TODAY.y, TODAY.m, TODAY.d) && 'today', sel && 'sel', !single && S.rangeMode && inside && 'inrange', future && 'future'].filter(Boolean).join(' ');
     cells.push(`<button type="button" class="${cls}" data-act="day" data-v="${k}" ${future ? 'disabled' : ''}
-      aria-label="${MONTH_NAMES[m - 1]} ${d}, ${future ? 'not yet' : n + ' received'}${sel ? ', selected' : (S.rangeMode && inside ? ', in range' : '')}">
-      <span class="n">${d}</span><span class="c">${future ? '' : (n || '·')}</span></button>`);
+      aria-label="${MONTH_NAMES[m - 1]} ${d}${opt.counts === false ? '' : ', ' + (future ? 'not yet' : n + ' received')}${sel ? ', selected' : (!single && S.rangeMode && inside ? ', in range' : '')}">
+      <span class="n">${d}</span>${opt.counts === false ? '' : `<span class="c">${future ? '' : (n || '·')}</span>`}</button>`);
   }
   const atStart = y === FIRST_YEAR && m === 1;
   const atNow = y === TODAY.y && m === TODAY.m;
@@ -1281,14 +1500,25 @@ function renderRail() {
       <div class="cal-pick-foot"><button type="button" class="btn-ghost" data-act="calToday">This month</button></div>
     </div>`;
 
-  const chip = (id, label, size) => `<button type="button" class="chip ${size || ''}" data-act="filter" data-v="${id}" aria-pressed="${S.filter === id}">${label}</button>`;
-  const filters = `
-    <div class="rail-filters">
-      <div class="chips" role="group" aria-label="Filter by decision">
-        ${chip('all', 'All')}${chip('awaiting', 'Awaiting')}${chip('accepted', 'Accepted')}${chip('declined', 'Declined')}${chip('external', 'External')}
-      </div>
-    </div>`;
+  const r = S.range;
+  const maxIso = toIso(dayKey(TODAY.y, TODAY.m, TODAY.d));
+  const rangeInputs = S.rangeMode ? `
+    <div class="range-in">
+      <input type="date" id="rangeFrom" aria-label="From" value="${r.from ? toIso(r.from) : ''}" min="${FIRST_YEAR}-01-01" max="${maxIso}">
+      <span>to</span>
+      <input type="date" id="rangeTo" aria-label="To" value="${r.to ? toIso(r.to) : ''}" min="${r.from ? toIso(r.from) : FIRST_YEAR + '-01-01'}" max="${maxIso}">
+    </div>` : '';
+  return { y, m, py, picker, cells, atStart, atNow, rangeInputs };
+}
 
+// The decision filters, shared by the sidebar list and the home screen list.
+function filterChips() {
+  const chip = (id, label) => `<button type="button" class="chip" data-act="filter" data-v="${id}" aria-pressed="${S.filter === id}">${label}</button>`;
+  return `<div class="chips" role="group" aria-label="Filter by triage status">${chip('all', 'All')}${STATUS_ORDER.map((k) => chip(k, STATUS[k].label)).join('')}${chip('external', 'External')}</div>`;
+}
+
+// The referrals that the calendar and the filters pick out, with a title and a count for the list.
+function referralList() {
   const rows = PEOPLE.filter((p) => onDay(p) && matchesFilter(p));
   const r = S.range;
   const span = S.rangeMode
@@ -1299,13 +1529,15 @@ function renderRail() {
     : S.rangeMode ? receivedBetween(r.from, r.to || r.from)
       : receivedOn(...S.day.split('-').map(Number)) || 0;
   const count = received === null ? String(rows.length) : `${rows.length} of ${received} received`;
-  const maxIso = toIso(dayKey(TODAY.y, TODAY.m, TODAY.d));
-  const rangeInputs = S.rangeMode ? `
-    <div class="range-in">
-      <input type="date" id="rangeFrom" aria-label="From" value="${r.from ? toIso(r.from) : ''}" min="${FIRST_YEAR}-01-01" max="${maxIso}">
-      <span>to</span>
-      <input type="date" id="rangeTo" aria-label="To" value="${r.to ? toIso(r.to) : ''}" min="${r.from ? toIso(r.from) : FIRST_YEAR + '-01-01'}" max="${maxIso}">
-    </div>` : '';
+  return { rows, title, count };
+}
+
+function renderRail() {
+  const { y, m, py, picker, cells, atStart, atNow, rangeInputs } = calendarParts();
+  // On the home screen the filters sit above the referral list instead.
+  const filters = S.view === 'queue' ? '' : `<div class="rail-filters">${filterChips()}</div>`;
+
+  const { rows, title, count } = referralList();
   const list = rows.length
     ? rows.map((p) => {
       const here = S.view === 'patient' && S.current === p.mrn;
@@ -1332,9 +1564,9 @@ function renderRail() {
       <div class="rail-fixed">
         <div style="padding: 0 12px 10px">${picker || `<div class="cal-cap"><span class="grow">Referrals by date received</span><button type="button" class="cal-mode" data-act="rangeMode" aria-pressed="${S.rangeMode}">Date range</button></div>${rangeInputs}<div class="cal">${cells.join('')}</div>`}</div>
         ${filters}
-        <div class="rail-title"><span class="kicker">${title}</span><span class="grow"></span><span class="count">${count}</span>${dateFiltered() ? '<button type="button" class="btn-ghost" data-act="clearDay">Show all</button>' : ''}</div>
+        ${S.view === 'queue' ? '' : `<div class="rail-title"><span class="kicker">${title}</span><span class="grow"></span><span class="count">${count}</span>${dateFiltered() ? '<button type="button" class="btn-ghost" data-act="clearDay">Show all</button>' : ''}</div>`}
       </div>
-      <div class="rail-scroll"><div style="padding: 0 8px 12px">${list}</div></div>
+      ${S.view === 'queue' ? '' : `<div class="rail-scroll"><div style="padding: 0 8px 12px">${list}</div></div>`}
       ${S.view === 'patient' ? `<div class="rail-foot"><button type="button" class="btn-back" data-act="toQueue">${ICON.left} Back to the day</button></div>` : ''}
     </aside>`;
 }
@@ -1430,15 +1662,76 @@ function renderQueue() {
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   if (S.home === 'dash') return renderDashboard();
   return `
-    <main class="centre landing" aria-label="Home">
+    <main class="centre landing ${S.side ? 'with-side' : ''}" aria-label="Referral inbox">
       <div class="centre-scroll"><div class="home">
-        <h2 class="hello"><span class="hi">${greeting}, Melissa</span><span class="sub">How can I help you today?</span></h2>
-        <div class="acards">${actionCards()}</div>
-        <p class="dash-note">Sample numbers for the prototype, not connected to Epic.</p>
+        ${SHOW_GREETING ? `<h2 class="hello"><span class="hi">${greeting}, Melissa</span><span class="sub">How can I help you today?</span></h2>` : ''}
+        <div class="home-filters">${filterChips()}${dateFilter()}${rangeFilter()}</div>
+        ${homeList()}
+        ${SHOW_HOME_CARDS ? `<div class="acards">${actionCards()}</div>
+        <p class="dash-note">Sample numbers for the prototype, not connected to Epic.</p>` : ''}
       </div></div>
-      ${renderSearch('Search an MRN or ask a question about the queue')}
     </main>`;
 }
+
+// The home screen's date filter: a chip that opens the calendar (a day, or a range) under it.
+function dateFilter() {
+  const { y, m, py, picker, cells, atStart, atNow } = calendarParts({ counts: false, single: true });
+  const dayOn = !S.rangeMode && S.day !== null;
+  const label = dayOn ? dayLabel(S.day) : 'Date received';
+  const pop = !S.calPop ? '' : `<div class="cal-pop" role="dialog" aria-label="Filter by date received">
+      <div class="cal-pop-top">
+        <button type="button" class="cal-month" data-act="calPick" aria-expanded="${py !== null}" aria-label="${MONTH_NAMES[m - 1]} ${y}, choose a month">${MONTH_NAMES[m - 1]} ${y}${ICON.down}</button>
+        <span class="grow"></span>
+        <button type="button" class="icon-btn" data-act="calStep" data-v="-1" aria-label="Previous month" ${atStart ? 'disabled' : ''}>${ICON.left}</button>
+        <button type="button" class="icon-btn" data-act="calStep" data-v="1" aria-label="Next month" ${atNow ? 'disabled' : ''}>${ICON.right}</button>
+      </div>
+      ${picker || `<div class="cal cal-plain">${cells.join('')}</div>`}
+      ${dayOn ? '<div class="cal-pop-foot"><button type="button" class="btn-ghost" data-act="clearDay">Clear date</button></div>' : ''}
+    </div>`;
+  return `<div class="date-filter">
+    <button type="button" class="chip date-chip ${dayOn ? 'on' : ''}" data-act="calPop" aria-expanded="${S.calPop}" aria-haspopup="dialog">${ICON.cal}<span>${label}</span>${ICON.down}</button>
+    ${pop}
+  </div>`;
+}
+
+// The home screen's date range filter: From and To, separate from the single-day calendar.
+function rangeFilter() {
+  const r = S.range;
+  const on = S.rangeMode && !!r.from;
+  const label = !on ? 'Date range' : (r.to && r.to !== r.from ? shortLabel(r.from) + ' – ' + shortLabel(r.to) : 'From ' + shortLabel(r.from));
+  const maxIso = toIso(dayKey(TODAY.y, TODAY.m, TODAY.d));
+  const pop = !S.rangePop ? '' : `<div class="cal-pop range-pop" role="dialog" aria-label="Filter by a range of dates received">
+      <div class="range-grid">
+        <label>From<input type="date" id="rangeFrom" value="${S.rangeMode && r.from ? toIso(r.from) : ''}" min="${FIRST_YEAR}-01-01" max="${maxIso}"></label>
+        <label>To<input type="date" id="rangeTo" value="${S.rangeMode && r.to ? toIso(r.to) : ''}" min="${S.rangeMode && r.from ? toIso(r.from) : FIRST_YEAR + '-01-01'}" max="${maxIso}"></label>
+      </div>
+      <div class="cal-pop-foot">${on ? '<button type="button" class="btn-ghost" data-act="clearDay">Clear range</button>' : ''}<button type="button" class="btn secondary sm" data-act="rangePop">Done</button></div>
+    </div>`;
+  return `<div class="date-filter">
+    <button type="button" class="chip date-chip ${on ? 'on' : ''}" data-act="rangePop" aria-expanded="${S.rangePop}" aria-haspopup="dialog">${ICON.cal}<span>${label}</span>${ICON.down}</button>
+    ${pop}
+  </div>`;
+}
+
+// The referral list on the home screen. The chips and the date filter above it choose what it shows.
+function homeList() {
+  const { rows, title, count } = referralList();
+  const body = rows.length
+    ? rows.map((p) => `<button type="button" class="hl-row ${S.side && S.current === p.mrn ? 'here' : ''}" data-act="open" data-v="${p.mrn}" ${S.side && S.current === p.mrn ? 'aria-current="true"' : ''}>
+        <span class="hl-st"><span class="pill xs t-${p.status}">${STATUS[p.status].label}</span></span><span class="hl-name">${esc(p.name)}</span><span class="hl-mrn">${p.mrn}</span><span class="hl-d">${esc(p.received)}</span><span class="hl-src">${esc(p.source)}</span>
+      </button>`).join('')
+    : '<div class="aw-none" style="padding: 16px 18px">No referrals match. Pick All, or clear the day.</div>';
+  return `<section class="card home-list" aria-label="${title}">
+    <div class="card-h"><span class="card-t grow">${title}</span><span class="hl-count">${count}</span>${dateFiltered() ? '<button type="button" class="btn-ghost" data-act="clearDay">Show all</button>' : ''}</div>
+    <div class="hl-cols"><span>Status</span><span>Patient</span><span>MRN</span><span>Received</span><span>Source</span></div>
+    <div class="hl-body">${body}</div>
+  </section>`;
+}
+
+// Hidden for now; set to true to bring the dashboard cards back on the home screen.
+const SHOW_HOME_CARDS = false;
+// Hidden for now; set to true to bring back "Good morning, Melissa / How can I help you today?".
+const SHOW_GREETING = false;
 
 // The four small cards on the home screen. Each opens the dashboard at its chart.
 function actionCards() {
@@ -1555,18 +1848,16 @@ const NODE_ICON = {
   g2: NI('<path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/>'),
   g3: NI('<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'),
   g4: NI('<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/>'),
-  g5: NI('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/>'),
   end: NI('<path d="M5 21V4h11l-2 4 2 4H5"/>')
 };
 const nodeIcon = (id) => NODE_ICON[id] || NODE_ICON.end;
-const SHORT = { g1: 'Isolated?', g2: 'Persistent?', g3: 'Recent enough?', g4: 'Seen by Allergy & Immunology?', g5: 'Exception applies?' };
-const LANE = { root: 'Referral', g1: 'Step 1 · Isolated', g2: 'Step 2 · Persistent', g3: 'Step 3 · Recent', g4: 'Step 4 · Allergy & Immunology', g5: 'Step 5 · Exception', accept: 'Outcome' };
+const SHORT = { g1: 'Isolated?', g2: 'Persistent?', g3: 'Recent enough?', g4: 'Seen by Allergy & Immunology?' };
+const LANE = { root: 'Referral', g1: 'Step 1 · Isolated', g2: 'Step 2 · Persistent', g3: 'Step 3 · Recent', g4: 'Step 4 · Allergy & Immunology', accept: 'Outcome' };
 const RULE = {
   g1: 'The newest CBC has a low ALC (below 1.0 K/µL) while WBC, Hgb, Plt and ANC are all inside their reference ranges.',
   g2: 'Two low ALC results at least 14 days apart, both within 12 weeks.',
   g3: 'The newest CBC was collected in the last 30 days.',
-  g4: 'An Allergy and Immunology evaluation is on file before hematology sees the patient.',
-  g5: 'Rev. 4 lists exception criteria for internal referrals only. External referrals have none.'
+  g4: 'An Allergy and Immunology evaluation is on file before hematology sees the patient.'
 };
 const stepSub = (st) => (st.pending ? 'Pending' : st.status === 'gap' ? 'Undefined · your call' : TONE[st.status].label);
 const markFor = (st) => (st.pending ? '<span class="mk pending" aria-hidden="true"></span>'
@@ -1631,8 +1922,7 @@ function nextStepPanel(where) {
   const close = where === 'card' ? `<button type="button" class="icon-btn" data-act="nextDismiss" aria-label="Hide the next step">${ICON.close}</button>` : '';
   const body = next
     ? `<p>${from ? `With ${label(from)} changed, the path continues to` : 'After this change, the path stops at'} <strong>${label(next)}</strong> <span class="pill xs t-${ev.steps[next].status}">${stepSub(ev.steps[next])}</span></p>
-      <div class="ns-acts"><button type="button" class="btn primary sm" data-act="nextStep" data-v="${next}">Go to step ${NODE[next].step + 1}</button>
-        <button type="button" class="btn secondary sm" data-act="nextOverride" data-v="${next}">Override step ${NODE[next].step + 1}</button></div>`
+      <div class="ns-acts"><button type="button" class="btn primary sm" data-act="nextStep" data-v="${next}">Go to step ${NODE[next].step + 1}</button></div>`
     : `<p>The path now ends at <strong>${OUTCOME[ev.end]}</strong>. There is no step after this one.</p>`;
   return `<div class="next-step ${where}" role="status"><div class="ns-h"><span class="kicker">Next step · V${latestVer().n}</span><span class="grow"></span>${close}</div>${body}</div>`;
 }
@@ -1643,7 +1933,7 @@ function algoCard() {
   const path = new Set(chainOf(ev.end));
   const ov = overridesIn(viewed);
   // The strip shows only the path the referral took; steps it never reached live in the full tree.
-  const all = ['g1', 'g2', 'g3', 'g4', 'g5'];
+  const all = ['g1', 'g2', 'g3', 'g4'];
   // Just the last step completed on the path, then where the path ends; the step it is waiting on lives in Awaiting items.
   const done = all.filter((id) => path.has(id) && ev.steps[id].status === 'met');
   const ids = done.slice(-1);
@@ -1744,21 +2034,21 @@ function testingRows(ev) {
   const cbc = AWAITING.find((a) => a.id === 'cbc');
   const rows = [
     { t: 'Allergy and Immunology evaluation', pa: d.ai.seen ? presence('present', 'Present') : presence('absent', 'Absent'),
-      d: d.ai.seen ? `Completed ${isoLabel(d.ai.date, true)} at ${d.ai.where}. No immunodeficiency identified.` : 'Not found in the outside records or the chart.',
-      src: d.ai.seen ? srcLink('ai', 'Open the evaluation note') + (S.srcOpen.ai ? `<blockquote class="quote">${AI_QUOTE}</blockquote>` : '') : '' },
+      d: d.ai.seen ? `Completed ${isoLabel(d.ai.date, true)} at ${d.ai.where}. No immunodeficiency identified.` : 'Not found in the outside records or the chart.' },
     { t: 'Repeat CBC with differential', pa: S.done.cbc ? presence('present', 'Received') : presence('pending', 'Pending'),
-      d: S.done.cbc ? 'Ticked as received. Add its result with an override or the companion so the algorithm can read it.' : `Requested ${cbc.asked}, due ${dueLabel(cbc)}${dueTone(cbc) === 'late' ? ' — late' : ''}. Step 2 needs it.` },
-    { t: 'Order on the referral', pa: presence('missing', 'Not in the chart'), d: 'No order data returned. That does not confirm none was placed.' }
+      d: S.done.cbc ? 'Ticked as received. Add its result with an override or the companion so the algorithm can read it.' : `Requested ${cbc.asked}, due ${dueLabel(cbc)}${dueTone(cbc) === 'late' ? ' — late' : ''}. Step 2 needs it.` }
   ];
   return rows.map((r) => `<div class="ev-row"><div class="grow" style="min-width: 0"><div class="t">${r.t}</div><div class="d">${r.d}</div>${r.src || ''}</div>${r.pa}</div>`).join('');
 }
 
 // The left card: the triage note's evidence, in tabs like the example note.
-function evidenceCard() {
+function evidenceCard(only) {
   const viewed = viewedVer();
   const ev = evaluate(viewed);
   const editable = viewed === latestVer();
-  const tab = S.noteTab;
+  // 'combo': testing and the lab summary in one card, testing first.
+  const combo = only === 'combo';
+  const tab = combo ? (S.evTab === 'labs' ? 'labs' : 'testing') : only || S.noteTab;
   let body;
   if (tab === 'labs') {
     const le = S.labEdit;
@@ -1804,6 +2094,13 @@ function evidenceCard() {
   } else {
     body = `<dl class="kv">${SUPP.map(([k, v, miss]) => `<dt>${k}</dt><dd class="${v ? '' : 'missing'}">${v ? esc(v) : '<span class="pa missing">Missing</span> ' + miss}</dd>`).join('')}</dl>`;
   }
+  if (combo) {
+    const ct = (id, label) => `<button type="button" role="tab" aria-selected="${tab === id}" data-act="evTab" data-v="${id}">${label}</button>`;
+    return `<section class="card ev-card"><div class="card-h"><span class="card-t grow">Testing and labs</span></div>
+      <div class="ctabs" role="tablist" aria-label="Testing and labs">${ct('testing', 'Testing')}${ct('labs', 'Lab summary')}</div>
+      <div class="cbody" role="tabpanel">${body}</div></section>`;
+  }
+  if (only) return `<section class="card"><div class="card-h"><span class="card-t grow">${only === 'labs' ? 'Lab summary' : 'Testing'}</span></div><div class="cbody">${body}</div></section>`;
   const t = (id, label) => `<button type="button" role="tab" aria-selected="${tab === id}" data-act="noteTab" data-v="${id}">${label}</button>`;
   return `
     <section class="card" aria-label="Triage note evidence">
@@ -1841,7 +2138,7 @@ function awaitingCard(p) {
       <div class="card-h"><span class="card-t grow">Awaiting items</span></div>
       <div class="aw-body">${items.length
         ? '<div class="aw-cols"><span>Item</span></div>' + items.map((a) => awaitingRow(a, 'patient', onRow[a.id])).join('')
-        : `<div class="aw-none">Nothing awaiting on ${p.name}. ${p.status === 'new' ? 'Untouched — nothing has been asked for yet.' : ''}</div>`}
+        : `<div class="aw-none">Nothing requested on ${p.name} yet${p.status === 'received' ? '; the referral is waiting for a triage decision' : ''}.</div>`}
         ${miss.some((m) => m.kind !== 'yesno') ? `<div class="tc-foot"><button type="button" class="btn secondary sm" data-act="toPip">${ICON.pip} Collect in the companion</button></div>` : ''}
       </div>
     </section>
@@ -1870,7 +2167,7 @@ function noteBody(p) {
   const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
   return `
     <div class="pnote">
-        <div class="pnote-h"><span class="tnote-t grow">Isolated lymphopenia</span><span class="ai-tag" title="Drafted from the algorithm. Review before charting.">AI draft · V${latest.n}</span></div>
+        <div class="pnote-h"><span class="tnote-t grow">Isolated lymphopenia</span></div>
         <dl class="kv tight">
           <dt>Date/time</dt><dd>${TODAY_LONG} · ${time}</dd>
           <dt>Patient</dt><dd>${p.name} · MRN ${p.mrn} · F</dd>
@@ -1940,6 +2237,7 @@ function ask(q) {
   S.panelTab = 'chat';
   S.trackCollapsed = false;
   if (matchMedia('(max-width: 767px)').matches) S.drawer = 'track';
+  S.chatOpen = true;
 }
 
 // One message covers one patient. It asks for whatever is still open on their awaiting list;
@@ -1991,7 +2289,7 @@ function renderMessage(p, m, i) {
     : '<div class="none">Nothing open on the awaiting list or missing from the algorithm, so there is nothing to ask for.</div>';
   return `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card">
     <div class="note-head"><span class="kicker">Message to the referring provider · ${m.sent ? 'sent' : 'draft'}</span><span class="grow"></span>
-      ${m.sent ? '<span class="pill xs t-accepted">Logged as sent</span>' : '<span class="ai-tag" title="Drafted by the copilot. Review and edit before sending.">AI draft</span>'}</div>
+      ${m.sent ? '<span class="pill xs t-accepted">Logged as sent</span>' : ''}</div>
     <div class="mc">
       <label class="mc-row"><span class="k">To</span><input class="mc-in" data-msg="${i}" data-f="to" value="${esc(m.to)}" placeholder="Referring provider not on file — enter who it goes to" ${off}></label>
       <label class="mc-row"><span class="k">Subject</span><input class="mc-in" data-msg="${i}" data-f="subject" value="${esc(m.subject)}" ${off}></label>
@@ -2028,7 +2326,7 @@ function renderChat(p) {
         : (latestVer().n > 1 ? 'Drafted from V' + latestVer().n : 'Drafted from the tree');
     return `<div class="msg-bot"><span class="logo sm">${ICON.logoSm}</span><div class="bot-card">
       <div class="note-head"><span class="kicker">Decision note · ${m.frozen ? 'added' : 'draft'}</span><span class="grow"></span>
-        <span class="ai-tag" title="Drafted by the copilot. Review before charting.">${m.edited ? 'AI draft · edited' : 'AI draft'}</span></div>
+</div>
       <textarea class="field note-edit" data-note="${i}" aria-label="Decision note" ${m.frozen ? 'disabled' : ''}>${esc(text)}</textarea>
       <div class="note-foot">
         <span class="why">${meta}. Nothing is charted until you paste it.</span>
@@ -2117,6 +2415,62 @@ function draftNote() {
   ].filter(Boolean).join('\n\n');
 }
 
+// Notes and history for one patient, newest first; used by the sidecard's References tab.
+function notesHtml(cur) {
+  const log = (S.added[cur.mrn] || []).concat(cur.mrn === WORKED ? NOTES : []);
+  let body;
+    // The newest note shows in full; earlier ones collapse to an icon and a short summary that opens on click.
+    const [latestNote, ...earlier] = log;
+    const pills = (n) => `${n.tag ? `<span class="pill xs ${tagTone(n.tag)}">${esc(n.tag)}</span>` : ''}${n.fresh ? '<span class="pill xs t-new">Just added</span>' : ''}`;
+    body = log.length ? `<div class="notes-v2">
+      <div class="kicker nl-k">Latest update</div>
+      <div class="nl-card">
+        <div class="nl-h"><span class="nl-ic">${noteIcon(latestNote)}</span><span class="grow"><span class="nl-who">${esc(latestNote.who)}</span><span class="nl-d">${esc(latestNote.date)}</span></span>${pills(latestNote)}</div>
+        <p class="nl-text">${esc(latestNote.text)}</p>
+      </div>
+      ${earlier.length ? `<div class="kicker nl-k">Earlier · ${earlier.length}</div>
+      <ul class="nc-list">${earlier.map((n, i) => {
+        const key = n.date + '|' + i + '|' + (n.sum || n.text).slice(0, 20);
+        const open = !!S.noteOpen[key];
+        return `<li class="nc ${open ? 'open' : ''}">
+          <button type="button" class="nc-row" data-act="noteOpen" data-v="${esc(key)}" aria-expanded="${open}">
+            <span class="nc-ic">${noteIcon(n)}</span><span class="nc-sum">${esc(noteSummary(n))}</span><span class="nc-d">${esc(n.date)}</span>
+          </button>
+          ${open ? `<div class="nc-full"><div class="nc-meta">${esc(n.who)} ${pills(n)}</div><p>${esc(n.text)}</p></div>` : ''}
+        </li>`;
+      }).join('')}</ul>` : ''}
+    </div>` : `<div class="aw-none" style="padding: 16px">No notes on ${cur.name} yet.</div>`;
+  return body;
+}
+
+function historyHtml(cur) {
+  const hist = (cur.mrn === WORKED ? HISTORY : []).concat(S.history[cur.mrn] || []);
+  let body;
+    // Same layout as Notes: the newest event in full, earlier ones as icon + title rows that open on click.
+    const events = hist.slice().reverse();
+    const [latestEv, ...earlierEv] = events;
+    const short = (d) => d.replace(/,\s*\d{4}$/, '');
+    body = hist.length ? `<div class="notes-v2">
+      <div class="kicker nl-k">Latest event</div>
+      <div class="nl-card">
+        <div class="nl-h"><span class="nl-ic">${historyIcon(latestEv)}</span><span class="grow"><span class="nl-who">${esc(latestEv.t)}</span><span class="nl-d">${esc(latestEv.date)}</span></span>${latestEv.fresh ? '<span class="pill xs t-new">Just added</span>' : ''}</div>
+        <p class="nl-text">${esc(latestEv.b)}</p>
+      </div>
+      ${earlierEv.length ? `<div class="kicker nl-k">Earlier · ${earlierEv.length}</div>
+      <ul class="nc-list">${earlierEv.map((e, i) => {
+        const key = 'h|' + e.date + '|' + i + '|' + e.t.slice(0, 20);
+        const open = !!S.noteOpen[key];
+        return `<li class="nc ${open ? 'open' : ''}">
+          <button type="button" class="nc-row" data-act="noteOpen" data-v="${esc(key)}" aria-expanded="${open}">
+            <span class="nc-ic">${historyIcon(e)}</span><span class="nc-sum">${esc(e.t)}</span><span class="nc-d">${esc(short(e.date))}</span>
+          </button>
+          ${open ? `<div class="nc-full">${e.fresh ? '<div class="nc-meta"><span class="pill xs t-new">Just added</span></div>' : ''}<p>${esc(e.b)}</p></div>` : ''}
+        </li>`;
+      }).join('')}</ul>` : ''}
+    </div>` : `<div class="aw-none" style="padding: 16px">No history on ${cur.name} yet.</div>`;
+  return body;
+}
+
 function renderTrack() {
   const strip = () => `
       <div class="strip">
@@ -2151,50 +2505,9 @@ function renderTrack() {
       ? noteBody(cur)
       : `<div class="pnote"><div class="gap-note"><strong>No triage note yet.</strong> The algorithm has not been run on this referral in the prototype, so there is nothing to draft the note from.</div></div>`;
   } else if (tab === 'notes') {
-    // The newest note shows in full; earlier ones collapse to an icon and a short summary that opens on click.
-    const [latestNote, ...earlier] = log;
-    const pills = (n) => `${n.tag ? `<span class="pill xs ${tagTone(n.tag)}">${esc(n.tag)}</span>` : ''}${n.fresh ? '<span class="pill xs t-new">Just added</span>' : ''}`;
-    body = log.length ? `<div class="notes-v2">
-      <div class="kicker nl-k">Latest update</div>
-      <div class="nl-card">
-        <div class="nl-h"><span class="nl-ic">${noteIcon(latestNote)}</span><span class="grow"><span class="nl-who">${esc(latestNote.who)}</span><span class="nl-d">${esc(latestNote.date)}</span></span>${pills(latestNote)}</div>
-        <p class="nl-text">${esc(latestNote.text)}</p>
-      </div>
-      ${earlier.length ? `<div class="kicker nl-k">Earlier · ${earlier.length}</div>
-      <ul class="nc-list">${earlier.map((n, i) => {
-        const key = n.date + '|' + i + '|' + (n.sum || n.text).slice(0, 20);
-        const open = !!S.noteOpen[key];
-        return `<li class="nc ${open ? 'open' : ''}">
-          <button type="button" class="nc-row" data-act="noteOpen" data-v="${esc(key)}" aria-expanded="${open}">
-            <span class="nc-ic">${noteIcon(n)}</span><span class="nc-sum">${esc(noteSummary(n))}</span><span class="nc-d">${esc(n.date)}</span>
-          </button>
-          ${open ? `<div class="nc-full"><div class="nc-meta">${esc(n.who)} ${pills(n)}</div><p>${esc(n.text)}</p></div>` : ''}
-        </li>`;
-      }).join('')}</ul>` : ''}
-    </div>` : `<div class="aw-none" style="padding: 16px">No notes on ${cur.name} yet.</div>`;
+    body = notesHtml(cur);
   } else if (tab === 'history') {
-    // Same layout as Notes: the newest event in full, earlier ones as icon + title rows that open on click.
-    const events = hist.slice().reverse();
-    const [latestEv, ...earlierEv] = events;
-    const short = (d) => d.replace(/,\s*\d{4}$/, '');
-    body = hist.length ? `<div class="notes-v2">
-      <div class="kicker nl-k">Latest event</div>
-      <div class="nl-card">
-        <div class="nl-h"><span class="nl-ic">${historyIcon(latestEv)}</span><span class="grow"><span class="nl-who">${esc(latestEv.t)}</span><span class="nl-d">${esc(latestEv.date)}</span></span>${latestEv.fresh ? '<span class="pill xs t-new">Just added</span>' : ''}</div>
-        <p class="nl-text">${esc(latestEv.b)}</p>
-      </div>
-      ${earlierEv.length ? `<div class="kicker nl-k">Earlier · ${earlierEv.length}</div>
-      <ul class="nc-list">${earlierEv.map((e, i) => {
-        const key = 'h|' + e.date + '|' + i + '|' + e.t.slice(0, 20);
-        const open = !!S.noteOpen[key];
-        return `<li class="nc ${open ? 'open' : ''}">
-          <button type="button" class="nc-row" data-act="noteOpen" data-v="${esc(key)}" aria-expanded="${open}">
-            <span class="nc-ic">${historyIcon(e)}</span><span class="nc-sum">${esc(e.t)}</span><span class="nc-d">${esc(short(e.date))}</span>
-          </button>
-          ${open ? `<div class="nc-full">${e.fresh ? '<div class="nc-meta"><span class="pill xs t-new">Just added</span></div>' : ''}<p>${esc(e.b)}</p></div>` : ''}
-        </li>`;
-      }).join('')}</ul>` : ''}
-    </div>` : `<div class="aw-none" style="padding: 16px">No history on ${cur.name} yet.</div>`;
+    body = historyHtml(cur);
   } else {
     body = renderChat(cur);
   }
@@ -2219,7 +2532,7 @@ function renderTrack() {
 
 /* ---------- The companion: stays over the EHR and fills in what the algorithm is missing ---------- */
 
-const blankComp = () => ({ date: '', alc: '', wbc: '', hgb: '', plt: '', anc: '', exception: '', ai: '', src: '', err: '', sent: '' });
+const blankComp = () => ({ date: '', alc: '', wbc: '', hgb: '', plt: '', anc: '', ai: '', src: '', err: '', sent: '' });
 const comp = () => S.comp || (S.comp = blankComp());
 const speechRec = () => window.SpeechRecognition || window.webkitSpeechRecognition || null;
 
@@ -2235,7 +2548,6 @@ function dictate(field) {
     const said = e.results[0][0].transcript;
     const c = comp();
     if (field === 'src') c.src = said;
-    else if (field === 'exception') c.exception = /\b(no|doesn'?t|does not)\b/i.test(said) ? 'false' : /\b(yes|applies)\b/i.test(said) ? 'true' : c.exception;
     else { const num = said.match(/\d+(?:\.\d+)?/); if (num) c[field] = num[0]; }
   };
   r.onerror = () => { S.listening = null; redraw(); };
@@ -2258,9 +2570,6 @@ function sendFromCompanion(v) {
     const set = { date, alc, src: 'Entered from the chart through the companion' };
     ['wbc', 'hgb', 'plt', 'anc'].forEach((k) => { set[k] = c[k] !== '' ? parseFloat(c[k]) : l[k]; });
     change = { step, data: Object.assign({}, data, { cbc: data.cbc.filter((x) => x.date !== date).concat(set) }), what: `CBC ${isoLabel(date)} added from the chart (ALC ${alc})` };
-  } else if (kind === 'yesno') {
-    if (!c.exception) { c.err = 'Pick whether an exception applies.'; return; }
-    change = { step, data: Object.assign({}, data, { exception: c.exception === 'true' }), what: c.exception === 'true' ? 'Step 5 answered: an exception applies' : 'Step 5 answered: no exception applies' };
   } else {
     if (!c.ai) { c.err = 'Pick whether the evaluation is on file.'; return; }
     change = { step, data: Object.assign({}, data, { ai: Object.assign({}, data.ai, { seen: c.ai === 'true' }) }), what: c.ai === 'true' ? 'Allergy and Immunology evaluation found in the chart' : 'Allergy and Immunology evaluation not in the chart' };
@@ -2304,8 +2613,6 @@ function renderPip() {
         <details class="cp-more"><summary>Other cell lines · start from ${isoLabel(l.date)}</summary>
           <div class="cp-grid">${['wbc', 'hgb', 'plt', 'anc'].map((k) => `<label>${CBC_RANGE[k][2]}<input type="number" step="0.01" data-comp="${k}" value="${c[k] !== '' ? c[k] : l[k]}"></label>`).join('')}</div>
         </details>`;
-    } else if (m.kind === 'yesno') {
-      body = `<div class="opts">${pick('exception', 'true', 'Applies')}${pick('exception', 'false', "Doesn't apply")}${mic('exception')}</div>`;
     } else {
       body = `<div class="opts">${pick('ai', 'true', 'On file')}${pick('ai', 'false', 'Not on file')}</div>`;
     }
@@ -2427,9 +2734,6 @@ function evaluate(ver) {
     ? { status: 'met', found: `Yes. Evaluation completed ${isoLabel(d.ai.date)} at ${d.ai.where}. No immunodeficiency identified, which clears the required-department step.`, field: 'Outside records · evaluation ' + isoLabel(d.ai.date, true) }
     : { status: 'missing', found: 'No Allergy and Immunology evaluation is on file for this referral.', field: 'Outside records · no evaluation found' };
 
-  steps.g5 = d.exception === null
-    ? { status: 'gap', found: 'Cannot be answered. This branch defines no exception threshold for external referrals, so there is nothing to test the referral against. Nothing was assumed in its place.', field: 'Tree · isolated lymphopenia, external, rev. 4' }
-    : { status: 'met', found: d.exception ? 'An exception applies — answered by Melissa, since the tree defines none for external referrals.' : 'No exception applies — answered by Melissa, since the tree defines none for external referrals.', field: 'Answered by Melissa · the tree is silent here' };
 
   // An overridden answer replaces what the tree worked out, and says so.
   Object.keys(ver.answers || {}).forEach((g) => { steps[g] = Object.assign({}, steps[g], { status: ver.answers[g], overridden: true, pending: '' }); });
@@ -2473,7 +2777,6 @@ function missingFor(ev) {
   if (s.g2.status !== 'met' && !s.g2.overridden) m.push({ id: 'cbc', step: 'g2', kind: 'cbc', label: 'A repeat CBC result', why: 'to confirm the low count is persistent (step 2)' });
   else if (s.g3.status !== 'met' && !s.g3.overridden) m.push({ id: 'cbc', step: 'g3', kind: 'cbc', label: 'A CBC from the last 30 days', why: 'the newest result is too old (step 3)' });
   if (s.g4.status !== 'met' && !s.g4.overridden) m.push({ id: 'ai', step: 'g4', kind: 'ai', label: 'Allergy and Immunology evaluation', why: 'required before hematology (step 4)' });
-  if (s.g5.status === 'gap') m.push({ id: 'exception', step: 'g5', kind: 'yesno', label: 'Does an exception apply?', why: "the tree doesn't define one for external referrals (step 5), so it's your call" });
   return m;
 }
 
@@ -2508,7 +2811,7 @@ function summaryLines(ev) {
     ev.age <= 30
       ? `Act by ${ev.expires}, when the ${isoLabel(l.date)} result passes 30 days. The 12-week window closes Jan 12, 2027.`
       : `The newest result is ${ev.age} days old, past the 30-day limit.`,
-    NEXT[ev.end] + (s.g5.status === 'gap' ? " The exception (step 5) is your call; the tree doesn't define one." : '')
+    NEXT[ev.end]
   ];
 }
 
@@ -2522,8 +2825,7 @@ const GRAPH = [
   { id: 'g2', parent: 'g1', kind: 'step', step: 1 },
   { id: 'g3', parent: 'g2', kind: 'step', step: 2 },
   { id: 'g4', parent: 'g3', kind: 'step', step: 3 },
-  { id: 'g5', parent: 'g4', kind: 'step', step: 4 },
-  { id: 'accept', parent: 'g5', kind: 'end', end: 'cold', kicker: 'If all pass', title: 'Accept · face-to-face',
+  { id: 'accept', parent: 'g4', kind: 'end', end: 'cold', kicker: 'If all pass', title: 'Accept · face-to-face',
     reason: 'Where this tree ends when every step passes: send to scheduling for a new-patient hematology visit.',
     source: 'Tree · outcome, accept' },
   { id: 'b1', parent: 'g1', branch: true, kind: 'end', end: 'cold', kicker: 'If no', title: 'Leave for the cytopenia path',
@@ -2540,7 +2842,7 @@ const GRAPH = [
     source: 'Tree · outcome, decline' }
 ];
 const NODE = Object.fromEntries(GRAPH.map((n) => [n.id, n]));
-const READ_ORDER = ['root', 'g1', 'b1', 'g2', 'b2', 'g3', 'b3', 'g4', 'b4', 'g5', 'accept'];
+const READ_ORDER = ['root', 'g1', 'b1', 'g2', 'b2', 'g3', 'b3', 'g4', 'b4', 'accept'];
 
 // What each node was read from, opened on request. The kind varies with the step:
 // labs, orders, clinical notes, outside reports, the referral itself or the tree definition.
@@ -2568,9 +2870,6 @@ function sourcesFor(id, ev) {
       ? [{ kind: 'Report', title: 'Allergy and Immunology evaluation', from: `${ev.data.ai.where} · completed ${isoLabel(ev.data.ai.date, true)}`,
         quote: 'Evaluated for recurrent infection and immunodeficiency. Immunoglobulin levels within normal limits. No primary immunodeficiency identified. Lymphopenia persists; defer to hematology as referred.' }]
       : [{ kind: 'Outside records', title: 'No Allergy and Immunology evaluation found', foot: 'Nothing in the outside records or the chart. Marked not on file.' }],
-    g5: [{ kind: 'Tree definition', title: 'Isolated lymphopenia · rev. 4 · step 5, exception check',
-      kv: [['Internal referrals', 'Exception criteria are listed'], ['External referrals', 'No exception criteria in this revision']],
-      foot: 'Read from the decision tree document. Nothing is inferred where the tree is silent.' }],
     b2: [
       { kind: 'Status history', title: 'Set to awaiting', kv: [['Set', 'Oct 28, 2026 · K. Lozano'], ['Waiting on', 'Repeat CBC with differential'], ['Window closes', 'Jan 12, 2027']] },
       ...def('Outcome · awaiting, persistence not confirmed', 'Hold; request a repeat CBC; re-triage on receipt')
@@ -2610,7 +2909,7 @@ function showToast(text) {
   setTimeout(() => { if (S.toast && S.toast.key === key) { S.toast = null; redraw(); } }, 4200);
 }
 
-const LANES = [['root'], ['g1', 'b1'], ['g2', 'b2'], ['g3', 'b3'], ['g4', 'b4'], ['g5'], ['accept']];
+const LANES = [['root'], ['g1', 'b1'], ['g2', 'b2'], ['g3', 'b3'], ['g4', 'b4'], ['accept']];
 
 function treeNode(id, ev, path, ov) {
   const n = NODE[id];
@@ -2677,9 +2976,6 @@ function evidenceFor(id, ev) {
           ${srcLink('ai', 'Open the evaluation note')}${S.srcOpen.ai ? `<blockquote class="quote">${AI_QUOTE}</blockquote>` : ''}</div>${presence('present', 'Present')}</div>`
       : `<div class="ev-row" style="border: 0; padding-top: 0"><div class="grow"><div class="t">Allergy and Immunology evaluation</div><div class="d">Not in the outside records or the chart.</div></div>${presence('absent', 'Absent')}</div>`;
   }
-  if (id === 'g5') {
-    return `<dl class="kv"><dt>Internal referrals</dt><dd>Exception criteria listed</dd><dt>External referrals</dt><dd class="missing"><span class="pa missing">Not defined</span> No exception criteria in rev. 4</dd></dl>`;
-  }
   if (id === 'root') {
     return `<dl class="kv">${RECORD.map((f) => `<dt>${f.k}</dt><dd class="${f.missing ? 'missing' : ''}">${f.missing ? '<span class="pa missing">Missing</span> ' : ''}${esc(f.v)}</dd>`).join('')}</dl>`;
   }
@@ -2688,13 +2984,13 @@ function evidenceFor(id, ev) {
 
 // Moving the decision: to a step (everything before it counts as met, the rest is read from the chart again)
 // or straight to an outcome (the answers that lead there). Each target lists what it does in plain words.
-const ROUTE_STEPS = ['g1', 'g2', 'g3', 'g4', 'g5'];
+const ROUTE_STEPS = ['g1', 'g2', 'g3', 'g4'];
 const ROUTE_ENDS = { accept: ['g1', 'g2', 'g3', 'g4'], b4: ['g1', 'g2', 'g3'], b3: ['g1', 'g2'], b2: ['g1'], b1: [] };
 function routeAnswers(target, prev) {
   const [kind, id] = target.split(':');
   const ans = Object.assign({}, prev);
   ['g1', 'g2', 'g3', 'g4'].forEach((g) => { delete ans[g]; });
-  if (kind === 'step') ROUTE_STEPS.slice(0, ROUTE_STEPS.indexOf(id)).forEach((g) => { if (g !== 'g5') ans[g] = 'met'; });
+  if (kind === 'step') ROUTE_STEPS.slice(0, ROUTE_STEPS.indexOf(id)).forEach((g) => { ans[g] = 'met'; });
   else { ROUTE_ENDS[id].forEach((g) => { ans[g] = 'met'; }); const fail = ['g1', 'g2', 'g3', 'g4'][ROUTE_ENDS[id].length]; if (fail) ans[fail] = 'missing'; }
   return ans;
 }
@@ -2718,16 +3014,13 @@ function overrideForm(id) {
   const o = S.ov;
   const latest = latestVer();
   const lab = ['g1', 'g2', 'g3'].includes(id);
-  const answers = id === 'g5' ? [['true', 'An exception applies'], ['false', 'No exception']] : [['met', 'Met'], ['missing', 'Not met']];
   const opts = (list) => `<div class="opts" role="group">${list.map(([v, label]) => `<button type="button" class="opt" data-act="ovPick" data-v="${v}" aria-pressed="${o.choice === v}">${label}</button>`).join('')}</div>`;
   const num = (k, label) => `<label>${label}<input type="number" step="0.01" data-ov="${k}" value="${o.cbc[k]}"></label>`;
   return `<div class="ov">
     <div class="ov-h">${NODE[id].kind === 'step' ? `Override step ${NODE[id].step + 1}` : 'Change the decision'}<span>Saved as V${latest.n + 1}, with your reason</span></div>
     <div class="seg seg-sm ov-mode" role="group" aria-label="What to change">
-      ${id === 'g5' ? `<button type="button" data-act="ovMode" data-v="answer" aria-pressed="${o.mode === 'answer'}">The answer</button>`
-        : `<button type="button" data-act="ovMode" data-v="evidence" aria-pressed="${o.mode === 'evidence'}">${lab ? 'A lab value' : 'The evidence'}</button>`}
+      <button type="button" data-act="ovMode" data-v="evidence" aria-pressed="${o.mode === 'evidence'}">${lab ? 'A lab value' : 'The evidence'}</button>
       <button type="button" data-act="ovMode" data-v="route" aria-pressed="${o.mode === 'route'}">Move the decision</button></div>
-    ${o.mode === 'answer' && id === 'g5' ? opts(answers) : ''}
     ${o.mode === 'route' ? routePicker(o) : ''}
     ${o.mode === 'evidence' && id === 'g4' ? opts([['true', 'Evaluation on file'], ['false', 'Not on file']]) : ''}
     ${o.mode === 'evidence' && lab ? `<div class="ov-grid">
@@ -2838,7 +3131,7 @@ function treeSide(id, ev, viewed) {
 // One lab over time, opened from a link in the triage note.
 function renderLabTrend() {
   const k = S.labTrend;
-  if (!k || S.view !== 'patient' || S.current !== WORKED) return '';
+  if (!k || !S.side || S.current !== WORKED) return '';
   const ev = evaluate(latestVer());
   const [lo, hi, label, unit] = CBC_RANGE[k];
   const sets = ev.sets;
@@ -2916,6 +3209,336 @@ function renderTreeModal() {
     </div>`;
 }
 
+
+/* ---------- The patient sidecard: opens beside the list, half the screen ---------- */
+
+const SIDE_TABS = [['details', 'Referral details'], ['decision', 'AI decision']];
+
+function renderSidecard() {
+  if (!S.side || !S.current) return '';
+  const p = byMrn(S.current);
+  const tab = (id, label) => `<button type="button" role="tab" aria-selected="${S.sideTab === id}" data-act="sideTab" data-v="${id}">${label}</button>`;
+  // Triage status as a dropdown: the button shows the current status; the menu lists the rest.
+  const statusMenu = !S.tsOpen ? '' : `<div class="ts-menu" role="menu" aria-label="Set triage status">${STATUS_ORDER.map((k) => `<button type="button" role="menuitemradio" aria-checked="${p.status === k}" class="ts-item" data-act="tstatus" data-v="${k}">
+      <span class="pill xs t-${k}">${STATUS[k].label}</span><span class="grow"></span>${p.status === k ? '<span class="ts-tick" aria-hidden="true">✓</span>' : ''}</button>`).join('')}</div>`;
+  let body = '';
+  if (S.sideTab === 'details') body = sideDetails(p);
+  else if (S.sideTab === 'decision') body = sideDecision(p);
+  else body = sideDecision(p);
+  return `<aside class="sidecard" aria-label="${esc(p.name)}">
+    <div class="sc-main">
+      <div class="sc-head">
+        <div class="grow" style="min-width: 0">
+          <h2 class="sc-name">${esc(p.name)}</h2>
+          <div class="sc-meta">MRN ${p.mrn}${p.meta ? ' · ' + p.meta : ''}</div>
+          ${referralFacts(p)}
+        </div>
+        <div class="ts"><span class="ts-lab" id="tsLab">Triage status</span>
+          <div class="ts-dd"><button type="button" class="ts-btn t-${p.status}" data-act="tsToggle" aria-haspopup="menu" aria-expanded="${!!S.tsOpen}" aria-labelledby="tsLab tsVal"><span class="ts-val" id="tsVal">${STATUS[p.status].label}</span>${ICON.down}</button>${statusMenu}</div></div>
+        <button type="button" class="icon-btn lg sc-x" data-act="closeSide" aria-label="Close ${esc(p.name)}" title="Close (Esc)">${ICON.close}</button>
+      </div>
+      <div class="sc-tabs" role="tablist" aria-label="Patient">${SIDE_TABS.map(([id, label]) => tab(id, label)).join('')}</div>
+      <div class="sc-body" role="tabpanel">${body}</div>
+    </div>
+  </aside>`;
+}
+
+// Two columns side by side; they stack when the sidecard is narrow.
+const cols2 = (a, b) => `<div class="sc-cols"><div class="sc-col">${a}</div><div class="sc-col">${b}</div></div>`;
+
+// 1. Referral details
+// The referral's key facts, in the sidecard header beside the patient's name.
+function referralFacts(p) {
+  const rows = [['Referral', p.ref], ['Received', p.received + ', 2026'], ['Source', p.source], ['In triage', p.days + (p.days === 1 ? ' day' : ' days')]];
+  if (p.waiting) rows.push(['Waiting on', p.waiting]);
+  return `<dl class="sc-facts" aria-label="Referral">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`;
+}
+
+// 1. Referral details: the referral record, the labs and testing the decision used, and the notes.
+// Each fact appears once; the referral ID, dates and source are in the header above.
+function sideDetails(p) {
+  const worked = p.mrn === WORKED;
+  const more = worked ? RECORD.map((f) => [f.k, f.v, f.missing]) : [];
+  const kv = (list) => `<dl class="kv sc-kv">${list.map(([k, v, miss]) => `<dt>${k}</dt><dd class="${miss ? 'missing' : ''}">${miss ? '<span class="pa missing">Missing</span> ' : ''}${esc(v)}</dd>`).join('')}</dl>`;
+  const record = `<section class="card"><div class="card-h"><span class="card-t grow">Referral record</span></div><div class="cbody">${more.length ? kv(more) : '<p class="sc-hint" style="margin: 0">Only the worked example (Alvarez) has the full referral loaded in this prototype.</p>'}</div></section>`;
+  const notes = notesCard(p);
+  return worked
+    ? cols2(record + evidenceCard('combo'), notes)
+    : cols2(record, notes);
+}
+
+// 2. AI decision: the recommendation and the outputs side by side; the decision tree across both columns below,
+// its steps on the left and the evidence for the step picked on the right.
+function sideDecision(p) {
+  const outputs = outputsCard(p);
+  if (p.mrn !== WORKED) {
+    return cols2(`<section class="sc-sec"><div class="gap-note"><strong>No AI recommendation yet.</strong> The algorithm has not been run on this referral in the prototype.</div></section>`, outputs);
+  }
+  const latest = latestVer();
+  const viewed = viewedVer();
+  const ev = evaluate(latest);
+  const ai = evaluate(S.alg.versions[0]);
+  return cols2(`<section class="sc-sec rec">
+      <div class="kicker">AI recommendation</div>
+      <div class="rec-t">${OUTCOME[ev.end]}</div>
+      <div class="rec-v"><span class="pill xs ${latest.n > 1 ? 't-new' : 't-cold'}">V${latest.n}${latest.n > 1 ? ` · after ${latest.n - 1} change${latest.n > 2 ? 's' : ''}` : ' · AI'}</span>
+        ${ev.end !== ai.end ? `<span class="rec-was">The AI recommended <s>${OUTCOME[ai.end]}</s> in V1.</span>` : ''}</div>
+      <div class="kicker" style="margin-top: 14px">Why</div>
+      <ol class="exec-lines">${summaryLines(ev).map((l) => `<li>${labLinks(l)}</li>`).join('')}</ol>
+      ${S.alg.versions.length > 1 ? `<div class="rec-vers">${versionChips()}</div>` : ''}
+      ${restoreRow()}
+      ${nextStepPanel('card')}
+    </section>`, outputs) + `<section class="sc-sec dt-card">
+      <div class="sc-sec-h"><span class="card-t grow">Decision tree</span>${viewed !== latest ? `<span class="pill xs t-awaiting">Showing V${viewed.n}</span>` : ''}</div>
+      <p class="sc-hint">Pick a step to see the evidence behind it.</p>
+      <div class="dt-grid">${vtree(evaluate(viewed))}${evidencePanel(treeSel(evaluate(viewed)))}</div>
+    </section>`;
+}
+
+// The algorithm as a vertical list: each step, the branch it can leave by, and where the path ends.
+function vtree(ev) {
+  const path = new Set(chainOf(ev.end));
+  const sel = treeSel(ev);
+  const BR = { g1: 'b1', g2: 'b2', g3: 'b3', g4: 'b4' };
+  const node = (id, title, sub, cls, mark) => `<button type="button" class="vt-node ${cls} ${sel === id ? 'sel' : ''}" data-act="docOpen" data-v="${id}" aria-pressed="${sel === id}">
+      <span class="sn-ic">${nodeIcon(NODE[id].kind === 'step' ? id : (id === 'root' ? 'root' : 'end'))}</span>
+      <span class="sn-txt"><span class="sn-t">${title}</span><span class="sn-s">${sub}</span></span>${mark || ''}</button>`;
+  const rows = [`<li class="vt-row on">${node('root', 'Referral received', 'REF-2026-4471 · Oct 27', 'on', '')}</li>`];
+  ['g1', 'g2', 'g3', 'g4'].forEach((g, i) => {
+    const st = ev.steps[g];
+    const on = path.has(g);
+    const b = BR[g];
+    const bOn = b && path.has(b);
+    rows.push(`<li class="vt-row ${on ? 'on' : 'off'}">
+      ${node(g, `Step ${i + 1} · ${SHORT[g]}`, on ? stepSub(st) : 'Not reached · ' + stepSub(st), `${on ? 'on ' + st.status : 'off'}`, markFor(st))}
+      ${b ? `<div class="vt-branch ${bOn ? 'end' : ''}"><span class="vt-if">If not met</span>${node(b, OUTCOME[b], bOn ? 'The path ends here' : 'Not reached', bOn ? 'on end' : 'off', '')}</div>` : ''}
+    </li>`);
+  });
+  const accOn = path.has('accept');
+  rows.push(`<li class="vt-row ${accOn ? 'on' : 'off'}">${node('accept', OUTCOME.accept, accOn ? 'The path ends here' : 'Not reached', accOn ? 'on end met' : 'off', '')}</li>`);
+  return `<ol class="vt">${rows.join('')}</ol>`;
+}
+
+// The document panel for a step or outcome: its documents, one at a time, with what matters highlighted.
+const HL = {
+  root: ['Persistent low lymphocyte count', 'No order data returned'],
+  g2: ['Repeat CBC', 'repeat CBC', 'Nothing in writing yet', 'No order has come back'],
+  g4: ['No primary immunodeficiency identified', 'Lymphopenia persists']
+};
+function hl(text, terms) {
+  let out = String(text);
+  (terms || []).forEach((t) => { out = out.split(t).join(`<mark>${t}</mark>`); });
+  return out;
+}
+function docsFor(id, ev) {
+  const terms = HL[id] || [];
+  const items = (sourcesFor(id, ev) || []).map((it) => Object.assign({}, it, {
+    quote: it.quote ? hl(it.quote, terms) : it.quote,
+    lines: it.lines ? it.lines.map((l) => hl(l, terms)) : it.lines,
+    kv: it.kv ? it.kv.map(([k, v]) => [k, hl(v, terms)]) : it.kv
+  }));
+  (PROVIDER_NOTES[id] || []).forEach((n) => items.push({ kind: 'Provider note', title: `${n.who} · ${n.date}`, from: `${n.role} · ${n.src}`, quote: hl(esc(n.text), terms) }));
+  return items;
+}
+// The step picked in the tree, or by default the step the referral is held at (where the path ends).
+function treeSel(ev) {
+  if (S.tree && S.tree.sel && NODE[S.tree.sel]) return S.tree.sel;
+  const held = chainOf(ev.end).reverse().find((id) => NODE[id].kind === 'step' && ev.steps[id].status !== 'met');
+  return held || ev.end;
+}
+
+// The documents behind one node of the tree, one at a time, with what matters highlighted.
+function evidencePanel(id) {
+  const n = NODE[id];
+  const ev = evaluate(viewedVer());
+  const docs = docsFor(id, ev);
+  const i = Math.min(S.docIdx, Math.max(0, docs.length - 1));
+  const name = n.kind === 'step' ? `Step ${n.step + 1} · ${SHORT[id]}` : n.kind === 'root' ? 'Referral received' : OUTCOME[id];
+  return `<aside class="ev-panel sc-docs" aria-label="Documents for ${esc(name)}">
+    <div class="evp-k">${esc(name)} · ${docs.length} document${docs.length === 1 ? '' : 's'}</div>
+    ${docs.length ? `<div class="dp-nav">
+        <button type="button" class="icon-btn" data-act="docNav" data-v="${i - 1}" aria-label="Previous document" ${i === 0 ? 'disabled' : ''}>${ICON.left}</button>
+        <span class="dp-count">${i + 1} of ${docs.length}</span>
+        <button type="button" class="icon-btn" data-act="docNav" data-v="${i + 1}" aria-label="Next document" ${i >= docs.length - 1 ? 'disabled' : ''}>${ICON.right}</button>
+        <div class="dp-tabs" role="tablist" aria-label="Documents">${docs.map((d, j) => `<button type="button" role="tab" aria-selected="${j === i}" data-act="docNav" data-v="${j}">${d.kind}</button>`).join('')}</div>
+      </div>
+      <div class="dp-doc">${sourceHtml([docs[i]])}</div>` : '<p class="muted" style="margin: 0">No documents for this step.</p>'}
+  </aside>`;
+}
+
+
+// 4. Outputs: the AI drafts the triage note and any info requests; Melissa edits them and copies them into Epic.
+function outFor(p) {
+  if (S.out[p.mrn]) return S.out[p.mrn];
+  const prov = PROVIDERS[p.mrn];
+  let reqs = [];
+  if (p.mrn === WORKED) {
+    const m = newMessage(p);
+    reqs = [{ to: m.to, body: m.body, ai: true }];
+  } else if (p.waiting) {
+    reqs = [{ to: 'Referring provider', body: `Dear colleague,\n\nRe: ${p.name} · MRN ${p.mrn} · referral ${p.ref}, received ${p.received}, 2026\n\nTo finish triaging this referral, we still need: ${p.waiting.toLowerCase()}.\n\nThank you,\nMelissa\nHematology referral triage`, ai: true }];
+  }
+  S.out[p.mrn] = {
+    note: p.mrn === WORKED ? draftNote() : `Triage note — ${p.name} · MRN ${p.mrn}\n\nThe algorithm has not been run on this referral in the prototype, so there is no AI draft. Write the note here.`,
+    reqs
+  };
+  return S.out[p.mrn];
+}
+// A referral is accepted when the decision ends at Accept, or Melissa has set it to Scheduled.
+function isAccepted(p) {
+  return (p.mrn === WORKED && evaluate(latestVer()).end === 'accept') || p.status === 'scheduled';
+}
+
+// The note to scheduling, drafted from the referral. It is always drafted; until the referral
+// is accepted it says so, and it follows the decision until Melissa edits it.
+function draftSchedNote(p) {
+  const accepted = isAccepted(p);
+  const rec = (k) => (RECORD.find((f) => f.k === k) || {}).v;
+  const worked = p.mrn === WORKED;
+  const ver = latestVer();
+  return [
+    'Scheduling request — Hematology new-patient visit',
+    [
+      `Patient: ${p.name} · MRN ${p.mrn}${p.meta ? ' · ' + p.meta : ''}`,
+      `Referral: ${p.ref}, received ${p.received}, 2026 · ${p.source}`,
+      worked ? `Referring provider: ${rec('Referring provider')}` : '',
+      `Visit: New patient · ${worked ? rec('Specialty requested') : 'Hematology'}`,
+      worked ? `Reason: ${rec('Reason for referral')}` : 'Reason: see the referral',
+      !accepted ? `Decision: not accepted yet${worked ? ` · current recommendation: ${OUTCOME[evaluate(ver).end]}` : ''}`
+        : worked && evaluate(ver).end === 'accept' ? `Decision: Accepted · V${ver.n}, isolated lymphopenia tree, rev. 4 · Melissa, ${TODAY_LONG}` : `Decision: Accepted · Melissa, ${TODAY_LONG}`
+    ].filter(Boolean).join('\n'),
+    worked ? `In the chart: ${rec('Outside records')}.` : '',
+    'Please let the referring provider know once the visit is booked.',
+    'Melissa\nHematology referral triage'
+  ].filter(Boolean).join('\n\n');
+}
+
+// A progress note, drafted by the AI from where the referral stands, for Melissa to edit and save.
+function draftProgressNote(p) {
+  const lines = [];
+  const lc = (t) => t.charAt(0).toLowerCase() + t.slice(1); // keeps CBC, Mesa Clinic and the like as written
+  const a = itemsFor(p.mrn).find((x) => !S.done[x.id]);
+  lines.push(`Status: ${STATUS[p.status].label}${a ? ` — ${lc(a.item)} requested ${a.asked}, due ${dueLabel(a)}${dueTone(a) === 'late' ? ' (late)' : ''}` : p.waiting ? ` — waiting on ${lc(p.waiting)}` : ''}.`);
+  if (p.mrn === WORKED) {
+    const ev = evaluate(latestVer());
+    lines.push(`AI recommendation: ${OUTCOME[ev.end]}.`);
+    const last = (S.added[p.mrn] || []).concat(NOTES)[0];
+    if (last) lines.push(`Last update: ${last.date.charAt(0) + last.date.slice(1).toLowerCase()} — ${noteSummary(last)}.`);
+    lines.push(NEXT[ev.end]);
+  } else {
+    lines.push(a || p.waiting ? `Next: follow up on the ${lc(a ? a.item : p.waiting)}.` : 'Next: review the referral.');
+  }
+  return lines.join('\n');
+}
+
+// Notes: a new note (AI draft, editable, saved into the log) and the earlier notes, as two subtabs.
+function notesCard(p) {
+  const o = outFor(p);
+  if (!o.pnoteEdited) o.pnote = draftProgressNote(p);
+  const log = (S.added[p.mrn] || []).concat(p.mrn === WORKED ? NOTES : []);
+  const sub = S.noteSub === 'earlier' ? 'earlier' : 'new';
+  const t = (id, label) => `<button type="button" role="tab" aria-selected="${sub === id}" data-act="noteSub" data-v="${id}">${label}</button>`;
+  const pills = (n) => `${n.tag ? `<span class="pill xs ${tagTone(n.tag)}">${esc(n.tag)}</span>` : ''}${n.fresh ? '<span class="pill xs t-new">Just added</span>' : ''}`;
+  const body = sub === 'new'
+    ? `<label class="sr-only" for="outPnote">New note</label>
+      <textarea class="field out-text" id="outPnote" data-out="pnote" rows="6">${esc(o.pnote)}</textarea>
+      <div class="out-acts"><button type="button" class="btn primary sm" data-act="pnoteSave">Save note</button>
+        <button type="button" class="btn secondary sm" data-act="pnoteReset">Reset AI draft</button>
+        ${S.noteSaved === p.mrn ? '<span class="out-ok" role="status">Saved to earlier notes</span>' : ''}</div>`
+    : log.length ? `<ul class="nc-list nc-earlier">${log.map((n, i) => {
+        const key = n.date + '|' + i + '|' + (n.sum || n.text).slice(0, 20);
+        const open = !!S.noteOpen[key];
+        return `<li class="nc ${open ? 'open' : ''}">
+          <button type="button" class="nc-row" data-act="noteOpen" data-v="${esc(key)}" aria-expanded="${open}">
+            <span class="nc-ic">${noteIcon(n)}</span><span class="nc-sum">${esc(noteSummary(n))}</span><span class="nc-d">${esc(n.date)}</span>
+          </button>
+          ${open ? `<div class="nc-full"><div class="nc-meta">${esc(n.who)} ${pills(n)}</div><p>${esc(n.text)}</p></div>` : ''}
+        </li>`;
+      }).join('')}</ul>` : `<div class="aw-none" style="padding: 4px 0">No notes on ${esc(p.name)} yet.</div>`;
+  return `<section class="card out-card notes-card">
+      <div class="card-h"><span class="card-t grow">Notes</span></div>
+      <div class="ctabs" role="tablist" aria-label="Notes">${t('new', 'New note')}${t('earlier', `Earlier notes · ${log.length}`)}</div>
+      <div class="cbody" role="tabpanel">${body}</div>
+    </section>`;
+}
+
+// The outputs in one card, a subtab each: triage note, info requests, scheduling note.
+function outputsCard(p) {
+  const o = outFor(p);
+  const accepted = isAccepted(p);
+  if (!o.schedEdited) o.sched = draftSchedNote(p);
+  const copied = (k) => (S.copied === p.mrn + '|' + k ? '<span class="out-ok" role="status">Copied</span>' : '');
+  const sub = ['note', 'reqs', 'sched'].includes(S.outSub) ? S.outSub : 'note';
+  const t = (id, label) => `<button type="button" role="tab" aria-selected="${sub === id}" data-act="outSub" data-v="${id}">${label}</button>`;
+  let body;
+  if (sub === 'note') {
+    body = `<label class="sr-only" for="outNote">Triage note</label>
+        <textarea class="field out-text" id="outNote" data-out="note" rows="12">${esc(o.note)}</textarea>
+        <div class="out-acts"><button type="button" class="btn primary sm" data-act="outCopy" data-v="note">Copy</button>
+          ${p.mrn === WORKED ? '<button type="button" class="btn secondary sm" data-act="outRedraft" data-v="note">Reset AI draft</button>' : ''}${copied('note')}</div>`;
+  } else if (sub === 'reqs') {
+    body = `${o.reqs.length ? o.reqs.map((r, i) => `<div class="out-req">
+          <label class="out-lab">To<input type="text" data-out="to:${i}" value="${esc(r.to)}" placeholder="Who this goes to"></label>
+          <label class="sr-only" for="outReq${i}">Request ${i + 1}</label>
+          <textarea class="field out-text" id="outReq${i}" data-out="body:${i}" rows="9">${esc(r.body)}</textarea>
+          <div class="out-acts"><button type="button" class="btn primary sm" data-act="outCopy" data-v="req:${i}">Copy</button>
+            ${r.ai ? `<button type="button" class="btn secondary sm" data-act="outResetReq" data-v="${i}">Reset AI draft</button>` : `<button type="button" class="btn secondary sm" data-act="outRemove" data-v="${i}">Remove</button>`}${copied('req:' + i)}</div>
+        </div>`).join('') : '<div class="gap-note" style="margin-bottom: 12px">No info requests are needed for this referral.</div>'}
+        <button type="button" class="btn secondary sm out-add" data-act="outAdd">${ICON.plus} Add an info request</button>`;
+  } else {
+    body = `${accepted ? '' : '<p class="out-hint"><span class="pill xs t-awaiting">Send once accepted</span> The referral hasn\'t been accepted yet.</p>'}
+        <label class="sr-only" for="outSched">Scheduling note</label>
+        <textarea class="field out-text" id="outSched" data-out="sched" rows="11">${esc(o.sched)}</textarea>
+        <div class="out-acts"><button type="button" class="btn primary sm" data-act="outCopy" data-v="sched">Copy</button>
+          <button type="button" class="btn secondary sm" data-act="outRedraft" data-v="sched">Reset AI draft</button>${copied('sched')}</div>`;
+  }
+  return `<section class="card out-card outputs-card">
+      <div class="card-h"><span class="card-t grow">Outputs</span></div>
+      <div class="ctabs" role="tablist" aria-label="Outputs">${t('note', 'Triage note')}${t('reqs', `Info requests · ${o.reqs.length}`)}${t('sched', 'Scheduling note')}</div>
+      <div class="cbody" role="tabpanel">${body}</div>
+    </section>`;
+}
+
+
+/* ---------- Chat: a bubble on the left, scoped to the open patient ---------- */
+
+function renderChatBubble() {
+  const p = S.side && S.current ? byMrn(S.current) : null;
+  const pop = !S.chatOpen ? '' : `<section class="chat-pop" role="dialog" aria-label="Chat">
+      <div class="chat-pop-h"><span class="logo sm">${ICON.logoSm}</span><span class="grow"><span class="chat-pop-t">Chat</span><span class="chat-pop-s">${p ? esc(p.name) + ' · MRN ' + p.mrn : 'No patient open'}</span></span>
+        <button type="button" class="icon-btn" data-act="chatToggle" aria-label="Close the chat">${ICON.close}</button></div>
+      <div class="chat-pop-body">${p ? renderChat(p) : '<div class="aw-none" style="padding: 16px">Open a patient from the list and the chat follows that chart.</div>'}</div>
+      ${p ? `<div class="chat-pop-sugg"><button type="button" class="draft-btn" data-act="ask" data-v="Summarize this page">${ICON.summary} Summarize this page</button></div>` : ''}
+      <form class="chat-pop-f" data-form="chat"><input type="text" id="chatQ" aria-label="Ask about this referral" placeholder="${p ? 'Ask about this referral' : 'Open a patient to chat'}" ${p ? '' : 'disabled'} autocomplete="off">
+        <button type="submit" class="btn-send" aria-label="Send" ${p ? '' : 'disabled'}>${ICON.send}</button></form>
+    </section>`;
+  return `${pop}<button type="button" class="chat-bubble ${S.chatOpen ? 'on' : ''}" data-act="chatToggle" aria-expanded="${S.chatOpen}" aria-label="${S.chatOpen ? 'Close the chat' : 'Open the chat'}">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></button>`;
+}
+
+/* ---------- Patient lookup: ad hoc searches outside the referral inbox ---------- */
+
+function renderLookup() {
+  const q = S.lookupQ.trim().toLowerCase();
+  const digits = q.replace(/\D/g, '');
+  const hits = !q ? [] : PEOPLE.filter((p) => (digits.length >= 2 && p.mrn.replace(/\D/g, '').includes(digits)) || (q.length >= 2 && p.name.toLowerCase().includes(q)));
+  const rows = hits.map((p) => `<button type="button" class="hl-row ${S.side && S.current === p.mrn ? 'here' : ''}" data-act="open" data-v="${p.mrn}">
+      <span class="hl-st"><span class="pill xs t-${p.status}">${STATUS[p.status].label}</span></span><span class="hl-name">${esc(p.name)}</span><span class="hl-mrn">${p.mrn}</span><span class="hl-d">${esc(p.received)}</span><span class="hl-src">${esc(p.source)}</span>
+    </button>`).join('');
+  return `<main class="centre landing ${S.side ? 'with-side' : ''}" aria-label="Patient lookup">
+      <div class="centre-scroll"><div class="home">
+        <h2 class="lk-t">Patient lookup</h2>
+        <p class="sc-hint" style="margin: 4px 0 14px">Look up any patient by MRN or name, including referrals outside your inbox.</p>
+        <div class="lk-box">${ICON.search}<input type="text" id="lookupQ" value="${esc(S.lookupQ)}" placeholder="MRN or name" aria-label="Look up a patient by MRN or name" autocomplete="off"></div>
+        ${q ? `<section class="card home-list" style="margin-top: 16px" aria-label="Results">
+          <div class="card-h"><span class="card-t grow">Results</span><span class="hl-count">${hits.length}</span></div>
+          <div class="hl-cols"><span>Status</span><span>Patient</span><span>MRN</span><span>Received</span><span>Source</span></div>
+          <div class="hl-body">${rows || '<div class="aw-none" style="padding: 16px 18px">No patient matches. Check the MRN or the spelling.</div>'}</div>
+        </section>` : ''}
+      </div></div>
+    </main>`;
+}
+
 /* ---------- Shell ---------- */
 
 function render() {
@@ -2928,20 +3551,23 @@ function render() {
     <header class="titlebar">
       <div class="logo">${ICON.logo}</div>
       <span class="app-name">Triage Copilot</span>
+      <nav class="tb-tabs" aria-label="Pages">
+        <button type="button" data-act="page" data-v="inbox" aria-current="${S.page === 'inbox' ? 'page' : 'false'}">Referral inbox</button>
+        <button type="button" data-act="page" data-v="lookup" aria-current="${S.page === 'lookup' ? 'page' : 'false'}">Patient lookup</button>
+      </nav>
       <span class="grow"></span>
       <span class="today">${TODAY_HEAD}</span>
-      <button type="button" class="tb-btn for-rail" data-act="drawer" data-v="rail" aria-controls="rail" aria-expanded="${S.drawer === 'rail'}">${ICON.list}<span class="lbl">Patients</span></button>
+      ${S.view === 'queue' ? '' : `<button type="button" class="tb-btn for-rail" data-act="drawer" data-v="rail" aria-controls="rail" aria-expanded="${S.drawer === 'rail'}">${ICON.list}<span class="lbl">Patients</span></button>`}
       ${S.view === 'queue' ? '' : `<button type="button" class="tb-btn for-track" data-act="drawer" data-v="track" aria-controls="track" aria-expanded="${S.drawer === 'track'}" aria-label="Triage note">${ICON.cal}<span class="lbl">Note</span></button>`}
       <button type="button" class="follow-btn" data-act="toPip" title="Collapse to the companion: a small window that stays over the EHR and collects what the algorithm is missing">${ICON.pip}<span class="lbl">Companion</span></button>
       <span class="avatar" aria-label="Signed in as Melissa">M</span>
     </header>
     <div class="cols" style="${S.railW ? `--rail-w: ${S.railW}px;` : ''}${S.trackW ? `--track-w: ${S.trackW}px;` : ''}">
       <button type="button" class="scrim ${S.drawer ? 'on' : ''}" data-act="closeDrawer" aria-label="Close panel" tabindex="-1"></button>
-      ${renderRail()}
-      ${S.view === 'queue' ? renderQueue() : renderPatient()}
-      ${renderTrack()}
+      ${S.page === 'lookup' ? renderLookup() : renderQueue()}
+      ${renderSidecard()}
     </div>
-    ${renderTreeModal()}
+    ${renderChatBubble()}
     ${renderLabTrend()}
     ${S.toast ? `<div class="toast" role="status"><span class="mk met">✓</span>${esc(S.toast.text)}</div>` : ''}`;
 }
@@ -2949,8 +3575,12 @@ function render() {
 /* ---------- Events ---------- */
 
 const ACT = {
+  calPop: () => { S.calPop = !S.calPop; S.rangePop = false; S.calPicker = null; },
+  rangePop: () => { S.rangePop = !S.rangePop; S.calPop = false; },
   day: (v) => {
-    if (!S.rangeMode) { S.day = S.day === v ? null : v; return; }
+    // Home: the calendar picks one day; it replaces any range.
+    if (S.view === 'queue') { S.rangeMode = false; S.range = { from: null, to: null }; S.day = S.day === v ? null : v; S.calPop = false; return; }
+    if (!S.rangeMode) { S.day = S.day === v ? null : v; if (S.view === 'queue') S.calPop = false; return; }
     // First click starts a range, second click ends it (in either order); a third starts again.
     const r = S.range;
     if (!r.from || r.to) { S.range = { from: v, to: null }; return; }
@@ -2974,15 +3604,60 @@ const ACT = {
   calYear: (v) => { S.calPicker = Math.min(TODAY.y, Math.max(FIRST_YEAR, S.calPicker + +v)); },
   calMonth: (v) => { S.cal = { y: S.calPicker, m: +v }; S.calPicker = null; },
   calToday: () => { S.cal = { y: TODAY.y, m: TODAY.m }; S.calPicker = null; },
-  clearDay: () => { S.day = null; S.range = { from: null, to: null }; },
+  clearDay: () => { S.day = null; S.range = { from: null, to: null }; S.rangeMode = false; S.calPop = false; S.rangePop = false; },
   filter: (v) => { S.filter = v; },
+  // Selecting a patient opens the sidecard beside the list.
   open: (v) => {
+    if (S.current !== v) { S.copied = ''; S.comp = null; S.tree = null; S.ov = null; S.docIdx = 0; S.labEdit = null; }
+    if (S.current !== v) { S.noteSub = 'new'; S.noteSaved = ''; S.outSub = 'note'; S.evTab = 'testing'; }
+    S.current = v; S.side = true; S.searchMsg = ''; S.drawer = null; S.tsOpen = false;
+    return;
     if (S.current !== v) { S.copied = null; S.comp = null; }
     // Opening a profile from the day shows only the awaiting column; the list is one click away.
     if (S.view === 'queue') Object.assign(S, { railCollapsed: true, trackCollapsed: false });
     S.current = v; S.view = 'patient'; S.searchMsg = ''; S.drawer = null;
   },
-  toQueue: () => { S.home = 'cards'; S.view = 'queue'; S.railCollapsed = false; S.trackCollapsed = true; S.searchMsg = ''; S.drawer = null; },
+  closeSide: () => { S.side = false; S.tree = null; S.ov = null; },
+  sideTab: (v) => { S.sideTab = v === 'refs' ? 'details' : v === 'outputs' ? 'decision' : v; S.ov = null; if (v !== 'decision') S.tree = null; },
+  docOpen: (v) => { S.sideTab = 'decision'; S.tree = { sel: v }; S.ov = null; S.docIdx = 0; },
+  docClose: () => { S.tree = null; S.ov = null; S.docIdx = 0; },
+  docNav: (v) => { S.docIdx = Math.max(0, +v); },
+  tsToggle: () => { S.tsOpen = !S.tsOpen; },
+  tstatus: (v) => { S.tsOpen = false; const p = byMrn(S.current); if (p.status === v) return; const was = STATUS[p.status].label; p.status = v; logEvent(`Triage status: ${STATUS[v].label}`, `Changed from ${was} by Melissa.`, '#2F5FA8'); showToast(`Triage status set to ${STATUS[v].label}.`); },
+  page: (v) => { S.page = v; S.calPop = false; S.rangePop = false; },
+  chatToggle: () => { S.chatOpen = !S.chatOpen; if (S.chatOpen) S.scrollChat = true; },
+  outCopy: (v) => {
+    const p = byMrn(S.current); const o = outFor(p);
+    const text = v === 'note' ? o.note : v === 'sched' ? o.sched : (() => { const r = o.reqs[+v.split(':')[1]]; return `To: ${r.to}\n\n${r.body}`; })();
+    const done = () => { S.copied = p.mrn + '|' + v; showToast('Copied. Paste it into Epic.'); redraw(); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => { showToast('Could not copy here. Select the text and copy it.'); redraw(); });
+    else { showToast('Could not copy here. Select the text and copy it.'); }
+  },
+  outRedraft: (v) => { const p = byMrn(S.current); if (v === 'sched') { outFor(p).schedEdited = false; outFor(p).sched = draftSchedNote(p); } else outFor(p).note = draftNote(); S.copied = ''; },
+  // Puts an AI-drafted info request back to the draft: rebuilt from a fresh copy of this patient's outputs.
+  outResetReq: (v) => {
+    const p = byMrn(S.current); const o = outFor(p);
+    const keep = S.out[p.mrn]; delete S.out[p.mrn];
+    const fresh = outFor(p).reqs.filter((r) => r.ai)[o.reqs.slice(0, +v + 1).filter((r) => r.ai).length - 1];
+    S.out[p.mrn] = keep;
+    if (fresh) o.reqs[+v] = fresh;
+    S.copied = '';
+  },
+  noteSub: (v) => { S.noteSub = v; },
+  outSub: (v) => { S.outSub = v; },
+  evTab: (v) => { S.evTab = v; S.labEdit = null; },
+  pnoteSave: () => {
+    const p = byMrn(S.current); const o = outFor(p);
+    const text = (o.pnote || '').trim();
+    if (!text) { showToast('Write the note before saving it.'); return; }
+    logNote('', text);
+    o.pnoteEdited = false; S.noteSaved = p.mrn;
+    showToast('Note saved.');
+  },
+  pnoteReset: () => { const p = byMrn(S.current); const o = outFor(p); o.pnoteEdited = false; S.noteSaved = ''; },
+  outAdd: () => { const p = byMrn(S.current); outFor(p).reqs.push({ to: '', body: '' }); },
+  outRemove: (v) => { const p = byMrn(S.current); outFor(p).reqs.splice(+v, 1); S.copied = ''; },
+  toQueue: () => { S.home = 'cards'; S.view = 'queue'; S.side = false; S.tree = null; S.railCollapsed = false; S.trackCollapsed = true; S.searchMsg = ''; S.drawer = null; },
   drawer: (v) => { S.drawer = S.drawer === v ? null : v; },
   closeDrawer: () => { S.drawer = null; },
   // Where the column is a drawer, its hide button closes the drawer instead.
@@ -3002,17 +3677,17 @@ const ACT = {
   treeOpen: (v) => { S.tree = { sel: v || null }; S.ov = null; },
   treeClose: () => { S.tree = null; S.ov = null; },
   // Take the next step after a change: open it in the tree, or open it with the override form ready.
-  nextStep: (v) => { S.tree = S.tree || { sel: null }; S.tree.sel = v; S.ov = null; },
+  nextStep: (v) => { S.side = true; S.sideTab = 'decision'; S.tree = { sel: v }; S.ov = null; S.docIdx = 0; },
   nextOverride: (v) => {
-    S.tree = S.tree || { sel: null }; S.tree.sel = v; ACT.ovOpen(v);
-    setTimeout(() => document.querySelector('.tm-side .ov')?.scrollIntoView({ block: 'center' }), 0);
+    S.side = true; S.sideTab = 'decision'; S.tree = { sel: v }; S.docIdx = 0; ACT.ovOpen(v);
+    setTimeout(() => document.querySelector('.sc-docs .ov')?.scrollIntoView({ block: 'center' }), 0);
   },
   nextDismiss: () => { if (S.lastOv) S.lastOv.dismissed = true; },
   treeSel: (v) => { S.tree.sel = v || null; S.ov = null; },
   // Overrides are written in the tree sidebar and saved as the next version.
   ovOpen: (v) => {
     const l = evaluate(latestVer()).last;
-    S.ov = { id: v, mode: NODE[v].kind !== 'step' ? 'route' : v === 'g5' ? 'answer' : 'evidence', choice: '', route: '', why: '', err: '', cbc: { date: isoToday(), alc: '', wbc: l.wbc, hgb: l.hgb, plt: l.plt, anc: l.anc } };
+    S.ov = { id: v, mode: NODE[v].kind !== 'step' ? 'route' : 'evidence', choice: '', route: '', why: '', err: '', cbc: { date: isoToday(), alc: '', wbc: l.wbc, hgb: l.hgb, plt: l.plt, anc: l.anc } };
   },
   ovMode: (v) => { S.ov.mode = v; S.ov.choice = ''; S.ov.route = ''; S.ov.err = ''; },
   ovRoute: (v) => { S.ov.route = v; S.ov.err = ''; },
@@ -3045,8 +3720,7 @@ const ACT = {
     if (!reason) { o.err = 'Say why. The reason is saved with the version.'; return; }
     const stepN = NODE[id].step + 1;
     let change;
-    if (id === 'g5') change = { data: Object.assign({}, d, { exception: o.choice === 'true' }), what: o.choice === 'true' ? 'Step 5 answered: an exception applies' : 'Step 5 answered: no exception applies' };
-    else if (o.mode === 'answer') change = { answers: { [id]: o.choice }, what: `Step ${stepN} set to ${o.choice === 'met' ? 'Met' : 'Not met'}` };
+    if (o.mode === 'answer') change = { answers: { [id]: o.choice }, what: `Step ${stepN} set to ${o.choice === 'met' ? 'Met' : 'Not met'}` };
     else if (id === 'g4') change = { data: Object.assign({}, d, { ai: Object.assign({}, d.ai, { seen: o.choice === 'true' }) }), what: o.choice === 'true' ? 'Allergy and Immunology evaluation marked on file' : 'Allergy and Immunology evaluation marked not on file' };
     else {
       const set = { date: o.cbc.date, src: 'Entered by Melissa' };
@@ -3157,13 +3831,23 @@ const ACT = {
     if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done);
     else done();
   },
-  toPip: () => { S.view = 'pip'; S.pipCollapsed = false; S.drawer = null; S.tree = null; S.ov = null; },
+  toPip: () => { S.chatOpen = false; S.view = 'pip'; S.pipCollapsed = false; S.drawer = null; S.tree = null; S.ov = null; },
   pipCollapse: () => { S.pipCollapsed = true; },
   pipExpand: () => { S.pipCollapsed = false; },
-  toFull: () => { S.view = 'patient'; S.trackCollapsed = false; }
+  toFull: () => { S.view = 'queue'; S.side = true; }
 };
 
-const PANES = '.rail-scroll, .centre-scroll, .panel-body, .tree-body, .tm-side';
+const PANES = '.rail-scroll, .centre-scroll, .panel-body, .tree-body, .tm-side, .sc-body, .sc-docs, .chat-pop-body';
+
+// A click outside the triage status menu closes it.
+document.addEventListener('click', (e) => {
+  if (S.tsOpen && !e.target.closest('.ts-dd')) { S.tsOpen = false; redraw(); }
+}, true);
+
+// A click outside the open date filter closes it.
+document.addEventListener('click', (e) => {
+  if ((S.calPop || S.rangePop) && !e.target.closest('.date-filter')) { S.calPop = false; S.rangePop = false; S.calPicker = null; redraw(); }
+}, true);
 
 document.addEventListener('click', (e) => {
   const el = e.target.closest('[data-act]');
@@ -3192,7 +3876,7 @@ function redraw() {
 function scrollToChat() {
   if (!S.scrollChat) return;
   S.scrollChat = false;
-  const c = document.querySelector('.panel-body');
+  const c = document.querySelector('.chat-pop-body') || document.querySelector('.panel-body');
   if (c) c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' });
 }
 
@@ -3216,6 +3900,28 @@ document.addEventListener('input', (e) => {
   if (e.target.dataset.f === 'body') m.edited = true;
   const sent = document.getElementById('msgSent' + i);
   if (sent) sent.disabled = !m.to.trim();
+});
+
+// Outputs: what Melissa types in the drafts is kept.
+document.addEventListener('input', (e) => {
+  const k = e.target.dataset && e.target.dataset.out;
+  if (!k || !S.current) return;
+  const o = outFor(byMrn(S.current));
+  if (k === 'note') o.note = e.target.value;
+  else if (k === 'sched') { o.sched = e.target.value; o.schedEdited = true; }
+  else if (k === 'pnote') { o.pnote = e.target.value; o.pnoteEdited = true; S.noteSaved = ''; }
+  else { const [f, i] = k.split(':'); if (o.reqs[+i]) o.reqs[+i][f] = e.target.value; }
+  S.copied = '';
+});
+
+// Patient lookup filters as it is typed.
+document.addEventListener('input', (e) => {
+  if (e.target.id !== 'lookupQ') return;
+  S.lookupQ = e.target.value;
+  const pos = e.target.selectionStart;
+  redraw();
+  const el = document.getElementById('lookupQ');
+  if (el) { el.focus(); el.setSelectionRange(pos, pos); }
 });
 
 // Inline lab change fields keep what's typed between redraws.
@@ -3242,6 +3948,7 @@ document.addEventListener('input', (e) => {
 
 document.addEventListener('change', (e) => {
   if (e.target.id === 'rangeFrom' || e.target.id === 'rangeTo') {
+    if (!S.rangeMode) { S.rangeMode = true; S.day = null; S.range = { from: null, to: null }; }
     const v = fromIso(e.target.value);
     const r = Object.assign({}, S.range, { [e.target.id === 'rangeFrom' ? 'from' : 'to']: v });
     if (!r.from && r.to) { r.from = r.to; r.to = null; }
@@ -3252,6 +3959,16 @@ document.addEventListener('change', (e) => {
     redraw();
     return;
   }
+});
+
+document.addEventListener('submit', (e) => {
+  if (e.target.dataset.form !== 'chat') return;
+  e.preventDefault();
+  const q = (document.getElementById('chatQ') || {}).value;
+  if (!q || !q.trim() || !S.side) return;
+  ask(q.trim());
+  render();
+  scrollToChat();
 });
 
 document.addEventListener('submit', (e) => {
@@ -3387,9 +4104,13 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && S.tsOpen) { S.tsOpen = false; redraw(); document.querySelector('.ts-btn')?.focus(); return; }
+  if (e.key === 'Escape' && S.chatOpen) { S.chatOpen = false; redraw(); return; }
+  if (e.key === 'Escape' && S.side && !S.tree && !S.labTrend && !S.labEdit && !S.calPop && !S.rangePop) { S.side = false; S.ov = null; redraw(); return; }
+  if (e.key === 'Escape' && (S.calPop || S.rangePop)) { const which = S.calPop ? 'calPop' : 'rangePop'; S.calPop = false; S.rangePop = false; S.calPicker = null; redraw(); document.querySelector(`.date-chip[data-act="${which}"]`)?.focus(); return; }
   if (e.key === 'Escape' && S.labTrend) { ACT.labTrendClose(); redraw(); return; }
   if (e.key === 'Escape' && S.labEdit && !S.tree) { S.labEdit = null; redraw(); return; }
-  if (e.key === 'Escape' && S.tree) { if (S.pnOpen) { S.pnOpen = null; S.pnErr = ''; } else if (S.ov) S.ov = null; else if (S.tree.sel) S.tree.sel = null; else S.tree = null; redraw(); return; }
+  if (e.key === 'Escape' && S.tree) { if (S.pnOpen) { S.pnOpen = null; S.pnErr = ''; } else if (S.ov) S.ov = null; else { S.tree = null; S.docIdx = 0; } redraw(); return; }
   if (e.key === 'Escape' && S.drawer) { S.drawer = null; render(); return; }
   if (e.key === 'Escape' && S.calPicker !== null) { S.calPicker = null; redraw(); return; }
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
